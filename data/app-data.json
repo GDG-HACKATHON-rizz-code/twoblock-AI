@@ -15,7 +15,8 @@
       "preferredLanguage": "English",
       "favouriteSubject": "Mathematics",
       "preferredStudyTime": "Evening",
-      "diagnostic_completed": true
+      "diagnostic_completed": true,
+      "estimatedGradeLevel": 4.4
     }
   },
   "teacherProfiles": {},
@@ -25,8 +26,8 @@
       "id": "mathematics",
       "name": "Mathematics",
       "shortName": "Maths",
-      "score": 45,
-      "mastery": 45,
+      "score": 50,
+      "mastery": 50,
       "learningMinutes": 15,
       "status": "Developing",
       "strength": "Addition",
@@ -34,127 +35,99 @@
         {
           "id": "mathematics-t1",
           "name": "Addition",
-          "score": 55,
+          "score": 60,
           "status": "Strong"
         },
         {
           "id": "mathematics-t2",
-          "name": "Reading comprehension",
+          "name": "Decimals",
           "score": 45,
           "status": "Developing"
         }
       ],
       "learningGaps": [
-        "Reading comprehension",
-        "Grammar",
-        "Kata kerja",
-        "Kata nama",
-        "Addition",
-        "Living things",
-        "Subtraction",
-        "Multiplication"
+        "Decimals"
       ]
     },
     {
       "id": "bahasa-melayu",
       "name": "Bahasa Melayu",
       "shortName": "BM",
-      "score": 45,
-      "mastery": 45,
+      "score": 95,
+      "mastery": 95,
       "learningMinutes": 15,
-      "status": "Developing",
+      "status": "On track",
       "strength": "Vocabulary",
       "topics": [
         {
           "id": "bahasa-melayu-t1",
           "name": "Vocabulary",
-          "score": 55,
+          "score": 95,
           "status": "Strong"
         },
         {
           "id": "bahasa-melayu-t2",
-          "name": "Reading comprehension",
-          "score": 45,
+          "name": "Decimals",
+          "score": 80,
           "status": "Developing"
         }
       ],
       "learningGaps": [
-        "Reading comprehension",
-        "Grammar",
-        "Kata kerja",
-        "Kata nama",
-        "Addition",
-        "Living things",
-        "Subtraction",
-        "Multiplication"
+        "Decimals"
       ]
     },
     {
       "id": "english",
       "name": "English",
       "shortName": "English",
-      "score": 45,
-      "mastery": 45,
+      "score": 95,
+      "mastery": 95,
       "learningMinutes": 15,
-      "status": "Developing",
+      "status": "On track",
       "strength": "Vocabulary",
       "topics": [
         {
           "id": "english-t1",
           "name": "Vocabulary",
-          "score": 55,
+          "score": 95,
           "status": "Strong"
         },
         {
           "id": "english-t2",
-          "name": "Reading comprehension",
-          "score": 45,
+          "name": "Decimals",
+          "score": 80,
           "status": "Developing"
         }
       ],
       "learningGaps": [
-        "Reading comprehension",
-        "Grammar",
-        "Kata kerja",
-        "Kata nama",
-        "Addition",
-        "Living things",
-        "Subtraction",
-        "Multiplication"
+        "Decimals"
       ]
     },
     {
       "id": "science",
       "name": "Science",
       "shortName": "Science",
-      "score": 50,
-      "mastery": 50,
+      "score": 95,
+      "mastery": 95,
       "learningMinutes": 15,
-      "status": "Developing",
+      "status": "On track",
       "strength": "Living things",
       "topics": [
         {
           "id": "science-t1",
           "name": "Living things",
-          "score": 60,
+          "score": 95,
           "status": "Strong"
         },
         {
           "id": "science-t2",
-          "name": "Reading comprehension",
-          "score": 45,
+          "name": "Decimals",
+          "score": 80,
           "status": "Developing"
         }
       ],
       "learningGaps": [
-        "Reading comprehension",
-        "Grammar",
-        "Kata kerja",
-        "Kata nama",
-        "Addition",
-        "Living things",
-        "Subtraction",
-        "Multiplication"
+        "Decimals"
       ]
     }
   ],
@@ -173,8 +146,8 @@
   "interventions": [],
   "practiceAttempts": [],
   "dashboard": {
-    "overallPerformance": 18,
-    "healthScore": 23,
+    "overallPerformance": 90,
+    "healthScore": 95,
     "learningStreakDays": 1,
     "streakIncreaseThisWeek": 1,
     "studyActivityMinutes": 15,
@@ -212,22 +185,22 @@
       }
     ],
     "recommendedPractice": {
-      "subject": "English",
-      "topic": "Reading comprehension",
-      "description": "Strengthen reading comprehension in a 15-minute session calibrated to your diagnostic results.",
+      "subject": "Mathematics",
+      "topic": "Decimals",
+      "description": "Strengthen decimals in a 15-minute session calibrated to your diagnostic results.",
       "durationMinutes": 15
     }
   },
   "classDashboard": {},
   "recommendations": [
     {
-      "id": "rec-1788625229381",
+      "id": "rec-1788625584584",
       "studentId": "new-student-001",
-      "subject": "English",
-      "topic": "Reading comprehension",
-      "title": "Build confidence in reading comprehension",
-      "reason": "Your Quick Learning Check highlighted reading comprehension as your key growth area. A 15-minute focused session will help establish foundational mastery.",
-      "currentScore": 18,
+      "subject": "Mathematics",
+      "topic": "Decimals",
+      "title": "Build confidence in decimals",
+      "reason": "Your Quick Learning Check highlighted decimals as your key growth area. A 15-minute focused session will help establish foundational mastery.",
+      "currentScore": 90,
       "timeSpentMinutes": 15,
       "recommendedMinutes": 15,
       "status": "active"
