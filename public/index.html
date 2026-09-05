@@ -71,6 +71,28 @@
     .diag-summary-box span { font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; }
     .diag-summary-box b { font-size: 18px; font-family: 'Space Grotesk'; }
 
+    /* Practice Realtime Sync Pill */
+    .sync-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 14px auto 0;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(66, 217, 232, 0.12);
+      border: 1px solid rgba(66, 217, 232, 0.35);
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      animation: pulse-sync 1.4s infinite alternate ease-in-out;
+      box-shadow: 0 0 14px rgba(66, 217, 232, 0.2);
+    }
+    @keyframes pulse-sync {
+      from { opacity: 0.75; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1.02); }
+    }
+
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -240,7 +262,7 @@
     <section id="practice-view" class="practice-page hidden">
       <div id="practice-subjects"><div class="practice-hero"><div><div class="eyebrow">Practice arena</div><h1>Choose your next adventure.</h1><p>Pick a subject and sharpen one skill at a time.</p></div><button class="practice-back" data-practice-back>← Back to overview</button></div><div class="subject-books"><button class="book" data-subject="math"><span class="book-icon">∑</span><strong>Mathematics</strong><small>Numbers &amp; problem solving</small></button><button class="book" data-subject="bm"><span class="book-icon">✎</span><strong>Bahasa Melayu</strong><small>Language &amp; writing</small></button><button class="book" data-subject="bi"><span class="book-icon">A</span><strong>English</strong><small>Reading &amp; grammar</small></button><button class="book" data-subject="science"><span class="book-icon">⚗</span><strong>Science</strong><small>Discover &amp; explore</small></button></div></div>
       <div id="practice-topics" class="topic-page hidden"><div class="practice-hero"><div><div class="eyebrow">Mathematics · Grade 1</div><h1>Pick a number skill.</h1><p>Each round adapts to what you know.</p></div><button class="practice-back" id="topics-back">← All subjects</button></div><div class="topic-grid"><button class="topic-card" data-topic="addition"><span class="topic-number">+</span><h3>Addition</h3><p>Put numbers together.</p></button><button class="topic-card" data-topic="subtraction"><span class="topic-number">−</span><h3>Subtraction</h3><p>Find what is left.</p></button><button class="topic-card" data-topic="multiplication"><span class="topic-number">×</span><h3>Multiplication</h3><p>Make equal groups.</p></button><button class="topic-card" data-topic="division"><span class="topic-number">÷</span><h3>Division</h3><p>Share equally.</p></button></div></div>
-      <div id="practice-round" class="round-page hidden"><div class="round-head"><button class="practice-back" id="round-back">← Change topic</button><span class="level-chip" id="round-level-chip">LEVEL 1 · GRADE 1</span><span class="wrong-counter">Wrong answers: <b id="wrong-count">0 / 3</b></span></div><article class="question-card"><div class="question-progress" id="question-progress"></div><div class="question-prompt" id="question-prompt">Solve the question</div><div class="equation" id="equation">2 + 3 = ?</div><form class="answer-row" id="answer-form"><input class="answer-input" id="answer-input" type="number" inputmode="numeric" autocomplete="off" aria-label="Your answer" required><button class="answer-btn" type="submit">Check</button></form><div class="answer-feedback" id="answer-feedback" aria-live="polite"></div></article></div>
+      <div id="practice-round" class="round-page hidden"><div class="round-head"><button class="practice-back" id="round-back">← Change topic</button><span class="level-chip" id="round-level-chip">LEVEL 1 · GRADE 1</span><span class="wrong-counter">Wrong answers: <b id="wrong-count">0 / 3</b></span></div><article class="question-card"><div class="question-progress" id="question-progress"></div><div class="question-prompt" id="question-prompt">Solve the question</div><div class="equation" id="equation">2 + 3 = ?</div><form class="answer-row" id="answer-form"><input class="answer-input" id="answer-input" type="number" inputmode="numeric" autocomplete="off" aria-label="Your answer" required><button class="answer-btn" type="submit">Check</button></form><div id="practice-sync-indicator" class="sync-indicator hidden"><span class="badge-dot" style="background: var(--cyan); box-shadow: 0 0 10px var(--cyan);"></span><span>Updating your progress…</span></div><div class="answer-feedback" id="answer-feedback" aria-live="polite"></div></article></div>
       <div id="practice-summary" class="summary-page hidden"><article class="summary-card"><div class="summary-star">✦</div><div class="eyebrow">Round complete</div><h1>Nice effort, Amira!</h1><p id="summary-note">You completed the survival round.</p><div class="summary-stats"><div class="summary-stat"><b id="summary-correct">0</b><span>Correct</span></div><div class="summary-stat"><b id="summary-wrong">0</b><span>Wrong</span></div><div class="summary-stat"><b id="summary-score">0%</b><span>Score</span></div></div><div class="mastery-result" id="mastery-result">Topic mastery: Beginning</div><div class="summary-actions"><button class="secondary-btn" id="try-again">Try again</button><button class="cta" id="other-topic">Choose another topic</button></div></article></div>
     </section>
     <section id="teacher-profile-view" class="teacher-profile-page hidden"><header class="teacher-profile-head"><div><div class="eyebrow">Teacher profile</div><h1>Your teaching profile.</h1><p>Keep your school, class, and teaching preferences current.</p></div><button class="signout-btn">Sign out</button></header><div class="teacher-profile-layout"><aside><article class="card teacher-profile-card"><div class="teacher-avatar-large" id="teacher-profile-initials">LK</div><h2 id="teacher-profile-name">Liyana K.</h2><p>Year 10 Mathematics Teacher</p><span class="teacher-profile-tag">Year 10</span><span class="teacher-profile-tag">3 active classes</span><div class="teacher-class-list"><div><b>Year 10 Amanah</b><small>30 students · Mathematics</small></div><div><b>Year 10 Bestari</b><small>28 students · Mathematics</small></div><div><b>Year 10 Cemerlang</b><small>26 students · Mathematics</small></div></div></article></aside><article class="card teacher-profile-form"><h2>Professional information</h2><p>This information helps organise your classes and teaching recommendations.</p><form id="teacher-profile-form"><div class="form-group-title">Teacher details</div><div class="form-grid"><label class="form-field"><span>Full name</span><input name="teacherName" value="Liyana K." required></label><label class="form-field"><span>Teacher ID</span><input name="teacherId" value="TCH-10482"></label><label class="form-field"><span>School</span><input name="school" value="Sekolah Menengah Maju Jaya"></label><label class="form-field"><span>District / city</span><input name="district" value="Kuala Lumpur"></label><label class="form-field"><span>Primary subject</span><select name="subject"><option>Mathematics</option><option>Science</option><option>Bahasa Melayu</option><option>English</option></select></label><label class="form-field"><span>Teaching level</span><select name="level"><option>Year 10</option><option>Year 9</option><option>Year 8</option><option>Year 7</option></select></label></div><div class="form-group-title">Teaching preferences</div><div class="form-grid"><label class="form-field"><span>Preferred intervention style</span><select name="intervention"><option>Small-group guided practice</option><option>One-to-one check-in</option><option>Whole-class reteaching</option><option>Adaptive practice assignment</option></select></label><label class="form-field"><span>Report frequency</span><select name="reports"><option>Weekly</option><option>Monthly</option><option>Each term</option></select></label><label class="form-field full"><span>Teaching interests</span><div class="activity-options"><label class="activity-option"><input type="checkbox" checked><span>📊 Learning analytics</span></label><label class="activity-option"><input type="checkbox" checked><span>✦ AI recommendations</span></label><label class="activity-option"><input type="checkbox" checked><span>🧩 Adaptive learning</span></label><label class="activity-option"><input type="checkbox" checked><span>👥 Small-group support</span></label></div></label></div><button class="teacher-save" type="submit">Save teacher profile</button></form></article></div></section>
@@ -597,6 +619,46 @@
   let teacherInsightsList = [];
   let teacherInsightIndex = 0;
   let activeRole = null;
+  let realtimeChannel = null;
+
+  function setupRealtimeSubscriptions() {
+    if (!supabaseClient) return;
+    if (realtimeChannel) {
+      try { supabaseClient.removeChannel(realtimeChannel); } catch (e) {}
+      realtimeChannel = null;
+    }
+
+    try {
+      realtimeChannel = supabaseClient.channel('live-practice-sync')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'practice_attempts' }, (payload) => {
+          console.log('[Realtime] Practice attempt logged:', payload);
+          if (activeRole === 'teacher') loadTeacherOverview();
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'student_topic_progress' }, (payload) => {
+          console.log('[Realtime] Topic progress updated:', payload);
+          if (activeRole === 'teacher') loadTeacherOverview();
+          else if (activeRole === 'student') loadStudentOverview();
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'student_subject_progress' }, (payload) => {
+          console.log('[Realtime] Subject progress updated:', payload);
+          if (activeRole === 'teacher') loadTeacherOverview();
+          else if (activeRole === 'student') loadStudentOverview();
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'recommendations' }, (payload) => {
+          console.log('[Realtime] Recommendations updated:', payload);
+          if (activeRole === 'student') loadStudentOverview();
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'interventions' }, (payload) => {
+          console.log('[Realtime] Interventions updated:', payload);
+          if (activeRole === 'teacher') loadTeacherOverview();
+        })
+        .subscribe((status) => {
+          console.log('[Realtime] Subscription status:', status);
+        });
+    } catch (err) {
+      console.warn('[Realtime] Failed to subscribe:', err);
+    }
+  }
 
   // Real 2Block Ai Supabase & Backend Client
   const API = {
@@ -702,6 +764,10 @@
     },
 
     async signOutFromSupabase() {
+      if (realtimeChannel && supabaseClient) {
+        try { supabaseClient.removeChannel(realtimeChannel); } catch (e) {}
+        realtimeChannel = null;
+      }
       if (supabaseClient) {
         try { await supabaseClient.auth.signOut(); } catch (e) {}
       }
@@ -735,6 +801,7 @@
       } else {
         openTeacherOverview();
       }
+      setupRealtimeSubscriptions();
     },
 
     async request(path, options = {}) {
@@ -970,13 +1037,50 @@
         };
       }
 
-      if (path === '/api/teacher/report') {
+      if (path === '/api/student/practice/answer' || path === '/api/student/practice/process-result') {
+        const topic = (body?.topic || 'addition').toLowerCase();
+        const studentAns = body?.studentAnswer;
+        const correctAns = body?.correctAnswer;
+        const isCorrect = Number(studentAns) === Number(correctAns);
+        const SCORING_WEIGHTS = { PREVIOUS: 0.7, LATEST: 0.3 };
+        const storedKey = `2block_topic_${topic}`;
+        const prevScore = Number(localStorage.getItem(storedKey)) || 70;
+        const latestScore = isCorrect ? 100 : 0;
+        const newScore = Math.round((prevScore * SCORING_WEIGHTS.PREVIOUS) + (latestScore * SCORING_WEIGHTS.LATEST));
+        localStorage.setItem(storedKey, newScore);
+
         return {
-          classHealthScore: 0,
-          averagePerformance: 0,
-          studentsOnTrack: 0,
-          studentsNeedingSupport: 0,
-          period: 'September 2026'
+          isCorrect,
+          correctAnswer: correctAns,
+          attemptId: 'att-local-' + Date.now(),
+          topic,
+          previousTopicScore: prevScore,
+          newTopicScore: newScore,
+          topicAccuracy: isCorrect ? 100 : 0,
+          topicMastery: newScore >= 80 ? 'Mastered' : newScore >= 60 ? 'Developing' : 'Beginning',
+          trend: newScore >= prevScore ? 'improving' : 'declining',
+          subjectScore: newScore,
+          overallPerformance: newScore,
+          healthScore: Math.min(100, Math.round(newScore * 1.05)),
+          learningStreak: 12,
+          recommendation: {
+            topic: newScore < 70 ? topic : 'subtraction',
+            action: newScore < 70 ? `Practice ${topic}` : 'Build confidence in subtraction',
+            reason: 'Adaptive recommendation based on recent activity.'
+          },
+          feedback: isCorrect ? 'Correct! Great thinking.' : `Not quite — the answer was ${correctAns}.`
+        };
+      }
+
+      if (path === '/api/student/practice/end') {
+        const total = (Number(body?.correctCount) || 0) + (Number(body?.wrongCount) || 0);
+        const score = total > 0 ? Math.round(((Number(body?.correctCount) || 0) / total) * 100) : 0;
+        return {
+          topic: body?.topic || 'addition',
+          correct: Number(body?.correctCount) || 0,
+          wrong: Number(body?.wrongCount) || 0,
+          score,
+          mastery: score >= 80 ? 'Strong' : score >= 55 ? 'Developing' : 'Beginning'
         };
       }
 
@@ -1726,8 +1830,11 @@
   document.querySelector('#answer-form').onsubmit = async e => {
     e.preventDefault();
     const input = document.querySelector('#answer-input'), feedback = document.querySelector('#answer-feedback');
+    const syncPill = document.querySelector('#practice-sync-indicator');
     if (input.value === '') return;
     input.disabled = true;
+
+    if (syncPill) syncPill.classList.remove('hidden');
 
     const timeSpent = Math.max(1, Math.round((Date.now() - currentRound.startTime) / 1000));
     let isCorrect = Number(input.value) === Number(currentRound.question.answer);
@@ -1743,8 +1850,75 @@
           questionText: currentRound.question.equation
         })
       });
-      if (res && res.isCorrect !== undefined) isCorrect = res.isCorrect;
-    } catch (err) {}
+
+      if (res) {
+        if (res.isCorrect !== undefined) isCorrect = res.isCorrect;
+
+        const newTopicScore = res.newTopicScore ?? res.topicProgress?.score;
+        const topicMastery = res.topicMastery ?? res.topicProgress?.status;
+        const subjectScore = res.subjectScore ?? res.subjectProgress?.score;
+        const overallPerformance = res.overallPerformance ?? res.studentMetrics?.overallPerformance;
+        const learningStreak = res.learningStreak ?? res.studentMetrics?.learningStreakDays;
+        const recommendation = res.recommendation ?? res.studentMetrics?.activeRecommendation;
+
+        // Immediately update cached in-memory student learning state
+        if (newTopicScore !== undefined) {
+          if (cachedStudentLearning && Array.isArray(cachedStudentLearning)) {
+            const mathSubj = cachedStudentLearning.find(s => s.name === 'Mathematics');
+            if (mathSubj) {
+              if (subjectScore !== undefined) mathSubj.score = subjectScore;
+              if (mathSubj.topics) {
+                const topicItem = mathSubj.topics.find(t => t.id === currentRound.topic || t.name.toLowerCase() === currentRound.topic.toLowerCase());
+                if (topicItem) {
+                  topicItem.score = newTopicScore;
+                  if (topicMastery) topicItem.mastery = topicMastery;
+                }
+              }
+            }
+          }
+
+          // Update Student Overview DOM metrics immediately
+          const overallEl = document.querySelector('#student-overall-score');
+          if (overallEl && overallPerformance !== undefined) {
+            overallEl.textContent = `${overallPerformance}%`;
+          }
+
+          const streakEl = document.querySelector('.streak-card .metric-value');
+          if (streakEl && learningStreak !== undefined) {
+            streakEl.textContent = `${learningStreak} days`;
+          }
+
+          // Update Mathematics donut / mini-ring in overview
+          if (subjectScore !== undefined) {
+            const mathDonut = document.querySelector('.subject-donut .mini-ring');
+            if (mathDonut) {
+              mathDonut.style.setProperty('--percent', subjectScore);
+              const b = mathDonut.querySelector('b');
+              if (b) b.textContent = `${subjectScore}%`;
+            }
+            const mathCard = document.querySelector('.learning-card[data-learning-subject="math"]');
+            if (mathCard) {
+              const bScores = mathCard.querySelectorAll('.learning-metrics b');
+              if (bScores[1]) bScores[1].textContent = `${subjectScore}%`;
+            }
+          }
+
+          // Update next recommended practice card
+          if (recommendation && (recommendation.action || recommendation.description)) {
+            const pracP = document.querySelector('.practice p');
+            if (pracP) {
+              pracP.textContent = recommendation.action ? `${recommendation.action}: ${recommendation.reason || ''}` : recommendation.description;
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('Live practice calculation error:', err);
+    } finally {
+      setTimeout(() => {
+        if (syncPill) syncPill.classList.add('hidden');
+      }, 500);
+    }
 
     if (isCorrect) {
       currentRound.correct++;

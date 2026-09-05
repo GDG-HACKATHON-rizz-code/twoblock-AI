@@ -377,3 +377,46 @@ CREATE POLICY "Teachers can view student initial assessments" ON public.student_
     EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'teacher')
   );
 
+-- ==============================================================================
+-- 15. LIVE PRACTICE COLUMNS ENHANCEMENT
+-- ==============================================================================
+ALTER TABLE public.student_topic_progress 
+  ADD COLUMN IF NOT EXISTS accuracy_percent INTEGER DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS time_spent_seconds INTEGER DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS latest_activity_date TIMESTAMPTZ DEFAULT NOW();
+
+ALTER TABLE public.student_subject_progress 
+  ADD COLUMN IF NOT EXISTS trend TEXT DEFAULT 'steady',
+  ADD COLUMN IF NOT EXISTS latest_activity_date TIMESTAMPTZ DEFAULT NOW();
+
+ALTER TABLE public.practice_attempts 
+  ADD COLUMN IF NOT EXISTS subject_id TEXT,
+  ADD COLUMN IF NOT EXISTS time_spent_seconds INTEGER DEFAULT 5;
+
+-- ==============================================================================
+-- 16. SUPABASE REALTIME CONFIGURATION
+-- ==============================================================================
+DO $$
+BEGIN
+  BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.practice_attempts;
+  EXCEPTION WHEN others THEN NULL; END;
+
+  BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.student_topic_progress;
+  EXCEPTION WHEN others THEN NULL; END;
+
+  BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.student_subject_progress;
+  EXCEPTION WHEN others THEN NULL; END;
+
+  BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.recommendations;
+  EXCEPTION WHEN others THEN NULL; END;
+
+  BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.interventions;
+  EXCEPTION WHEN others THEN NULL; END;
+END $$;
+
+

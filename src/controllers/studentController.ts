@@ -3,6 +3,8 @@ import { dataStore } from '../services/dataStore.js';
 import { AnalyticsService } from '../services/analyticsService.js';
 import { RecommendationEngine } from '../services/recommendationEngine.js';
 import { diagnosticEngine } from '../services/diagnosticEngine.js';
+import { ScoringService } from '../services/scoringService.js';
+import { GeminiPracticeService } from '../services/geminiPracticeService.js';
 import { sendSuccess } from '../utils/response.js';
 
 export async function getDashboard(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -125,41 +127,11 @@ export async function getPracticeQuestion(req: Request, res: Response, next: Nex
   try {
     const topic = (req.query.topic as string) || 'addition';
     const level = parseInt(req.query.level as string) || 1;
+    const grade = parseInt(req.query.grade as string) || 2;
+    const subject = (req.query.subject as string) || 'Mathematics';
 
-    let a: number, b: number, sign: string, answer: number;
-
-    if (topic === 'addition') {
-      a = 1 + Math.floor(Math.random() * (level === 1 ? 9 : 20));
-      b = 1 + Math.floor(Math.random() * (level === 1 ? 9 : 20));
-      sign = '+';
-      answer = a + b;
-    } else if (topic === 'subtraction') {
-      a = 3 + Math.floor(Math.random() * (level === 1 ? 8 : 18));
-      b = 1 + Math.floor(Math.random() * a);
-      sign = '−';
-      answer = a - b;
-    } else if (topic === 'multiplication') {
-      a = 1 + Math.floor(Math.random() * 5);
-      b = 1 + Math.floor(Math.random() * (level === 1 ? 3 : 6));
-      sign = '×';
-      answer = a * b;
-    } else {
-      b = 1 + Math.floor(Math.random() * 3);
-      answer = 1 + Math.floor(Math.random() * (level === 1 ? 5 : 10));
-      a = b * answer;
-      sign = '÷';
-    }
-
-    sendSuccess(res, {
-      id: `q-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-      topic,
-      level,
-      a,
-      b,
-      sign,
-      equation: `${a} ${sign} ${b} = ?`,
-      answer
-    });
+    const question = await GeminiPracticeService.generateAdaptiveQuestion(topic, grade, level, subject);
+    sendSuccess(res, question);
   } catch (err) {
     next(err);
   }
@@ -167,30 +139,64 @@ export async function getPracticeQuestion(req: Request, res: Response, next: Nex
 
 export async function submitAnswer(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const studentId = req.user?.id || 'new-student-001';
-    const { topic, studentAnswer, correctAnswer, timeSpentSeconds, questionText } = req.body;
+    const studentId = req.user?.id || 'student-user-001';
+    const { topic, studentAnswer, correctAnswer, timeSpentSeconds, questionText, question, subject, level } = req.body;
 
-    const isCorrect = Number(studentAnswer) === Number(correctAnswer);
+    const isCorrect = String(studentAnswer).trim().toLowerCase() === String(correctAnswer).trim().toLowerCase();
 
-    dataStore.data.practiceAttempts.push({
-      id: `att-${Date.now()}`,
+    const result = await ScoringService.processPracticeResult({
       studentId,
       topic: topic || 'addition',
-      level: 1,
-      question: questionText || '',
-      studentAnswer: Number(studentAnswer),
-      correctAnswer: Number(correctAnswer),
+      subject: subject || 'Mathematics',
+      question: questionText || question || '',
+      submittedAnswer: String(studentAnswer),
+      correctAnswer: String(correctAnswer),
       isCorrect,
       timeSpentSeconds: Number(timeSpentSeconds) || 5,
-      attemptedAt: new Date().toISOString()
+      level: Number(level) || 1
     });
 
-    dataStore.save();
-
     sendSuccess(res, {
+      ...result,
       isCorrect,
-      correctAnswer: Number(correctAnswer),
+      correctAnswer,
+      previousTopicScore: result.topicProgress.previousScore,
+      newTopicScore: result.topicProgress.score,
+      topicAccuracy: result.topicProgress.accuracyPercent,
+      topicMastery: result.topicProgress.status,
+      subjectScore: result.subjectProgress.score,
+      subjectMastery: result.subjectProgress.mastery,
+      overallPerformance: result.studentMetrics.overallPerformance,
+      healthScore: result.studentMetrics.healthScore,
+      learningStreak: result.studentMetrics.learningStreakDays,
+      recommendation: result.studentMetrics.activeRecommendation,
       feedback: isCorrect ? 'Correct! Great thinking.' : `Not quite — the answer was ${correctAnswer}.`
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function processPracticeResult(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const studentId = req.user?.id || req.body.studentId || 'student-user-001';
+    const result = await ScoringService.processPracticeResult({
+      ...req.body,
+      studentId
+    });
+    sendSuccess(res, {
+      ...result,
+      isCorrect: result.topicProgress.accuracyPercent === 100,
+      previousTopicScore: result.topicProgress.previousScore,
+      newTopicScore: result.topicProgress.score,
+      topicAccuracy: result.topicProgress.accuracyPercent,
+      topicMastery: result.topicProgress.status,
+      subjectScore: result.subjectProgress.score,
+      subjectMastery: result.subjectProgress.mastery,
+      overallPerformance: result.studentMetrics.overallPerformance,
+      healthScore: result.studentMetrics.healthScore,
+      learningStreak: result.studentMetrics.learningStreakDays,
+      recommendation: result.studentMetrics.activeRecommendation
     });
   } catch (err) {
     next(err);
@@ -199,22 +205,21 @@ export async function submitAnswer(req: Request, res: Response, next: NextFuncti
 
 export async function endPracticeSession(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const studentId = req.user?.id || 'new-student-001';
+    const studentId = req.user?.id || 'student-user-001';
     const { topic, correctCount, wrongCount } = req.body;
+    const total = (Number(correctCount) || 0) + (Number(wrongCount) || 0);
+    const roundScore = total > 0 ? Math.round((Number(correctCount) / total) * 100) : 0;
+    const mastery = roundScore >= 80 ? 'Strong' : roundScore >= 55 ? 'Developing' : 'Beginning';
 
-    const result = AnalyticsService.recordPracticeSessionResults({
-      studentId,
-      topicName: topic,
-      correctCount: Number(correctCount) || 0,
-      wrongCount: Number(wrongCount) || 0
-    });
+    dataStore.data.dashboard.studyActivityMinutes = (dataStore.data.dashboard.studyActivityMinutes || 0) + 5;
+    dataStore.save();
 
     sendSuccess(res, {
       topic,
       correct: Number(correctCount) || 0,
       wrong: Number(wrongCount) || 0,
-      score: result.score,
-      mastery: result.status,
+      score: roundScore,
+      mastery,
       message: `You completed the practice round in ${topic}.`
     });
   } catch (err) {

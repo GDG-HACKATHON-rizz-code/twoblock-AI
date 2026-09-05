@@ -26,17 +26,20 @@
       "id": "mathematics",
       "name": "Mathematics",
       "shortName": "Maths",
-      "score": 50,
-      "mastery": 50,
-      "learningMinutes": 15,
-      "status": "Developing",
+      "score": 63,
+      "mastery": 55,
+      "learningMinutes": 17,
+      "status": "Building skills",
       "strength": "Addition",
       "topics": [
         {
           "id": "mathematics-t1",
           "name": "Addition",
-          "score": 60,
-          "status": "Strong"
+          "score": 80,
+          "status": "Mastered",
+          "correctAnswers": 2,
+          "totalAnswers": 2,
+          "timeSpentMinutes": 2
         },
         {
           "id": "mathematics-t2",
@@ -141,16 +144,51 @@
       "healthScore": 25,
       "status": "support",
       "trend": "up"
+    },
+    {
+      "id": "student-user-001",
+      "name": "Active Learner",
+      "initials": "AL",
+      "primarySubject": "Mathematics",
+      "learningMinutes": 2,
+      "healthScore": 60,
+      "status": "watch",
+      "trend": "up"
     }
   ],
   "interventions": [],
-  "practiceAttempts": [],
+  "practiceAttempts": [
+    {
+      "id": "att-1788626411954-741",
+      "studentId": "student-user-001",
+      "topic": "Addition",
+      "level": 1,
+      "question": "5 + 3 = ?",
+      "submittedAnswer": "8",
+      "correctAnswer": "8",
+      "isCorrect": true,
+      "timeSpentSeconds": 6,
+      "attemptedAt": "2026-09-05T16:40:11.954Z"
+    },
+    {
+      "id": "att-1788626448178-10",
+      "studentId": "student-user-001",
+      "topic": "Addition",
+      "level": 1,
+      "question": "5 + 3 = ?",
+      "submittedAnswer": "8",
+      "correctAnswer": "8",
+      "isCorrect": true,
+      "timeSpentSeconds": 6,
+      "attemptedAt": "2026-09-05T16:40:48.178Z"
+    }
+  ],
   "dashboard": {
-    "overallPerformance": 90,
+    "overallPerformance": 87,
     "healthScore": 95,
     "learningStreakDays": 1,
     "streakIncreaseThisWeek": 1,
-    "studyActivityMinutes": 15,
+    "studyActivityMinutes": 17,
     "studyActivityChangePercent": 0,
     "availableFocusMinutes": 45,
     "bestFocusWindow": "7:00 PM",
@@ -185,10 +223,8 @@
       }
     ],
     "recommendedPractice": {
-      "subject": "Mathematics",
-      "topic": "Decimals",
-      "description": "Strengthen decimals in a 15-minute session calibrated to your diagnostic results.",
-      "durationMinutes": 15
+      "title": "Strengthen Decimals",
+      "description": "Your score in Decimals is 45%. A 15-minute focused session will help establish mastery."
     }
   },
   "classDashboard": {},

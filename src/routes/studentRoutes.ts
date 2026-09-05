@@ -4,6 +4,7 @@ import {
   getLearning,
   getPracticeQuestion,
   submitAnswer,
+  processPracticeResult,
   endPracticeSession,
   getInsights,
   getReport,
@@ -21,6 +22,7 @@ router.get('/dashboard', getDashboard);
 router.get('/learning', getLearning);
 router.get('/practice/questions', getPracticeQuestion);
 router.post('/practice/answer', submitAnswer);
+router.post('/practice/process-result', processPracticeResult);
 router.post('/practice/end', endPracticeSession);
 router.get('/insights', getInsights);
 router.get('/report', getReport);

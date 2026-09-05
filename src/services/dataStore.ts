@@ -99,7 +99,8 @@ export interface PracticeAttempt {
   topic: string;
   level: number;
   question: string;
-  studentAnswer: number | string;
+  studentAnswer?: number | string;
+  submittedAnswer?: string;
   correctAnswer: number | string;
   isCorrect: boolean;
   timeSpentSeconds: number;
