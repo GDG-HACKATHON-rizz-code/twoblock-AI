@@ -3,26 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2Be AI — Latihan Pintar Beradaptasi</title>
+  <title>2Be AI — Platform Pembelajaran Adaptif</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --bg: #0f172a;
-      --card-bg: #1e293b;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-glow: rgba(99, 102, 241, 0.35);
+      --bg: #0b0f19;
+      --surface: #131b2e;
+      --card-bg: #1a233a;
+      --card-hover: #222d4a;
+      --border: #2a3756;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
+      --text-dim: #64748b;
       --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.25);
       --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.25);
       --warning: #f59e0b;
-      --border: #334155;
+      --info: #38bdf8;
     }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     }
+
     body {
       background-color: var(--bg);
       color: var(--text-main);
@@ -30,419 +42,1284 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem 1rem;
+      padding: 1.5rem 1rem;
     }
-    .container {
-      max-width: 680px;
+
+    .app-container {
+      max-width: 780px;
       width: 100%;
     }
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    header h1 {
-      font-size: 2rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #818cf8, #c084fc);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-      position: relative;
-      margin-bottom: 1.5rem;
-    }
-    .screen {
-      display: none;
-    }
-    .screen.active {
-      display: block;
-    }
-    .header-bar {
+
+    /* Navbar */
+    .navbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 0.85rem 1.5rem;
+      margin-bottom: 1.75rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
-    .chip {
-      background: rgba(99, 102, 241, 0.15);
-      color: #a5b4fc;
-      border: 1px solid rgba(99, 102, 241, 0.3);
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 1.35rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #a5b4fc, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
       padding: 0.35rem 0.85rem;
       border-radius: 9999px;
       font-size: 0.85rem;
-      font-weight: 600;
     }
-    .wrong-chip {
-      background: rgba(239, 68, 68, 0.15);
-      color: #fca5a5;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      padding: 0.35rem 0.85rem;
-      border-radius: 9999px;
-      font-size: 0.85rem;
-      font-weight: 600;
+
+    .user-role-badge {
+      background: var(--primary-glow);
+      color: #c7d2fe;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
     }
-    .progress-dots {
+
+    /* Navigation Tabs */
+    .nav-tabs {
       display: flex;
       gap: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--border);
-    }
-    .dot.active {
-      background: var(--primary);
-      box-shadow: 0 0 10px var(--primary);
-    }
-    .dot.correct {
-      background: var(--success);
-    }
-    .dot.wrong {
-      background: var(--danger);
-    }
-    .equation {
-      font-size: 1.35rem;
-      font-weight: 600;
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-      color: var(--text-main);
-    }
-    .options-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    .option-btn {
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--surface);
       border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 1rem;
       border-radius: 12px;
-      font-size: 1.05rem;
+      padding: 0.35rem;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+    }
+
+    .nav-tab {
+      flex: 1;
+      text-align: center;
+      padding: 0.65rem 1rem;
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.9rem;
       cursor: pointer;
       transition: all 0.2s;
-      text-align: left;
+      white-space: nowrap;
+      border: none;
+      background: transparent;
     }
-    .option-btn:hover {
-      background: rgba(99, 102, 241, 0.2);
-      border-color: var(--primary);
+
+    .nav-tab:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.04);
     }
-    .option-btn.selected {
+
+    .nav-tab.active {
       background: var(--primary);
-      border-color: var(--primary-hover);
+      color: white;
+      box-shadow: 0 2px 10px var(--primary-glow);
     }
-    .input-row {
-      display: flex;
-      gap: 0.75rem;
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
       margin-bottom: 1.5rem;
     }
-    input[type="text"] {
-      flex: 1;
-      background: rgba(0, 0, 0, 0.2);
-      border: 1px solid var(--border);
-      padding: 0.85rem 1rem;
-      border-radius: 10px;
-      color: var(--text-main);
-      font-size: 1.1rem;
+
+    .screen {
+      display: none;
     }
-    input[type="text"]:focus {
+
+    .screen.active {
+      display: block;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Typography & Helpers */
+    h2 { font-size: 1.45rem; font-weight: 700; margin-bottom: 0.5rem; }
+    h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.75rem; }
+    p.subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; }
+
+    /* Form Inputs */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.45rem;
+    }
+
+    input, select {
+      width: 100%;
+      background: rgba(11, 15, 25, 0.6);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus {
       outline: none;
       border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
     }
+
+    /* Buttons */
     .btn {
       background: var(--primary);
       color: white;
       border: none;
       padding: 0.85rem 1.5rem;
-      border-radius: 10px;
-      font-size: 1rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
-    .btn:hover {
+
+    .btn:hover:not(:disabled) {
       background: var(--primary-hover);
+      box-shadow: 0 4px 15px var(--primary-glow);
     }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     .btn-secondary {
-      background: transparent;
+      background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--border);
       color: var(--text-muted);
     }
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.05);
+
+    .btn-secondary:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.1);
       color: var(--text-main);
     }
-    .feedback {
-      padding: 1rem;
-      border-radius: 10px;
-      margin-top: 1rem;
+
+    .btn-sm {
+      padding: 0.4rem 0.85rem;
+      font-size: 0.8rem;
+      border-radius: 8px;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: #dc2626;
+      box-shadow: 0 4px 15px var(--danger-glow);
+    }
+
+    /* Badges & Chips */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+    }
+
+    .chip-primary { background: var(--primary-glow); color: #c7d2fe; border-color: rgba(99, 102, 241, 0.4); }
+    .chip-success { background: var(--success-glow); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.4); }
+    .chip-warning { background: rgba(245, 158, 11, 0.2); color: #fde68a; border-color: rgba(245, 158, 11, 0.4); }
+    .chip-danger { background: var(--danger-glow); color: #fca5a5; border-color: rgba(239, 68, 68, 0.4); }
+
+    /* Progress Dots */
+    .progress-dots {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: all 0.3s;
+    }
+
+    .dot.active {
+      background: var(--primary);
+      box-shadow: 0 0 10px var(--primary);
+      transform: scale(1.2);
+    }
+
+    .dot.correct { background: var(--success); }
+    .dot.wrong { background: var(--danger); }
+
+    /* Practice UI */
+    .equation-card {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .option-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 1rem 1.25rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: var(--primary);
+    }
+
+    .option-btn.selected {
+      background: var(--primary);
+      border-color: var(--primary-hover);
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    .feedback-box {
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-top: 1.25rem;
       display: none;
     }
-    .feedback.correct {
+
+    .feedback-box.correct {
       display: block;
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      background: var(--success-glow);
+      border: 1px solid rgba(16, 185, 129, 0.4);
       color: #6ee7b7;
     }
-    .feedback.wrong {
+
+    .feedback-box.wrong {
       display: block;
       background: rgba(239, 68, 68, 0.15);
       border: 1px solid rgba(239, 68, 68, 0.3);
       color: #fca5a5;
     }
-    .summary-card {
+
+    /* Summary & Snapshot */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
       text-align: center;
     }
-    .score-circle {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      background: rgba(99, 102, 241, 0.15);
-      border: 3px solid var(--primary);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin: 1.5rem auto;
-      font-size: 2rem;
+
+    .stat-val {
+      font-size: 1.75rem;
       font-weight: 800;
+      color: #c7d2fe;
     }
-    .cosmetic-label {
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: #a5b4fc;
-      margin-bottom: 0.5rem;
-    }
-    .authoritative-badge {
-      display: inline-block;
-      padding: 0.35rem 1rem;
-      border-radius: 9999px;
-      font-size: 0.85rem;
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-top: 0.25rem;
       font-weight: 600;
-      margin-top: 0.75rem;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .data-table th, .data-table td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table th {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--surface);
       border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: none;
+      z-index: 1000;
+      font-size: 0.9rem;
+      animation: fadeIn 0.2s;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>2Be AI</h1>
-      <p style="color: var(--text-muted); font-size: 0.95rem;">Sistem Pembelajaran Adaptif</p>
+  <div class="app-container">
+    
+    <!-- Top Navbar -->
+    <header class="navbar">
+      <div class="brand">
+        <span>⚡ 2Be AI</span>
+      </div>
+      <div id="auth-status-container">
+        <!-- Injected via JS -->
+      </div>
     </header>
 
-    <!-- 1. Selection / Start Screen -->
-    <div id="start-screen" class="card screen active">
-      <h2 style="margin-bottom: 1rem;">Mula Sesi Latihan</h2>
-      <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
-        Pilih subtopik untuk memulakan latihan beradaptasi mengikut tahap kefahaman anda.
-      </p>
-      <div style="margin-bottom: 1.5rem;">
-        <label style="display: block; color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem;">
-          Pilih Subtopik:
-        </label>
-        <select id="subtopic-select" style="width: 100%; padding: 0.85rem; background: #0f172a; border: 1px solid var(--border); color: white; border-radius: 10px; font-size: 1rem;">
-          <option value="">Memuatkan subtopik...</option>
+    <!-- Navigation Tabs (Only when logged in) -->
+    <nav id="main-nav" class="nav-tabs" style="display: none;">
+      <button class="nav-tab active" onclick="switchTab('practice')">🎯 Latihan Adaptif</button>
+      <button class="nav-tab" onclick="switchTab('diagnostic')">📝 Penilaian Diagnostik</button>
+      <button class="nav-tab" onclick="switchTab('snapshot')">📊 Snapshot Pembelajaran</button>
+      <button id="teacher-tab-btn" class="nav-tab" style="display: none;" onclick="switchTab('teacher')">👨‍🏫 Portal Guru</button>
+    </nav>
+
+    <!-- ======================================================== -->
+    <!-- 1. AUTH SCREEN (Login / Register)                         -->
+    <!-- ======================================================== -->
+    <div id="auth-screen" class="card screen active">
+      <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+        <button id="login-tab-btn" class="btn" style="flex: 1;" onclick="toggleAuthMode('login')">Log Masuk</button>
+        <button id="register-tab-btn" class="btn btn-secondary" style="flex: 1;" onclick="toggleAuthMode('register')">Daftar Akaun</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <h2>Selamat Kembali</h2>
+        <p class="subtitle">Sila log masuk untuk mengakses latihan adaptif pintar anda.</p>
+        <div class="form-group">
+          <label>Emel:</label>
+          <input type="email" id="login-email" required placeholder="nama@emel.com" />
+        </div>
+        <div class="form-group">
+          <label>Kata Laluan:</label>
+          <input type="password" id="login-password" required placeholder="••••••••" />
+        </div>
+        <button type="submit" id="login-btn" class="btn" style="width: 100%;">Log Masuk</button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" style="display: none;" onsubmit="handleRegister(event)">
+        <h2>Daftar Akaun Baharu</h2>
+        <p class="subtitle">Cipta akaun untuk memulakan perjalanan pembelajaran pintar anda.</p>
+        <div class="form-group">
+          <label>Nama Penuh:</label>
+          <input type="text" id="reg-name" required placeholder="Ahmad Faris" />
+        </div>
+        <div class="form-group">
+          <label>Emel:</label>
+          <input type="email" id="reg-email" required placeholder="faris@sekolah.edu.my" />
+        </div>
+        <div class="form-group">
+          <label>Kata Laluan (min 6 aksara):</label>
+          <input type="password" id="reg-password" minlength="6" required placeholder="••••••••" />
+        </div>
+        <div class="form-group">
+          <label>Peranan:</label>
+          <select id="reg-role" onchange="handleRoleChange()">
+            <option value="STUDENT">Pelajar (Student)</option>
+            <option value="TEACHER">Guru (Teacher)</option>
+          </select>
+        </div>
+        <div class="form-group" id="student-grade-group">
+          <label>Darjah / Tingkatan (1-6):</label>
+          <select id="reg-grade">
+            <option value="1">Darjah 1</option>
+            <option value="2">Darjah 2</option>
+            <option value="3">Darjah 3</option>
+            <option value="4" selected>Darjah 4</option>
+            <option value="5">Darjah 5</option>
+            <option value="6">Darjah 6</option>
+          </select>
+        </div>
+        <button type="submit" id="reg-btn" class="btn" style="width: 100%;">Daftar Sekarang</button>
+      </form>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 2. PRACTICE SELECTION SCREEN (A4 / A6 Hierarchy)          -->
+    <!-- ======================================================== -->
+    <div id="practice-select-screen" class="card screen">
+      <h2>Mula Sesi Latihan Adaptif</h2>
+      <p class="subtitle">Pilih mengikut hierarki Subjek → Topik → Subtopik untuk memulakan latihan pintar.</p>
+
+      <div class="form-group">
+        <label>1. Pilih Subjek:</label>
+        <select id="subject-select" onchange="loadTopicsForSubject()">
+          <option value="">-- Pilih Subjek --</option>
         </select>
       </div>
-      <button class="btn" style="width: 100%;" onclick="startRound()">Mula Latihan</button>
+
+      <div class="form-group">
+        <label>2. Pilih Topik:</label>
+        <select id="topic-select" disabled onchange="loadSubtopicsForTopic()">
+          <option value="">-- Sila pilih subjek dahulu --</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>3. Pilih Subtopik:</label>
+        <select id="subtopic-select" disabled onchange="handleSubtopicSelected()">
+          <option value="">-- Sila pilih topik dahulu --</option>
+        </select>
+      </div>
+
+      <button id="start-practice-btn" class="btn" style="width: 100%; margin-top: 1rem;" disabled onclick="startPracticeSession()">
+        🚀 Mula Sesi Latihan
+      </button>
     </div>
 
-    <!-- 2. Practice Question Screen -->
-    <div id="practice-screen" class="card screen">
-      <div class="header-bar">
-        <span id="level-chip" class="chip">Tahap Kesukaran: L1</span>
-        <span id="wrong-count" class="wrong-chip">Salah Berturut-turut: 0/3</span>
+    <!-- ======================================================== -->
+    <!-- 3. PRACTICE RUN SCREEN (Question presentation & answer)  -->
+    <!-- ======================================================== -->
+    <div id="practice-run-screen" class="card screen">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <span id="level-chip" class="chip chip-primary">Aras: L1</span>
+          <span id="recovery-badge" class="chip chip-warning" style="display: none;">🚨 Recovery Mode</span>
+        </div>
+        <span id="consecutive-wrong-chip" class="chip chip-danger">Salah Berturut: 0/3</span>
       </div>
 
-      <div id="question-progress" class="progress-dots">
-        <div class="dot active"></div>
+      <div id="practice-progress-dots" class="progress-dots"></div>
+
+      <div id="practice-question-text" class="equation-card">
+        Memuatkan soalan adaptif...
       </div>
 
-      <div id="equation" class="equation">Memuatkan soalan...</div>
+      <!-- MCQ Options -->
+      <div id="practice-options-grid" class="options-grid"></div>
 
-      <div id="options-container" class="options-grid"></div>
-
-      <div id="input-container" class="input-row" style="display: none;">
-        <input type="text" id="answer-input" placeholder="Masukkan jawapan anda di sini..." />
-        <button class="btn" onclick="submitCurrentAnswer()">Hantar</button>
-      </div>
-
-      <div id="answer-feedback" class="feedback"></div>
-
-      <div style="display: flex; justify-content: space-between; margin-top: 1.5rem;">
-        <button class="btn btn-secondary" onclick="endRound()">Tamatkan Sesi</button>
-        <button id="next-btn" class="btn" style="display: none;" onclick="loadNextQuestion()">Soalan Seterusnya</button>
-      </div>
-    </div>
-
-    <!-- 3. Summary Screen -->
-    <div id="summary-screen" class="card screen summary-card">
-      <h2>Ringkasan Sesi Latihan</h2>
-      <div class="score-circle">
-        <span id="score-percent">0%</span>
-      </div>
-      <div id="mastery-result">
-        <div id="cosmetic-label" class="cosmetic-label">Strong foundation</div>
-        <p id="stats-text" style="color: var(--text-muted); font-size: 0.95rem;">0 daripada 0 soalan dijawab dengan betul</p>
-        <div id="authoritative-status" class="authoritative-badge">
-          Status Subtopik Rasmi: <strong>DEVELOPING (Mastery: 75%)</strong>
+      <!-- Short Answer Input -->
+      <div id="practice-input-container" style="display: none; margin-bottom: 1.5rem;">
+        <div style="display: flex; gap: 0.75rem;">
+          <input type="text" id="practice-text-input" placeholder="Masukkan jawapan anda..." onkeypress="if(event.key==='Enter') submitPracticeAnswer()" />
+          <button class="btn" onclick="submitPracticeAnswer()">Hantar</button>
         </div>
       </div>
-      <button class="btn" style="margin-top: 2rem; width: 100%;" onclick="showPracticeScreen(false)">Latihan Baru</button>
+
+      <!-- Feedback Banner -->
+      <div id="practice-feedback" class="feedback-box"></div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
+        <button class="btn btn-secondary" onclick="confirmEndSession()">Tamatkan Sesi</button>
+        <button id="practice-next-btn" class="btn" style="display: none;" onclick="loadNextPracticeQuestion()">
+          Soalan Seterusnya ➔
+        </button>
+      </div>
     </div>
+
+    <!-- ======================================================== -->
+    <!-- 4. SESSION SUMMARY SCREEN (Dual Labels)                   -->
+    <!-- ======================================================== -->
+    <div id="practice-summary-screen" class="card screen" style="text-align: center;">
+      <h2>🎉 Ringkasan Sesi Selesai</h2>
+      <p class="subtitle">Berikut adalah pencapaian pusingan latihan dan status penguasaan rasmi anda.</p>
+
+      <!-- 1. Round Result (Cosmetic) -->
+      <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem;">
+        <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Prestasi Pusingan Sesi Ini</div>
+        <div id="summary-accuracy" style="font-size: 2.75rem; font-weight: 800; color: #a5b4fc; margin: 0.5rem 0;">0%</div>
+        <div id="summary-cosmetic-label" class="chip chip-primary" style="font-size: 0.95rem; padding: 0.4rem 1rem;">Strong foundation</div>
+        <p id="summary-stats-text" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.75rem;">0 daripada 0 soalan dijawab dengan betul</p>
+      </div>
+
+      <!-- 2. Authoritative Subtopic Status -->
+      <div id="summary-authoritative-box" style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem;">
+        <div style="color: #a5b4fc; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Status Penguasaan Rasmi Pangkalan Data</div>
+        <div id="summary-official-status" style="font-size: 1.5rem; font-weight: 800; margin: 0.5rem 0;">DEVELOPING</div>
+        <div id="summary-official-mastery" style="font-size: 1.1rem; color: var(--text-muted);">Skor Mastery: <strong>75%</strong> (Sumber: calculated)</div>
+      </div>
+
+      <button class="btn" style="width: 100%;" onclick="switchTab('practice')">Latihan Baharu</button>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 5. DIAGNOSTIC ASSESSMENT SCREEN                           -->
+    <!-- ======================================================== -->
+    <div id="diagnostic-screen" class="card screen">
+      <h2>Penilaian Diagnostik</h2>
+      <p class="subtitle">Jawab 5 soalan pantas untuk mengesan tahap awal penguasaan subtopik anda.</p>
+
+      <div id="diagnostic-setup-box">
+        <div class="form-group">
+          <label>Pilih Subjek untuk Ujian Diagnostik:</label>
+          <select id="diagnostic-subject-select"></select>
+        </div>
+        <button class="btn" style="width: 100%;" onclick="startDiagnosticTest()">Mula Ujian Diagnostik (5 Soalan)</button>
+      </div>
+
+      <div id="diagnostic-run-box" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <span id="diagnostic-q-counter" class="chip chip-primary">Soalan 1 daripada 5</span>
+          <span class="chip">Diagnostik</span>
+        </div>
+
+        <div id="diagnostic-progress-dots" class="progress-dots"></div>
+
+        <div id="diagnostic-question-text" class="equation-card"></div>
+        <div id="diagnostic-options-grid" class="options-grid"></div>
+        
+        <div id="diagnostic-input-container" style="display: none; margin-bottom: 1.5rem;">
+          <input type="text" id="diagnostic-text-input" placeholder="Jawapan anda..." />
+        </div>
+
+        <button id="diagnostic-next-btn" class="btn" style="width: 100%;" onclick="handleDiagnosticNext()">
+          Seterusnya ➔
+        </button>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 6. LEARNING SNAPSHOT SCREEN                               -->
+    <!-- ======================================================== -->
+    <div id="snapshot-screen" class="card screen">
+      <h2>Snapshot Pembelajaran</h2>
+      <p class="subtitle">Profil penguasaan subtopik dan titik permulaan cadangan anda.</p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div id="snap-total-assessed" class="stat-val">0</div>
+          <div class="stat-label">Dinilai</div>
+        </div>
+        <div class="stat-card">
+          <div id="snap-total-verified" class="stat-val" style="color: #6ee7b7;">0</div>
+          <div class="stat-label">Disahkan</div>
+        </div>
+        <div class="stat-card">
+          <div id="snap-unverified" class="stat-val" style="color: #fde68a;">0</div>
+          <div class="stat-label">Anggaran Awal</div>
+        </div>
+      </div>
+
+      <div id="snap-recommended-box" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem;">
+        <div style="font-size: 0.8rem; color: #a5b4fc; font-weight: 700; text-transform: uppercase;">Cadangan Titik Mula Latihan:</div>
+        <div id="snap-recommended-title" style="font-size: 1.15rem; font-weight: 700; margin-top: 0.25rem;">Tiada cadangan setakat ini</div>
+      </div>
+
+      <h3>Status Penguasaan Subtopik</h3>
+      <div style="overflow-x: auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Subtopik</th>
+              <th>Mastery</th>
+              <th>Status</th>
+              <th>Sumber</th>
+            </tr>
+          </thead>
+          <tbody id="snapshot-table-body">
+            <tr><td colspan="4" style="text-align: center; color: var(--text-dim);">Tiada data progress.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 7. TEACHER PORTAL SCREEN (A10)                            -->
+    <!-- ======================================================== -->
+    <div id="teacher-screen" class="card screen">
+      <h2>Portal Guru — Skor Kesihatan Murid</h2>
+      <p class="subtitle">Pantau kesihatan pembelajaran dan jurang pembelajaran pelajar mengikut kelas.</p>
+
+      <div class="form-group">
+        <label>Pilih Kelas Anda:</label>
+        <select id="teacher-class-select" onchange="loadClassStudentsHealth()"></select>
+      </div>
+
+      <div id="teacher-class-summary-box" class="stats-grid" style="display: none;">
+        <div class="stat-card">
+          <div id="tc-total-students" class="stat-val">0</div>
+          <div class="stat-label">Jumlah Pelajar</div>
+        </div>
+        <div class="stat-card">
+          <div id="tc-avg-health" class="stat-val">0</div>
+          <div class="stat-label">Purata Kesihatan</div>
+        </div>
+      </div>
+
+      <h3>Senarai Pelajar & Skor Kesihatan (A8)</h3>
+      <div style="overflow-x: auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Pelajar</th>
+              <th>Skor Kesihatan</th>
+              <th>Status Kesihatan</th>
+              <th>Sebab / Indikator</th>
+            </tr>
+          </thead>
+          <tbody id="teacher-students-table-body">
+            <tr><td colspan="4" style="text-align: center; color: var(--text-dim);">Sila pilih kelas.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 
+  <div id="toast" class="toast"></div>
+
+  <!-- ======================================================== -->
+  <!-- FRONTEND APPLICATION JAVASCRIPT LOGIC                     -->
+  <!-- ======================================================== -->
   <script>
     let authToken = localStorage.getItem('2be_token') || '';
-    let currentSessionId = null;
-    let currentQuestion = null;
-    let selectedOption = null;
+    let currentUser = null;
 
-    // Auto-login dummy student if no token
-    async function ensureAuth() {
-      if (!authToken) {
-        try {
-          const res = await fetch('/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: 'student@twoblock.ai', password: 'Password123!' }),
-          });
-          const data = await res.json();
-          if (data.success) {
-            authToken = data.data.token;
-            localStorage.setItem('2be_token', authToken);
-          }
-        } catch (e) {
-          console.error('Auth error:', e);
+    // Practice state
+    let practiceSessionId = null;
+    let currentPracticeQuestion = null;
+    let selectedPracticeAnswer = null;
+    let questionStartTime = null;
+
+    // Diagnostic state
+    let diagnosticSessionId = null;
+    let diagnosticQuestions = [];
+    let diagnosticCurrentIndex = 0;
+    let diagnosticCollectedAnswers = [];
+    let diagnosticQuestionStartTime = null;
+
+    // Helper: Toast Notification
+    function showToast(msg, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.borderColor = isError ? 'var(--danger)' : 'var(--border)';
+      toast.style.color = isError ? '#fca5a5' : 'var(--text-main)';
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3500);
+    }
+
+    // Helper: Safe text escape
+    function escapeHtml(str) {
+      if (!str) return '';
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // Helper: Authenticated Fetch
+    async function apiFetch(url, options = {}) {
+      const headers = {
+        'Content-Type': 'application/json',
+        ...(options.headers || {})
+      };
+      if (authToken) {
+        headers['Authorization'] = `Bearer ${authToken}`;
+      }
+
+      try {
+        const res = await fetch(url, { ...options, headers });
+        const data = await res.json();
+        if (res.status === 401) {
+          logout();
+          throw new Error('Sesi anda telah tamat. Sila log masuk semula.');
         }
+        return { ok: res.ok, status: res.status, data };
+      } catch (err) {
+        throw err;
       }
     }
 
-    async function loadSubtopics() {
-      await ensureAuth();
-      try {
-        const res = await fetch('/subjects', {
-          headers: { 'Authorization': `Bearer ${authToken}` },
-        });
-        const data = await res.json();
-        const select = document.getElementById('subtopic-select');
-        select.innerHTML = '';
+    // --------------------------------------------------------
+    // App Initialization & Auth Verification
+    // --------------------------------------------------------
+    async function initApp() {
+      if (authToken) {
+        try {
+          const res = await apiFetch('/auth/me');
+          if (res.ok && res.data.success) {
+            currentUser = res.data.data.user;
+            renderLoggedInState();
+            switchTab('practice');
+            return;
+          }
+        } catch (e) {
+          console.error('Session verify failed:', e);
+        }
+      }
+      renderLoggedOutState();
+    }
 
-        if (data.success && data.data) {
-          data.data.forEach(sub => {
-            sub.topics?.forEach(top => {
-              top.subtopics?.forEach(st => {
-                const opt = document.createElement('option');
-                opt.value = st.id;
-                opt.textContent = `${sub.name_ms} — ${top.title_ms} > ${st.title_ms}`;
-                select.appendChild(opt);
-              });
-            });
+    function renderLoggedInState() {
+      document.getElementById('auth-screen').classList.remove('active');
+      document.getElementById('main-nav').style.display = 'flex';
+      
+      const authContainer = document.getElementById('auth-status-container');
+      authContainer.innerHTML = `
+        <div class="user-pill">
+          <span>${escapeHtml(currentUser.full_name)}</span>
+          <span class="user-role-badge">${currentUser.role}</span>
+          <button class="btn btn-secondary btn-sm" onclick="logout()">Log Keluar</button>
+        </div>
+      `;
+
+      if (currentUser.role === 'TEACHER' || currentUser.role === 'ADMIN') {
+        document.getElementById('teacher-tab-btn').style.display = 'inline-block';
+      } else {
+        document.getElementById('teacher-tab-btn').style.display = 'none';
+      }
+    }
+
+    function renderLoggedOutState() {
+      authToken = '';
+      currentUser = null;
+      localStorage.removeItem('2be_token');
+      document.getElementById('auth-status-container').innerHTML = '';
+      document.getElementById('main-nav').style.display = 'none';
+      hideAllScreens();
+      document.getElementById('auth-screen').classList.add('active');
+    }
+
+    function logout() {
+      renderLoggedOutState();
+      showToast('Anda telah berjaya log keluar.');
+    }
+
+    function toggleAuthMode(mode) {
+      if (mode === 'login') {
+        document.getElementById('login-form').style.display = 'block';
+        document.getElementById('register-form').style.display = 'none';
+        document.getElementById('login-tab-btn').className = 'btn';
+        document.getElementById('register-tab-btn').className = 'btn btn-secondary';
+      } else {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('register-form').style.display = 'block';
+        document.getElementById('login-tab-btn').className = 'btn btn-secondary';
+        document.getElementById('register-tab-btn').className = 'btn';
+      }
+    }
+
+    function handleRoleChange() {
+      const role = document.getElementById('reg-role').value;
+      document.getElementById('student-grade-group').style.display = role === 'STUDENT' ? 'block' : 'none';
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const btn = document.getElementById('login-btn');
+
+      btn.disabled = true;
+      try {
+        const res = await apiFetch('/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({ email, password })
+        });
+
+        if (res.ok && res.data.success) {
+          authToken = res.data.data.token;
+          currentUser = res.data.data.user;
+          localStorage.setItem('2be_token', authToken);
+          renderLoggedInState();
+          showToast(`Selamat datang, ${currentUser.full_name}!`);
+          switchTab('practice');
+        } else {
+          showToast(res.data.error?.message_ms || res.data.error?.message || 'Emel atau kata laluan tidak tepat.', true);
+        }
+      } catch (err) {
+        showToast(err.message || 'Ralat sambungan ke pelayan.', true);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const full_name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const role = document.getElementById('reg-role').value;
+      const grade_level = role === 'STUDENT' ? parseInt(document.getElementById('reg-grade').value, 10) : undefined;
+      const btn = document.getElementById('reg-btn');
+
+      btn.disabled = true;
+      try {
+        const res = await apiFetch('/auth/register', {
+          method: 'POST',
+          body: JSON.stringify({ full_name, email, password, role, grade_level })
+        });
+
+        if (res.ok && res.data.success) {
+          authToken = res.data.data.token;
+          currentUser = res.data.data.user;
+          localStorage.setItem('2be_token', authToken);
+          renderLoggedInState();
+          showToast('Pendaftaran berjaya! Selamat datang ke 2Be AI.');
+          switchTab('practice');
+        } else {
+          showToast(res.data.error?.message_ms || res.data.error?.message || 'Pendaftaran tidak berjaya.', true);
+        }
+      } catch (err) {
+        showToast(err.message || 'Ralat pendaftaran.', true);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // --------------------------------------------------------
+    // Screen / Tab Navigation
+    // --------------------------------------------------------
+    function hideAllScreens() {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    }
+
+    function switchTab(tab) {
+      hideAllScreens();
+      document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+
+      if (tab === 'practice') {
+        document.querySelector('.nav-tab:nth-child(1)').classList.add('active');
+        document.getElementById('practice-select-screen').classList.add('active');
+        loadSubjects();
+      } else if (tab === 'diagnostic') {
+        document.querySelector('.nav-tab:nth-child(2)').classList.add('active');
+        document.getElementById('diagnostic-screen').classList.add('active');
+        loadDiagnosticSubjects();
+      } else if (tab === 'snapshot') {
+        document.querySelector('.nav-tab:nth-child(3)').classList.add('active');
+        document.getElementById('snapshot-screen').classList.add('active');
+        loadLearningSnapshot();
+      } else if (tab === 'teacher') {
+        document.getElementById('teacher-tab-btn').classList.add('active');
+        document.getElementById('teacher-screen').classList.add('active');
+        loadTeacherClasses();
+      }
+    }
+
+    // --------------------------------------------------------
+    // Practice Flow (Hierarchical: Subject -> Topic -> Subtopic)
+    // --------------------------------------------------------
+    async function loadSubjects() {
+      const select = document.getElementById('subject-select');
+      select.innerHTML = '<option value="">Memuatkan subjek...</option>';
+      try {
+        const res = await apiFetch('/subjects');
+        if (res.ok && res.data.success) {
+          select.innerHTML = '<option value="">-- Pilih Subjek --</option>';
+          res.data.data.forEach(sub => {
+            const opt = document.createElement('option');
+            opt.value = sub.id;
+            opt.textContent = `${sub.name_ms} (${sub.code})`;
+            select.appendChild(opt);
           });
         }
       } catch (err) {
-        console.error('Failed to load subtopics:', err);
+        select.innerHTML = '<option value="">Ralat memuatkan subjek</option>';
       }
     }
 
-    function showPracticeScreen(isPracticing) {
-      document.getElementById('start-screen').classList.toggle('active', !isPracticing);
-      document.getElementById('practice-screen').classList.toggle('active', isPracticing);
-      document.getElementById('summary-screen').classList.remove('active');
-    }
+    async function loadTopicsForSubject() {
+      const subjectId = document.getElementById('subject-select').value;
+      const topicSelect = document.getElementById('topic-select');
+      const subtopicSelect = document.getElementById('subtopic-select');
+      const startBtn = document.getElementById('start-practice-btn');
 
-    async function startRound() {
-      const subtopicId = document.getElementById('subtopic-select').value;
-      if (!subtopicId) {
-        alert('Sila pilih subtopik.');
+      subtopicSelect.innerHTML = '<option value="">-- Sila pilih topik dahulu --</option>';
+      subtopicSelect.disabled = true;
+      startBtn.disabled = true;
+
+      if (!subjectId) {
+        topicSelect.innerHTML = '<option value="">-- Sila pilih subjek dahulu --</option>';
+        topicSelect.disabled = true;
         return;
       }
 
-      await ensureAuth();
+      topicSelect.innerHTML = '<option value="">Memuatkan topik...</option>';
+      topicSelect.disabled = true;
+
       try {
-        const res = await fetch('/practice/sessions', {
+        const res = await apiFetch(`/subjects/${subjectId}/topics`);
+        if (res.ok && res.data.success) {
+          topicSelect.innerHTML = '<option value="">-- Pilih Topik --</option>';
+          res.data.data.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t.id;
+            opt.textContent = `${t.order_seq}. ${t.title_ms}`;
+            topicSelect.appendChild(opt);
+          });
+          topicSelect.disabled = false;
+        }
+      } catch (err) {
+        topicSelect.innerHTML = '<option value="">Ralat memuatkan topik</option>';
+      }
+    }
+
+    async function loadSubtopicsForTopic() {
+      const topicId = document.getElementById('topic-select').value;
+      const subtopicSelect = document.getElementById('subtopic-select');
+      const startBtn = document.getElementById('start-practice-btn');
+
+      startBtn.disabled = true;
+
+      if (!topicId) {
+        subtopicSelect.innerHTML = '<option value="">-- Sila pilih topik dahulu --</option>';
+        subtopicSelect.disabled = true;
+        return;
+      }
+
+      subtopicSelect.innerHTML = '<option value="">Memuatkan subtopik...</option>';
+      subtopicSelect.disabled = true;
+
+      try {
+        const res = await apiFetch(`/topics/${topicId}/subtopics`);
+        if (res.ok && res.data.success) {
+          subtopicSelect.innerHTML = '<option value="">-- Pilih Subtopik --</option>';
+          res.data.data.forEach(st => {
+            const opt = document.createElement('option');
+            opt.value = st.id;
+            opt.textContent = `${st.order_seq}. ${st.title_ms} (Aras ${st.difficulty_tier})`;
+            subtopicSelect.appendChild(opt);
+          });
+          subtopicSelect.disabled = false;
+        }
+      } catch (err) {
+        subtopicSelect.innerHTML = '<option value="">Ralat memuatkan subtopik</option>';
+      }
+    }
+
+    function handleSubtopicSelected() {
+      const subtopicId = document.getElementById('subtopic-select').value;
+      document.getElementById('start-practice-btn').disabled = !subtopicId;
+    }
+
+    async function startPracticeSession() {
+      const subtopicId = document.getElementById('subtopic-select').value;
+      const btn = document.getElementById('start-practice-btn');
+
+      btn.disabled = true;
+      try {
+        const res = await apiFetch('/practice/sessions', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`,
-          },
-          body: JSON.stringify({ subtopic_id: subtopicId }),
+          body: JSON.stringify({ subtopic_id: subtopicId })
         });
 
-        const data = await res.json();
-        if (data.success) {
-          currentSessionId = data.data.session_id;
-          showPracticeScreen(true);
-          loadNextQuestion();
+        if (res.ok && res.data.success) {
+          practiceSessionId = res.data.data.session_id;
+          hideAllScreens();
+          document.getElementById('practice-run-screen').classList.add('active');
+          loadNextPracticeQuestion();
         } else {
-          alert(data.error?.message_ms || 'Ralat memulakan sesi.');
+          showToast(res.data.error?.message_ms || 'Gagal memulakan sesi latihan.', true);
+          btn.disabled = false;
         }
       } catch (err) {
-        console.error('Error starting round:', err);
+        showToast('Ralat memulakan sesi latihan.', true);
+        btn.disabled = false;
       }
     }
 
-    async function loadNextQuestion() {
-      document.getElementById('answer-feedback').style.display = 'none';
-      document.getElementById('next-btn').style.display = 'none';
-      selectedOption = null;
+    async function loadNextPracticeQuestion() {
+      document.getElementById('practice-feedback').style.display = 'none';
+      document.getElementById('practice-next-btn').style.display = 'none';
+      selectedPracticeAnswer = null;
 
       try {
-        const res = await fetch(`/practice/sessions/${currentSessionId}/next-question`, {
-          headers: { 'Authorization': `Bearer ${authToken}` },
-        });
+        const res = await apiFetch(`/practice/sessions/${practiceSessionId}/next-question`);
 
-        const data = await res.json();
-        if (!data.success) {
-          if (data.error?.code === 'SESSION_ALREADY_ENDED' || data.error?.code === 'NO_QUESTIONS_AVAILABLE') {
-            endRound();
-            return;
+        if (res.ok && res.data.success) {
+          renderPracticeQuestion(res.data.data);
+        } else {
+          // If session is already ended or no questions, directly show summary
+          if (res.data.error?.code === 'SESSION_ALREADY_ENDED' || res.data.error?.code === 'NO_QUESTIONS_AVAILABLE') {
+            openSessionSummary();
+          } else {
+            showToast(res.data.error?.message_ms || 'Ralat memuatkan soalan.', true);
           }
-          alert(data.error?.message_ms || 'Ralat memuatkan soalan.');
-          return;
         }
-
-        currentQuestion = data.data.question;
-        renderQuestion(data.data);
       } catch (err) {
-        console.error('Error loading question:', err);
+        showToast('Ralat memuatkan soalan.', true);
       }
     }
 
-    function renderQuestion(data) {
-      const q = data.question;
-      document.getElementById('level-chip').textContent = `Tahap Kesukaran: L${q.difficulty_level}${data.in_recovery ? ' (Pemulihan)' : ''}`;
-      document.getElementById('equation').textContent = q.question_text;
+    function renderPracticeQuestion(data) {
+      currentPracticeQuestion = data.question;
+      questionStartTime = Date.now();
 
-      // Render Progress Dots
-      const dotsContainer = document.getElementById('question-progress');
-      dotsContainer.innerHTML = '';
-      for (let i = 0; i < (data.total_answered || 0) + 1; i++) {
+      // Difficulty & Recovery badge
+      document.getElementById('level-chip').textContent = `Aras: L${currentPracticeQuestion.difficulty_level}`;
+      const recBadge = document.getElementById('recovery-badge');
+      if (data.in_recovery) {
+        recBadge.style.display = 'inline-flex';
+        recBadge.textContent = `🚨 Recovery Mode — Langkah ${data.recovery_step || 1}/4`;
+      } else {
+        recBadge.style.display = 'none';
+      }
+
+      // Progress dots
+      const dots = document.getElementById('practice-progress-dots');
+      dots.innerHTML = '';
+      const totalDots = Math.max(1, (data.total_answered || 0) + 1);
+      for (let i = 0; i < totalDots; i++) {
         const dot = document.createElement('div');
         dot.className = `dot ${i === data.total_answered ? 'active' : 'correct'}`;
-        dotsContainer.appendChild(dot);
+        dots.appendChild(dot);
       }
 
-      // Render options or input
-      const optionsContainer = document.getElementById('options-container');
-      const inputContainer = document.getElementById('input-container');
+      // Question text
+      document.getElementById('practice-question-text').textContent = currentPracticeQuestion.question_text;
+
+      // Render Options (MCQ vs Short Answer)
+      const optionsGrid = document.getElementById('practice-options-grid');
+      const inputContainer = document.getElementById('practice-input-container');
+
+      if (currentPracticeQuestion.question_type === 'mcq' && currentPracticeQuestion.options) {
+        optionsGrid.style.display = 'grid';
+        inputContainer.style.display = 'none';
+        optionsGrid.innerHTML = '';
+
+        const entries = Array.isArray(currentPracticeQuestion.options)
+          ? currentPracticeQuestion.options.map((val, idx) => [String.fromCharCode(65 + idx), val])
+          : Object.entries(currentPracticeQuestion.options);
+
+        entries.forEach(([key, val]) => {
+          const btn = document.createElement('button');
+          btn.className = 'option-btn';
+          btn.textContent = `${key}. ${val}`;
+          btn.onclick = () => {
+            document.querySelectorAll('#practice-options-grid .option-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedPracticeAnswer = key;
+            submitPracticeAnswer();
+          };
+          optionsGrid.appendChild(btn);
+        });
+      } else {
+        optionsGrid.style.display = 'none';
+        inputContainer.style.display = 'block';
+        document.getElementById('practice-text-input').value = '';
+      }
+    }
+
+    async function submitPracticeAnswer() {
+      const answer = selectedPracticeAnswer || document.getElementById('practice-text-input').value.trim();
+      if (!answer) {
+        showToast('Sila pilih atau masukkan jawapan terlebih dahulu.', true);
+        return;
+      }
+
+      const responseTimeSeconds = questionStartTime ? Math.round((Date.now() - questionStartTime) / 1000) : 10;
+
+      // Disable inputs while submitting
+      document.querySelectorAll('#practice-options-grid .option-btn').forEach(b => b.disabled = true);
+
+      try {
+        const res = await apiFetch(`/practice/sessions/${practiceSessionId}/answer`, {
+          method: 'POST',
+          body: JSON.stringify({
+            question_id: currentPracticeQuestion.id,
+            student_answer: answer,
+            response_time_seconds: responseTimeSeconds
+          })
+        });
+
+        if (res.ok && res.data.success) {
+          const result = res.data.data;
+          const feedback = document.getElementById('practice-feedback');
+
+          // Encouraging wording
+          feedback.className = `feedback-box ${result.is_correct ? 'correct' : 'wrong'}`;
+          feedback.innerHTML = `
+            <strong>${result.is_correct ? '✨ Bagus, jawapan betul!' : '💡 Belum tepat—jom cuba lagi.'}</strong>
+            <p style="margin-top: 0.35rem; font-size: 0.9rem;">${escapeHtml(result.explanation || '')}</p>
+          `;
+
+          // Consecutive wrong counter
+          document.getElementById('consecutive-wrong-chip').textContent = `Salah Berturut: ${result.session_consecutive_wrong || 0}/3`;
+
+          // If session auto-terminated (Survival round / 15 questions / Mastery Gate)
+          if (result.is_terminated) {
+            setTimeout(() => { openSessionSummary(); }, 1800);
+          } else {
+            document.getElementById('practice-next-btn').style.display = 'inline-flex';
+          }
+        } else {
+          showToast(res.data.error?.message_ms || 'Ralat menghantar jawapan.', true);
+        }
+      } catch (err) {
+        showToast('Ralat menghantar jawapan.', true);
+      }
+    }
+
+    async function confirmEndSession() {
+      if (confirm('Adakah anda pasti mahu menamatkan sesi latihan ini sekarang?')) {
+        try {
+          await apiFetch(`/practice/sessions/${practiceSessionId}/end`, { method: 'POST' });
+        } catch (e) {
+          console.error(e);
+        }
+        openSessionSummary();
+      }
+    }
+
+    async function openSessionSummary() {
+      try {
+        const res = await apiFetch(`/practice/sessions/${practiceSessionId}/summary`);
+        if (res.ok && res.data.success) {
+          const summary = res.data.data;
+          hideAllScreens();
+          document.getElementById('practice-summary-screen').classList.add('active');
+
+          // Round result
+          document.getElementById('summary-accuracy').textContent = `${summary.round_result?.accuracy_percent || 0}%`;
+          document.getElementById('summary-cosmetic-label').textContent = summary.round_result?.label || 'Developing';
+          document.getElementById('summary-stats-text').textContent = 
+            `${summary.round_result?.correct_count || 0} daripada ${summary.round_result?.total_questions || 0} soalan dijawab dengan betul`;
+
+          // Official DB Status
+          if (summary.subtopic_progress) {
+            document.getElementById('summary-official-status').textContent = summary.subtopic_progress.status;
+            document.getElementById('summary-official-mastery').innerHTML = 
+              `Skor Mastery: <strong>${summary.subtopic_progress.mastery_score}%</strong> (Sumber: ${escapeHtml(summary.subtopic_progress.mastery_source)})`;
+          }
+        }
+      } catch (err) {
+        showToast('Gagal memuatkan ringkasan sesi.', true);
+      }
+    }
+
+    // --------------------------------------------------------
+    // Diagnostic Flow (5 Questions -> Batch Submit -> Snapshot)
+    // --------------------------------------------------------
+    async function loadDiagnosticSubjects() {
+      const select = document.getElementById('diagnostic-subject-select');
+      select.innerHTML = '<option value="">Memuatkan subjek...</option>';
+      try {
+        const res = await apiFetch('/subjects');
+        if (res.ok && res.data.success) {
+          select.innerHTML = '';
+          res.data.data.forEach(sub => {
+            const opt = document.createElement('option');
+            opt.value = sub.id;
+            opt.textContent = `${sub.name_ms} (${sub.code})`;
+            select.appendChild(opt);
+          });
+        }
+      } catch (e) {
+        select.innerHTML = '<option value="">Ralat subjek</option>';
+      }
+    }
+
+    async function startDiagnosticTest() {
+      const subjectId = document.getElementById('diagnostic-subject-select').value;
+      try {
+        const url = subjectId ? `/students/diagnostic?subject_id=${subjectId}` : '/students/diagnostic';
+        const res = await apiFetch(url);
+
+        if (res.ok && res.data.success) {
+          diagnosticSessionId = res.data.data.session_id;
+          diagnosticQuestions = res.data.data.questions || [];
+          diagnosticCurrentIndex = 0;
+          diagnosticCollectedAnswers = [];
+
+          if (diagnosticQuestions.length === 0) {
+            showToast('Tiada soalan diagnostik tersedia buat masa ini.', true);
+            return;
+          }
+
+          document.getElementById('diagnostic-setup-box').style.display = 'none';
+          document.getElementById('diagnostic-run-box').style.display = 'block';
+          renderDiagnosticQuestion();
+        } else {
+          showToast(res.data.error?.message_ms || 'Gagal memulakan diagnostik.', true);
+        }
+      } catch (err) {
+        showToast('Ralat memulakan ujian diagnostik.', true);
+      }
+    }
+
+    function renderDiagnosticQuestion() {
+      const q = diagnosticQuestions[diagnosticCurrentIndex];
+      diagnosticQuestionStartTime = Date.now();
+
+      document.getElementById('diagnostic-q-counter').textContent = `Soalan ${diagnosticCurrentIndex + 1} daripada ${diagnosticQuestions.length}`;
+
+      // Progress dots
+      const dots = document.getElementById('diagnostic-progress-dots');
+      dots.innerHTML = '';
+      for (let i = 0; i < diagnosticQuestions.length; i++) {
+        const dot = document.createElement('div');
+        dot.className = `dot ${i === diagnosticCurrentIndex ? 'active' : i < diagnosticCurrentIndex ? 'correct' : ''}`;
+        dots.appendChild(dot);
+      }
+
+      document.getElementById('diagnostic-question-text').textContent = q.question_text;
+
+      const optionsGrid = document.getElementById('diagnostic-options-grid');
+      const inputContainer = document.getElementById('diagnostic-input-container');
 
       if (q.question_type === 'mcq' && q.options) {
-        optionsContainer.style.display = 'grid';
+        optionsGrid.style.display = 'grid';
         inputContainer.style.display = 'none';
-        optionsContainer.innerHTML = '';
+        optionsGrid.innerHTML = '';
 
-        const entries = Array.isArray(q.options) 
+        const entries = Array.isArray(q.options)
           ? q.options.map((val, idx) => [String.fromCharCode(65 + idx), val])
           : Object.entries(q.options);
 
@@ -451,86 +1328,193 @@
           btn.className = 'option-btn';
           btn.textContent = `${key}. ${val}`;
           btn.onclick = () => {
-            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            document.querySelectorAll('#diagnostic-options-grid .option-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
-            selectedOption = key;
-            submitCurrentAnswer();
+            q._selectedAnswer = key;
           };
-          optionsContainer.appendChild(btn);
+          optionsGrid.appendChild(btn);
         });
       } else {
-        optionsContainer.style.display = 'none';
-        inputContainer.style.display = 'flex';
-        document.getElementById('answer-input').value = '';
+        optionsGrid.style.display = 'none';
+        inputContainer.style.display = 'block';
+        document.getElementById('diagnostic-text-input').value = '';
       }
     }
 
-    async function submitCurrentAnswer() {
-      const answer = selectedOption || document.getElementById('answer-input').value;
-      if (!answer) return;
+    async function handleDiagnosticNext() {
+      const q = diagnosticQuestions[diagnosticCurrentIndex];
+      const answer = q._selectedAnswer || document.getElementById('diagnostic-text-input').value.trim();
+
+      if (!answer) {
+        showToast('Sila pilih atau masukkan jawapan anda.', true);
+        return;
+      }
+
+      const responseTimeSeconds = diagnosticQuestionStartTime ? Math.round((Date.now() - diagnosticQuestionStartTime) / 1000) : 10;
+      diagnosticCollectedAnswers.push({
+        question_id: q.id,
+        student_answer: answer,
+        response_time_seconds: responseTimeSeconds
+      });
+
+      diagnosticCurrentIndex++;
+
+      if (diagnosticCurrentIndex < diagnosticQuestions.length) {
+        renderDiagnosticQuestion();
+      } else {
+        // Submit all answers in one batch
+        await submitDiagnosticBatch();
+      }
+    }
+
+    async function submitDiagnosticBatch() {
+      const nextBtn = document.getElementById('diagnostic-next-btn');
+      nextBtn.disabled = true;
+      nextBtn.textContent = 'Menghantar Penilaian...';
 
       try {
-        const res = await fetch(`/practice/sessions/${currentSessionId}/answer`, {
+        const res = await apiFetch('/students/diagnostic/submit', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`,
-          },
           body: JSON.stringify({
-            question_id: currentQuestion.id,
-            student_answer: answer,
-            response_time_seconds: 10,
-          }),
+            session_id: diagnosticSessionId,
+            answers: diagnosticCollectedAnswers
+          })
         });
 
-        const data = await res.json();
-        if (data.success) {
-          const result = data.data;
-          const feedback = document.getElementById('answer-feedback');
-          feedback.className = `feedback ${result.is_correct ? 'correct' : 'wrong'}`;
-          feedback.innerHTML = `<strong>${result.is_correct ? 'Tahniah! Jawapan Betul.' : 'Kurang Tepat.'}</strong><br>${result.explanation || ''}`;
-          feedback.style.display = 'block';
-
-          document.getElementById('wrong-count').textContent = `Salah Berturut-turut: ${result.session_consecutive_wrong || 0}/3`;
-
-          if (result.is_terminated) {
-            setTimeout(() => endRound(), 1500);
-          } else {
-            document.getElementById('next-btn').style.display = 'inline-block';
-          }
+        if (res.ok && res.data.success) {
+          showToast('Penilaian Diagnostik berjaya dihantar!');
+          document.getElementById('diagnostic-setup-box').style.display = 'block';
+          document.getElementById('diagnostic-run-box').style.display = 'none';
+          switchTab('snapshot');
+        } else {
+          showToast(res.data.error?.message_ms || 'Gagal menghantar diagnostik.', true);
+          nextBtn.disabled = false;
+          nextBtn.textContent = 'Seterusnya ➔';
         }
       } catch (err) {
-        console.error('Error submitting answer:', err);
+        showToast('Ralat menghantar diagnostik.', true);
+        nextBtn.disabled = false;
+        nextBtn.textContent = 'Seterusnya ➔';
       }
     }
 
-    async function endRound() {
+    // --------------------------------------------------------
+    // Learning Snapshot
+    // --------------------------------------------------------
+    async function loadLearningSnapshot() {
       try {
-        const res = await fetch(`/practice/sessions/${currentSessionId}/end`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${authToken}` },
-        });
-        const data = await res.json();
-        if (data.success) {
-          const summary = data.data;
-          document.getElementById('start-screen').classList.remove('active');
-          document.getElementById('practice-screen').classList.remove('active');
-          document.getElementById('summary-screen').classList.add('active');
+        const res = await apiFetch('/students/snapshot');
+        if (res.ok && res.data.success) {
+          const snap = res.data.data;
 
-          document.getElementById('score-percent').textContent = `${summary.round_result?.accuracy_percent || 0}%`;
-          document.getElementById('cosmetic-label').textContent = summary.round_result?.label || 'Developing';
-          document.getElementById('stats-text').textContent = `${summary.round_result?.correct_count || 0} daripada ${summary.round_result?.total_questions || 0} soalan dijawab dengan betul`;
+          document.getElementById('snap-total-assessed').textContent = snap.summary?.total_subtopics_assessed || 0;
+          document.getElementById('snap-total-verified').textContent = snap.summary?.verified_subtopics || 0;
+          document.getElementById('snap-unverified').textContent = snap.summary?.unverified_estimates || 0;
 
-          if (summary.subtopic_progress) {
-            document.getElementById('authoritative-status').innerHTML = `Status Subtopik Rasmi: <strong>${summary.subtopic_progress.status} (Mastery: ${summary.subtopic_progress.mastery_score}%)</strong>`;
+          const recBox = document.getElementById('snap-recommended-title');
+          if (snap.recommended_starting_point) {
+            recBox.textContent = `${snap.recommended_starting_point.subtopic_title_ms || snap.recommended_starting_point.subtopic_id} (${snap.recommended_starting_point.subject_name || ''})`;
+          } else {
+            recBox.textContent = 'Tiada cadangan setakat ini (lengkapkan diagnostik)';
           }
+
+          const tbody = document.getElementById('snapshot-table-body');
+          tbody.innerHTML = '';
+
+          const subtopics = snap.subtopics || [];
+          if (subtopics.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-dim);">Tiada rekod pembelajaran.</td></tr>';
+            return;
+          }
+
+          subtopics.forEach(st => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td><strong>${escapeHtml(st.subtopic_title_ms)}</strong><br><span style="color: var(--text-dim); font-size: 0.75rem;">${escapeHtml(st.subtopic_code)}</span></td>
+              <td>${st.mastery_score}%</td>
+              <td><span class="chip ${st.status === 'STRONG' ? 'chip-success' : st.status === 'DEVELOPING' ? 'chip-primary' : 'chip-danger'}">${escapeHtml(st.status)}</span></td>
+              <td><span class="chip" style="font-size: 0.75rem;">${escapeHtml(st.mastery_source)}</span></td>
+            `;
+            tbody.appendChild(tr);
+          });
         }
       } catch (err) {
-        console.error('Error ending round:', err);
+        showToast('Gagal memuatkan snapshot pembelajaran.', true);
       }
     }
 
-    window.onload = loadSubtopics;
+    // --------------------------------------------------------
+    // Teacher Portal Flow (A10)
+    // --------------------------------------------------------
+    async function loadTeacherClasses() {
+      const select = document.getElementById('teacher-class-select');
+      select.innerHTML = '<option value="">Memuatkan kelas...</option>';
+
+      try {
+        const res = await apiFetch('/teacher/classes');
+        if (res.ok && res.data.success) {
+          const classes = res.data.data;
+          select.innerHTML = '<option value="">-- Pilih Kelas --</option>';
+          classes.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = `${c.name} (${c.total_students} Murid)`;
+            select.appendChild(opt);
+          });
+        }
+      } catch (err) {
+        select.innerHTML = '<option value="">Ralat memuatkan kelas guru</option>';
+      }
+    }
+
+    async function loadClassStudentsHealth() {
+      const classId = document.getElementById('teacher-class-select').value;
+      const tbody = document.getElementById('teacher-students-table-body');
+      const summaryBox = document.getElementById('teacher-class-summary-box');
+
+      if (!classId) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-dim);">Sila pilih kelas.</td></tr>';
+        summaryBox.style.display = 'none';
+        return;
+      }
+
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-dim);">Memuatkan data murid...</td></tr>';
+
+      try {
+        const res = await apiFetch(`/teacher/classes/${classId}/students`);
+        if (res.ok && res.data.success) {
+          const students = res.data.data.students || [];
+          tbody.innerHTML = '';
+
+          if (students.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-dim);">Tiada murid berdaftar dalam kelas ini.</td></tr>';
+            return;
+          }
+
+          document.getElementById('tc-total-students').textContent = res.data.data.total_students || students.length;
+          summaryBox.style.display = 'grid';
+
+          students.forEach(s => {
+            const tr = document.createElement('tr');
+            const reasonsList = s.reasons?.length ? s.reasons.map(r => `• ${escapeHtml(r)}`).join('<br>') : '<span style="color: var(--text-dim);">Prestasi stabil</span>';
+            const labelClass = s.health_label === 'Thriving' ? 'chip-success' : s.health_label === 'On track' ? 'chip-primary' : s.health_label === 'Watch' ? 'chip-warning' : 'chip-danger';
+
+            tr.innerHTML = `
+              <td><strong>${escapeHtml(s.student.full_name)}</strong><br><span style="color: var(--text-dim); font-size: 0.75rem;">${escapeHtml(s.student.email)}</span></td>
+              <td><strong style="font-size: 1.1rem; color: #a5b4fc;">${s.health_score !== null ? s.health_score : 'N/A'}</strong></td>
+              <td><span class="chip ${labelClass}">${escapeHtml(s.health_label || 'Belum Dinilai')}</span></td>
+              <td style="font-size: 0.8rem; line-height: 1.4;">${reasonsList}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-danger);">Ralat memuatkan data kelas.</td></tr>';
+      }
+    }
+
+    // Run on startup
+    window.addEventListener('DOMContentLoaded', initApp);
   </script>
 </body>
 </html>
