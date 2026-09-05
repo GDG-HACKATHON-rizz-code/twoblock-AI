@@ -2,6 +2,7 @@ import { MasterySource, SessionStatus, QuestionType, GapType } from '@prisma/cli
 import { prisma } from '../config/db.js';
 import { AppError } from '../utils/errors.js';
 import { adaptiveEngine, MasteryCalculationResult, AttemptItem } from './adaptiveEngine.js';
+import { healthScoreService } from './healthScoreService.js';
 
 export interface SubmitAnswerInput {
   question_id: string;
@@ -309,6 +310,14 @@ export class PracticeService {
       },
     });
 
+    if (isTerminated) {
+      try {
+        await healthScoreService.recalculateAndSave(studentId);
+      } catch (err) {
+        console.error('Failed to recalculate health score after session completion:', err);
+      }
+    }
+
     return {
       is_correct: isCorrect,
       explanation: question.explanation,
@@ -348,6 +357,12 @@ export class PracticeService {
         end_time: new Date(),
       },
     });
+
+    try {
+      await healthScoreService.recalculateAndSave(studentId);
+    } catch (err) {
+      console.error('Failed to recalculate health score after voluntary session end:', err);
+    }
 
     return this.getSessionSummary(studentId, sessionId);
   }
