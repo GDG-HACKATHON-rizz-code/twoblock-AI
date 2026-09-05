@@ -662,38 +662,33 @@
 
   // Real 2Block Ai Supabase & Backend Client
   const API = {
-    token: localStorage.getItem('2block_token') || null,
-    user: JSON.parse(localStorage.getItem('2block_user') || 'null'),
+    token: null,
+    user: null,
     session: null,
     isOnline: !!supabaseClient,
 
     async init() {
+      // CLEAR ANY LINGERING LOCAL DEV SESSIONS SO APP ALWAYS STARTS CLEAN AT LOGIN
+      localStorage.removeItem('2block_token');
+      localStorage.removeItem('2block_user');
+      localStorage.removeItem('2block_role');
+      this.token = null;
+      this.user = null;
+      this.session = null;
+
       if (!supabaseClient) {
         this.updateStatus(false, 'Local API Active');
       } else {
         try {
-          const { data: { session } } = await supabaseClient.auth.getSession();
-          if (session && session.user) {
-            this.session = session;
-            this.token = session.access_token;
-            this.user = session.user;
-            const role = session.user.app_metadata?.role || session.user.user_metadata?.role || localStorage.getItem('2block_role') || 'student';
-            this.updateStatus(true, 'Supabase Connected');
-            await this.onAuthenticated(role);
-            return;
-          } else {
-            this.updateStatus(true, 'Supabase Ready');
-          }
+          await supabaseClient.auth.signOut();
+          this.updateStatus(true, 'Supabase Ready');
         } catch (e) {
           this.updateStatus(true, 'Supabase Ready');
         }
       }
 
-      // If user had local session
-      if (this.user && this.token) {
-        const role = localStorage.getItem('2block_role') || 'student';
-        await this.onAuthenticated(role);
-      }
+      // App must ALWAYS start at the Login page
+      await showLogin(true);
     },
 
     updateStatus(online, text) {
@@ -763,7 +758,7 @@
       return { user: this.user, role };
     },
 
-    async signOutFromSupabase() {
+    async signOutFromSupabase(silent = false) {
       if (realtimeChannel && supabaseClient) {
         try { supabaseClient.removeChannel(realtimeChannel); } catch (e) {}
         realtimeChannel = null;
@@ -783,7 +778,7 @@
       studentProfileCompleted = false;
       studentDiagnosticCompleted = false;
       this.updateStatus(true, 'Ready to Sign In');
-      toast('Signed out successfully.');
+      if (!silent) toast('Signed out successfully.');
     },
 
     async onAuthenticated(role) {
@@ -1130,6 +1125,15 @@
      teacherProgressView, teacherReportView, teacherProfileView].forEach(s => s && s.classList.add('hidden'));
   }
 
+  function guardStudentAccess() {
+    if (activeRole === 'student' && (!studentProfileCompleted || !studentDiagnosticCompleted)) {
+      toast('Complete your Quick Learning Check to personalise your learning.');
+      openDiagnosticStep(studentProfileCompleted ? 'quiz' : 'profile');
+      return false;
+    }
+    return true;
+  }
+
   function setRole(role) {
     activeRole = role;
     const isTeacher = role === 'teacher';
@@ -1137,7 +1141,9 @@
     if (isTeacher) {
       teacherView.classList.remove('hidden');
     } else {
-      studentView.classList.remove('hidden');
+      if (studentProfileCompleted && studentDiagnosticCompleted) {
+        studentView.classList.remove('hidden');
+      }
     }
     document.querySelector('#crumb').textContent = isTeacher ? 'Teacher space / Year 10 overview' : 'Student space / Overview';
     document.querySelector('#avatar').textContent = isTeacher ? 'LK' : 'ST';
@@ -1146,9 +1152,10 @@
     document.querySelectorAll('.teacher-nav').forEach(e => e.classList.toggle('hidden', !isTeacher));
   }
 
-  async function showLogin() {
+  async function showLogin(silent = false) {
     activeRole = null;
-    await API.signOutFromSupabase();
+    await API.signOutFromSupabase(silent);
+    hideAllSections();
     appShell.classList.add('hidden');
     loginView.classList.remove('hidden');
     if (teacherDrawer) teacherDrawer.classList.add('hidden');
@@ -1164,7 +1171,17 @@
   document.querySelectorAll('[data-login-role]').forEach(button => {
     button.onclick = () => signIn(button.dataset.loginRole);
   });
-  document.querySelectorAll('.signout-btn').forEach(btn => btn.onclick = showLogin);
+  document.querySelectorAll('.signout-btn').forEach(btn => btn.onclick = () => showLogin(false));
+
+  function escapeHtml(str) {
+    return String(str || '').replace(/[&<>"']/g, s => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[s]));
+  }
 
   // ----------------------------------------------------
   // STUDENT ONBOARDING & DIAGNOSTIC FLOW
@@ -1237,7 +1254,8 @@
         return;
       }
 
-      const profilePayload = { name, grade: parseInt(grade, 10), school, city, birth, language, favourite, studytime };
+      const parsedGrade = Math.max(1, Math.min(6, parseInt(grade, 10) || 3));
+      const profilePayload = { name, grade: parsedGrade, school, city, birth, language, favourite, studytime };
       
       try {
         await API.request('/api/student/profile', {
@@ -1254,58 +1272,122 @@
       const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
       document.querySelector('#avatar').textContent = initials;
       const welcomeH1 = document.querySelector('#student-welcome-heading');
-      if (welcomeH1) welcomeH1.innerHTML = `Good morning, ${name} <span>✦</span>`;
+      if (welcomeH1) welcomeH1.innerHTML = `Good morning, ${escapeHtml(name)} <span>✦</span>`;
 
       // Transition immediately to Step 2
-      startQuickLearningCheck(parseInt(grade, 10) || 3);
+      startQuickLearningCheck(parsedGrade);
     };
   }
 
   // Step 2 Quick Learning Check Adaptive Quiz
+  let questionStartTime = Date.now();
+
   async function startQuickLearningCheck(grade = 3) {
+    const validGrade = Math.max(1, Math.min(6, parseInt(grade, 10) || 3));
     openDiagnosticStep('quiz');
-    document.querySelector('#diag-question-prompt').textContent = 'Preparing calibrated questions...';
-    document.querySelector('#diag-options-container').innerHTML = '';
-    document.querySelector('#diag-feedback-box').className = 'diag-feedback-card hidden';
-    document.querySelector('#diag-next-btn').classList.add('hidden');
+
+    // Display loading state
+    const promptEl = document.querySelector('#diag-question-prompt');
+    const optionsContainer = document.querySelector('#diag-options-container');
+    const feedbackBox = document.querySelector('#diag-feedback-box');
+    const nextBtn = document.querySelector('#diag-next-btn');
+
+    document.querySelector('#diag-badge-counter').textContent = 'Question 1 of 10';
+    document.querySelector('#diag-badge-grade').textContent = `Grade ${validGrade}`;
+    document.querySelector('#diag-badge-subject').textContent = 'Mathematics';
+    document.querySelector('#diag-progress-fill').style.width = '10%';
+
+    promptEl.textContent = 'Preparing your learning check…';
+    optionsContainer.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; padding: 36px; color: var(--cyan);">
+        <div style="font-size: 28px; animation: pulse 1.2s infinite ease-in-out; margin-bottom: 12px;">✦</div>
+        <p style="font-size: 13px; color: var(--muted); margin: 0;">Generating calibrated adaptive questions for Grade ${validGrade}…</p>
+      </div>
+    `;
+    feedbackBox.className = 'diag-feedback-card hidden';
+    nextBtn.classList.add('hidden');
 
     try {
       const res = await API.request('/api/student/diagnostic/start', {
         method: 'POST',
-        body: JSON.stringify({ grade })
+        body: JSON.stringify({ grade: validGrade })
       });
-      if (res && res.sessionId) {
+      if (res && res.sessionId && res.currentQuestion) {
         currentDiagnosticSession = res;
-        renderDiagnosticQuestion(res.currentQuestion, res.questionNumber, res.totalQuestions, res.currentGrade, res.subject);
+        questionStartTime = Date.now();
+        renderDiagnosticQuestion(
+          res.currentQuestion,
+          res.questionNumber || 1,
+          res.totalQuestions || 10,
+          res.currentGrade || validGrade,
+          res.subject || res.currentQuestion.subject || 'Mathematics'
+        );
         return;
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn('Diagnostic start API failed:', e);
+    }
 
     // Fallback local session
-    currentDiagnosticSession = createLocalDiagnosticSession(grade);
-    const q = currentDiagnosticSession.currentQuestion;
-    renderDiagnosticQuestion(q, currentDiagnosticSession.questionNumber, 10, currentDiagnosticSession.currentGrade, q.subject);
+    try {
+      currentDiagnosticSession = createLocalDiagnosticSession(validGrade);
+      if (currentDiagnosticSession && currentDiagnosticSession.currentQuestion) {
+        questionStartTime = Date.now();
+        const q = currentDiagnosticSession.currentQuestion;
+        renderDiagnosticQuestion(
+          q,
+          currentDiagnosticSession.questionNumber || 1,
+          10,
+          currentDiagnosticSession.currentGrade || validGrade,
+          q.subject || 'Mathematics'
+        );
+        return;
+      }
+    } catch (err) {
+      console.error('Local diagnostic bank failed:', err);
+    }
+
+    // Error state with retry action
+    promptEl.textContent = 'Could not load your learning check.';
+    optionsContainer.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; padding: 30px;">
+        <p style="color: var(--pink); font-size: 13px; margin-bottom: 16px;">We encountered a connection issue preparing your questions.</p>
+        <button id="diag-retry-start-btn" class="cta" style="padding: 10px 22px; font-size: 12px;">Retry Learning Check ↺</button>
+      </div>
+    `;
+    const retryBtn = document.querySelector('#diag-retry-start-btn');
+    if (retryBtn) retryBtn.onclick = () => startQuickLearningCheck(validGrade);
   }
 
-  function renderDiagnosticQuestion(question, num, total, grade, subject) {
+  function renderDiagnosticQuestion(question, num = 1, total = 10, grade = 3, subject = 'Mathematics') {
+    if (!question) return;
     currentQuestionData = question;
-    document.querySelector('#diag-badge-counter').textContent = `Question ${num} of ${total}`;
-    document.querySelector('#diag-badge-grade').textContent = `Grade ${grade}`;
-    document.querySelector('#diag-badge-subject').textContent = subject;
+    questionStartTime = Date.now();
 
-    const progressPct = Math.round((num / total) * 100);
+    const safeNum = num || 1;
+    const safeTotal = total || 10;
+    const safeGrade = grade || question.grade || 3;
+    const safeSubject = subject || question.subject || 'Mathematics';
+
+    document.querySelector('#diag-badge-counter').textContent = `Question ${safeNum} of ${safeTotal}`;
+    document.querySelector('#diag-badge-grade').textContent = `Grade ${safeGrade}`;
+    document.querySelector('#diag-badge-subject').textContent = safeSubject;
+
+    const progressPct = Math.min(100, Math.max(10, Math.round((safeNum / safeTotal) * 100)));
     document.querySelector('#diag-progress-fill').style.width = `${progressPct}%`;
 
-    document.querySelector('#diag-question-prompt').textContent = question.question;
+    document.querySelector('#diag-question-prompt').textContent = question.question || 'Question';
     document.querySelector('#diag-feedback-box').className = 'diag-feedback-card hidden';
     document.querySelector('#diag-next-btn').classList.add('hidden');
 
     const optionsContainer = document.querySelector('#diag-options-container');
     const letters = ['A', 'B', 'C', 'D'];
-    optionsContainer.innerHTML = question.options.map((opt, i) => `
-      <button class="diag-opt-btn" data-option="${opt}">
+    const options = Array.isArray(question.options) ? question.options : [];
+
+    optionsContainer.innerHTML = options.map((opt, i) => `
+      <button class="diag-opt-btn" data-option="${escapeHtml(String(opt))}">
         <span class="diag-opt-key">${letters[i] || (i+1)}</span>
-        <span>${opt}</span>
+        <span>${escapeHtml(String(opt))}</span>
       </button>
     `).join('');
 
@@ -1320,8 +1402,9 @@
     buttons.forEach(b => b.disabled = true);
     optBtn.classList.add('selected');
 
-    const questionId = currentQuestionData.id;
+    const questionId = currentQuestionData?.id;
     const sessionId = currentDiagnosticSession?.sessionId || 'session-fallback';
+    const responseTimeSeconds = Math.max(1, Math.round((Date.now() - questionStartTime) / 1000));
 
     let result = null;
     try {
@@ -1330,13 +1413,16 @@
         body: JSON.stringify({
           sessionId,
           questionId,
-          selectedAnswer: selectedOption
+          selectedAnswer: selectedOption,
+          studentAnswer: selectedOption,
+          responseTimeSeconds,
+          timeSpentSeconds: responseTimeSeconds
         })
       });
     } catch (e) {}
 
     if (!result) {
-      result = validateLocalDiagnosticAnswer(currentDiagnosticSession, questionId, selectedOption);
+      result = validateLocalDiagnosticAnswer(currentDiagnosticSession, questionId, selectedOption, responseTimeSeconds);
     }
 
     const feedbackBox = document.querySelector('#diag-feedback-box');
@@ -1345,19 +1431,19 @@
     if (result.isCorrect) {
       optBtn.classList.add('correct');
       feedbackBox.className = 'diag-feedback-card correct';
-      feedbackBox.innerHTML = `✓ <b>Correct!</b> ${result.explanation || 'Great job!'}`;
+      feedbackBox.innerHTML = `✓ <b>Correct!</b> ${escapeHtml(result.explanation || 'Great job!')}`;
     } else {
       optBtn.classList.add('wrong');
       buttons.forEach(b => {
-        if (b.dataset.option === result.correctAnswer) b.classList.add('correct');
+        if (b.dataset.option === String(result.correctAnswer)) b.classList.add('correct');
       });
       feedbackBox.className = 'diag-feedback-card wrong';
-      feedbackBox.innerHTML = `✗ <b>Not quite.</b> The correct answer was <b>${result.correctAnswer}</b>. ${result.explanation || ''}`;
+      feedbackBox.innerHTML = `✗ <b>Not quite.</b> The correct answer was <b>${escapeHtml(result.correctAnswer)}</b>. ${escapeHtml(result.explanation || '')}`;
     }
 
     feedbackBox.classList.remove('hidden');
     nextBtn.classList.remove('hidden');
-    nextBtn.textContent = result.isComplete ? 'View Results →' : 'Next Question →';
+    nextBtn.textContent = (result.isComplete || result.isCompleted) ? 'View Results →' : 'Next Question →';
 
     currentDiagnosticSession.lastResult = result;
   }
@@ -1366,42 +1452,59 @@
     const res = currentDiagnosticSession?.lastResult;
     if (!res) return;
 
-    if (res.isComplete) {
+    if (res.isComplete || res.isCompleted) {
       studentDiagnosticCompleted = true;
       localStorage.setItem('2block_student_diagnostic_completed', 'true');
-      localStorage.setItem('2block_initial_assessment', JSON.stringify(res.initialAssessment));
+      const assessment = res.initialAssessment || res.assessment;
+      if (assessment) {
+        localStorage.setItem('2block_initial_assessment', JSON.stringify(assessment));
+      }
       openDiagnosticStep('complete');
-      renderDiagnosticSummary(res.initialAssessment);
+      renderDiagnosticSummary(assessment);
     } else if (res.nextQuestion) {
       currentDiagnosticSession.currentQuestion = res.nextQuestion;
-      currentDiagnosticSession.questionNumber = res.questionNumber;
-      currentDiagnosticSession.currentGrade = res.currentGrade;
-      renderDiagnosticQuestion(res.nextQuestion, res.questionNumber, 10, res.currentGrade, res.nextQuestion.subject);
+      currentDiagnosticSession.questionNumber = res.questionNumber || (res.nextQuestion.questionNumber);
+      currentDiagnosticSession.currentGrade = res.currentGrade || (res.nextQuestion.grade);
+      renderDiagnosticQuestion(
+        res.nextQuestion,
+        currentDiagnosticSession.questionNumber,
+        10,
+        currentDiagnosticSession.currentGrade,
+        res.nextQuestion.subject
+      );
     }
   };
 
   function renderDiagnosticSummary(assessment) {
     if (!assessment) return;
-    document.querySelector('#diag-res-score').textContent = `${assessment.overallScore}%`;
-    document.querySelector('#diag-res-grade').textContent = `Grade ${assessment.estimatedGradeLevel}`;
+    document.querySelector('#diag-res-score').textContent = `${assessment.overallScore || 0}%`;
+    document.querySelector('#diag-res-grade').textContent = `Grade ${assessment.estimatedGradeLevel || 3}`;
     
     const strengthsEl = document.querySelector('#diag-res-strengths');
     if (strengthsEl) {
-      strengthsEl.textContent = (assessment.strengths && assessment.strengths.length)
-        ? assessment.strengths.join(', ')
-        : 'All core subjects developing';
+      const strengthsList = assessment.strengths || assessment.topicStrengths || [];
+      strengthsEl.textContent = strengthsList.length
+        ? strengthsList.join(', ')
+        : 'Foundational concepts in progress';
     }
 
     const gapsEl = document.querySelector('#diag-res-gaps');
     if (gapsEl) {
-      gapsEl.textContent = (assessment.learningGaps && assessment.learningGaps.length)
-        ? assessment.learningGaps.join(', ')
-        : 'Ready for higher challenges';
+      const gapsList = assessment.learningGaps || [];
+      gapsEl.textContent = gapsList.length
+        ? gapsList.join(', ')
+        : 'All core subjects developing well';
     }
 
     const recEl = document.querySelector('#diag-res-rec');
-    if (recEl && assessment.recommendations && assessment.recommendations.length) {
-      recEl.textContent = `${assessment.recommendations[0].title}: ${assessment.recommendations[0].reason}`;
+    if (recEl) {
+      if (assessment.recommendations && assessment.recommendations.length) {
+        const topRec = assessment.recommendations[0];
+        recEl.textContent = `${topRec.title}: ${topRec.reason || topRec.description || ''}`;
+      } else if (assessment.recommendedFirstPracticeTopic) {
+        const t = assessment.recommendedFirstPracticeTopic;
+        recEl.textContent = `Focus on ${t.topic} (${t.subject}): ${t.description || 'Guided practice'}`;
+      }
     }
   }
 
@@ -1414,7 +1517,7 @@
     document.querySelector('#crumb').textContent = 'Student space / Overview';
     document.querySelectorAll('#nav button').forEach((b, i) => b.classList.toggle('active', i === 0));
     loadStudentOverview();
-    toast('Student Overview unlocked with your calibrated learning data!');
+    toast('Student Overview unlocked with your calibrated learning data! Tap "Start adaptive practice" to begin.');
   };
 
   const btnStartCheck = document.querySelector('#btn-start-diag-check');
@@ -1426,11 +1529,12 @@
 
   // Local Diagnostic Fallback Engine
   function createLocalDiagnosticSession(grade) {
-    const pool = FALLBACK_DIAGNOSTIC_BANK.filter(q => q.grade === grade);
+    const safeGrade = Math.max(1, Math.min(6, parseInt(grade, 10) || 3));
+    const pool = FALLBACK_DIAGNOSTIC_BANK.filter(q => q.grade === safeGrade);
     const startQ = pool.length ? pool[0] : FALLBACK_DIAGNOSTIC_BANK[0];
     return {
       sessionId: 'local-' + Date.now(),
-      currentGrade: grade,
+      currentGrade: safeGrade,
       questionNumber: 1,
       currentQuestion: startQ,
       answers: [],
@@ -1438,7 +1542,7 @@
     };
   }
 
-  function validateLocalDiagnosticAnswer(session, questionId, selectedAnswer) {
+  function validateLocalDiagnosticAnswer(session, questionId, selectedAnswer, responseTimeSeconds = 10) {
     const q = FALLBACK_DIAGNOSTIC_BANK.find(item => item.id === questionId) || session.currentQuestion;
     const isCorrect = String(selectedAnswer).trim().toLowerCase() === String(q.correctAnswer).trim().toLowerCase();
 
@@ -1447,13 +1551,24 @@
       subject: q.subject,
       grade: q.grade,
       topic: q.topic,
-      isCorrect
+      isCorrect,
+      responseTimeSeconds
     });
 
     const isComplete = session.answers.length >= 10;
     let nextGrade = session.currentGrade;
-    if (isCorrect) nextGrade = Math.min(6, session.currentGrade + 1);
-    else nextGrade = Math.max(1, session.currentGrade - 1);
+    if (isCorrect) {
+      // Fast correct (<= 12 seconds) increases difficulty / advances grade level
+      if (responseTimeSeconds <= 12) {
+        nextGrade = Math.min(6, session.currentGrade + 1);
+      } else {
+        // Slow correct keeps current grade level
+        nextGrade = session.currentGrade;
+      }
+    } else {
+      // Incorrect answer lowers grade level
+      nextGrade = Math.max(1, session.currentGrade - 1);
+    }
 
     session.currentGrade = nextGrade;
 
@@ -1479,15 +1594,16 @@
         else learningGaps.push(`${subj} (${pct}%)`);
       });
 
+      const firstGap = learningGaps[0] || 'Core concepts';
       initialAssessment = {
         overallScore,
         estimatedGradeLevel: nextGrade,
-        strengths: strengths.length ? strengths : ['General understanding'],
+        strengths: strengths.length ? strengths : ['Core concepts'],
         learningGaps: learningGaps.length ? learningGaps : ['Skill refinement'],
         totalCorrect: correctCount,
         recommendations: [
           {
-            title: `Focus on ${learningGaps[0] || 'Core concepts'}`,
+            title: `Focus on ${firstGap}`,
             reason: 'Calibrated from your Quick Learning Check. Regular 15-minute practice will build mastery.',
             description: 'Adaptive practice designed to strengthen your foundational skills.'
           }
@@ -1499,11 +1615,18 @@
         }))
       };
     } else {
+      const subjectsOrder = ['Mathematics', 'Bahasa Melayu', 'English', 'Science'];
+      const nextSubj = subjectsOrder[session.answers.length % subjectsOrder.length];
       const candidates = FALLBACK_DIAGNOSTIC_BANK.filter(item => 
         !session.answeredIds.includes(item.id) &&
+        item.subject === nextSubj &&
         (item.grade === nextGrade || Math.abs(item.grade - nextGrade) <= 1)
       );
-      nextQuestion = candidates.length ? candidates[0] : FALLBACK_DIAGNOSTIC_BANK.find(i => !session.answeredIds.includes(i.id)) || FALLBACK_DIAGNOSTIC_BANK[0];
+      nextQuestion = candidates.length 
+        ? candidates[0] 
+        : (FALLBACK_DIAGNOSTIC_BANK.find(i => !session.answeredIds.includes(i.id) && i.subject === nextSubj) 
+           || FALLBACK_DIAGNOSTIC_BANK.find(i => !session.answeredIds.includes(i.id))
+           || FALLBACK_DIAGNOSTIC_BANK[0]);
       session.answeredIds.push(nextQuestion.id);
     }
 
@@ -1611,10 +1734,7 @@
   }
 
   function backToOverview() {
-    if (activeRole === 'student' && (!studentProfileCompleted || !studentDiagnosticCompleted)) {
-      openDiagnosticStep(studentProfileCompleted ? 'quiz' : 'profile');
-      return;
-    }
+    if (!guardStudentAccess()) return;
     hideAllSections();
     studentView.classList.remove('hidden');
     document.querySelector('#crumb').textContent = 'Student space / Overview';
@@ -1623,6 +1743,7 @@
   }
 
   document.querySelector('#get-started').onclick = () => {
+    if (!guardStudentAccess()) return;
     document.querySelectorAll('#nav button').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('#nav button')[1].classList.add('active');
     openLearning();
@@ -1632,6 +1753,7 @@
   // 2. MY LEARNING VIEW
   // ----------------------------------------------------
   async function openLearning() {
+    if (!guardStudentAccess()) return;
     hideAllSections();
     learningView.classList.remove('hidden');
     document.querySelector('#crumb').textContent = 'Student space / My learning';
@@ -1732,6 +1854,7 @@
   }
 
   function openPractice() {
+    if (!guardStudentAccess()) return;
     hideAllSections();
     practiceView.classList.remove('hidden');
     showPracticeScreen(practiceSubjects);
@@ -1816,6 +1939,7 @@
   }
 
   document.querySelector('#start-practice').onclick = () => {
+    if (!guardStudentAccess()) return;
     openPractice();
     showPracticeScreen(practiceTopics);
   };
@@ -1939,6 +2063,7 @@
   // 4. INSIGHTS VIEW
   // ----------------------------------------------------
   async function openInsights() {
+    if (!guardStudentAccess()) return;
     hideAllSections();
     insightsView.classList.remove('hidden');
     document.querySelector('#crumb').textContent = 'Student space / Insights';
@@ -1979,6 +2104,7 @@
   // 5. REPORT VIEW
   // ----------------------------------------------------
   async function openReport() {
+    if (!guardStudentAccess()) return;
     hideAllSections();
     reportView.classList.remove('hidden');
     document.querySelector('#crumb').textContent = 'Student space / Reports';
@@ -2018,6 +2144,7 @@
   // 6. STUDENT PERSONAL PROFILE
   // ----------------------------------------------------
   async function openPersonal() {
+    if (!guardStudentAccess()) return;
     hideAllSections();
     personalView.classList.remove('hidden');
     document.querySelector('#crumb').textContent = 'Student space / Personal';
@@ -2042,7 +2169,10 @@
   }
 
   document.querySelector('#personal-overview').onclick = backToOverview;
-  document.querySelector('#avatar').onclick = () => activeRole === 'teacher' ? openTeacherProfile() : openPersonal();
+  document.querySelector('#avatar').onclick = () => {
+    if (activeRole === 'teacher') openTeacherProfile();
+    else if (guardStudentAccess()) openPersonal();
+  };
   document.querySelector('#personal-form').onsubmit = async e => {
     e.preventDefault();
     const formData = Object.fromEntries(new FormData(e.currentTarget));
@@ -2386,6 +2516,17 @@
     labels.innerHTML = '<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>';
     chart.insertAdjacentElement('afterend', labels);
   });
+
+  const sideAction = document.querySelector('#side-action');
+  if (sideAction) {
+    sideAction.onclick = () => {
+      if (activeRole === 'student') {
+        if (guardStudentAccess()) openLearning();
+      } else {
+        openTeacherOverview();
+      }
+    };
+  }
 
   // Initialize Session
   API.init();

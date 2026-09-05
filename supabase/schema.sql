@@ -419,4 +419,50 @@ BEGIN
   EXCEPTION WHEN others THEN NULL; END;
 END $$;
 
+-- ----------------------------------------------------
+-- CURRICULUM TOPICS (SYLLABUS BOUNDARIES)
+-- ----------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.curriculum_topics (
+  id VARCHAR(64) PRIMARY KEY,
+  grade INTEGER NOT NULL CHECK (grade BETWEEN 1 AND 6),
+  subject VARCHAR(64) NOT NULL,
+  topic VARCHAR(100) NOT NULL,
+  subtopic VARCHAR(120),
+  difficulty_min VARCHAR(20) DEFAULT 'easy',
+  difficulty_max VARCHAR(20) DEFAULT 'hard',
+  learning_objective TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.curriculum_topics ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read curriculum_topics" ON public.curriculum_topics
+  FOR SELECT USING (true);
+
+-- ----------------------------------------------------
+-- QUICK LEARNING CHECK DIAGNOSTIC ATTEMPTS
+-- ----------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.diagnostic_attempts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id VARCHAR(100) NOT NULL,
+  student_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  question_id VARCHAR(100) NOT NULL,
+  subject VARCHAR(64) NOT NULL,
+  grade INTEGER NOT NULL,
+  topic VARCHAR(100) NOT NULL,
+  question_text TEXT NOT NULL,
+  student_answer TEXT NOT NULL,
+  correct_answer TEXT NOT NULL,
+  is_correct BOOLEAN NOT NULL,
+  response_time_seconds INTEGER NOT NULL DEFAULT 5,
+  score INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.diagnostic_attempts ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Students insert diagnostic_attempts" ON public.diagnostic_attempts
+  FOR INSERT WITH CHECK (auth.uid() = student_id);
+CREATE POLICY "Students read own diagnostic_attempts" ON public.diagnostic_attempts
+  FOR SELECT USING (auth.uid() = student_id);
+
+
 

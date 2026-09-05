@@ -239,14 +239,39 @@ class DiagnosticEngine {
 
     session.questionsAnswered = session.answers.length;
 
-    // Adaptive grade shift
+    // Adaptive rules:
+    // - Correct and fast (<= 12s): increase difficulty / advance grade
+    // - Correct but slow (> 12s): keep similar difficulty / grade
+    // - Wrong: ask a simpler question / lower grade
     if (isCorrect) {
-      // Move to more difficult question (up to Grade 6)
-      session.currentGrade = Math.min(6, session.currentGrade + 1);
+      if (timeSpentSeconds <= 12) {
+        session.currentGrade = Math.min(6, session.currentGrade + 1);
+      }
     } else {
-      // Move to easier question (down to Grade 1)
       session.currentGrade = Math.max(1, session.currentGrade - 1);
     }
+
+    // Save attempt to Supabase diagnostic_attempts if available
+    try {
+      import('../config/supabase.js').then(({ supabase }) => {
+        if (supabase && session.studentId) {
+          supabase.from('diagnostic_attempts').insert({
+            session_id: session.id,
+            student_id: session.studentId,
+            question_id: question.id,
+            subject: question.subject,
+            grade: question.grade,
+            topic: question.topic,
+            question_text: question.question,
+            student_answer: String(studentAnswer),
+            correct_answer: String(question.correctAnswer),
+            is_correct: isCorrect,
+            response_time_seconds: Math.max(1, timeSpentSeconds),
+            score: isCorrect ? 100 : 0
+          }).then(() => {}).catch(() => {});
+        }
+      }).catch(() => {});
+    } catch (e) {}
 
     // End the quick test after 10 questions
     if (session.questionsAnswered >= session.totalQuestions) {
@@ -447,6 +472,17 @@ class DiagnosticEngine {
       (prof as any).diagnostic_completed = true;
       (prof as any).estimatedGradeLevel = assessment.estimatedGradeLevel;
     }
+
+    try {
+      import('../config/supabase.js').then(({ supabase }) => {
+        if (supabase && assessment.studentId && assessment.studentId.includes('-')) {
+          supabase.from('student_profiles').update({
+            diagnostic_completed: true,
+            estimated_grade_level: assessment.estimatedGradeLevel
+          }).eq('user_id', assessment.studentId).then(() => {}).catch(() => {});
+        }
+      }).catch(() => {});
+    } catch (e) {}
 
     // 5. Add to teacher student roster
     const existingStudent = dataStore.data.students.find(s => s.id === assessment.studentId);

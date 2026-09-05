@@ -423,9 +423,10 @@ export async function startDiagnostic(req: Request, res: Response, next: NextFun
 
 export async function submitDiagnosticAnswer(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const { sessionId, questionId, studentAnswer, selectedAnswer, timeSpentSeconds } = req.body;
+    const { sessionId, questionId, studentAnswer, selectedAnswer, timeSpentSeconds, responseTimeSeconds } = req.body;
     const answer = (studentAnswer !== undefined && studentAnswer !== null) ? studentAnswer : selectedAnswer;
-    const result = diagnosticEngine.submitAnswer(sessionId, questionId, String(answer), Number(timeSpentSeconds) || 5);
+    const duration = Number(timeSpentSeconds) || Number(responseTimeSeconds) || 5;
+    const result = diagnosticEngine.submitAnswer(sessionId, questionId, String(answer), duration);
     sendSuccess(res, result);
   } catch (err) {
     next(err);
@@ -452,8 +453,62 @@ export async function getDiagnosticStatus(req: Request, res: Response, next: Nex
   try {
     const studentId = req.user?.id || Object.keys(dataStore.data.studentProfiles)[0] || 'new-student-001';
     const profile = dataStore.data.studentProfiles[studentId];
-    const isCompleted = profile ? (profile as any).diagnostic_completed === true : false;
-    sendSuccess(res, { isCompleted, profile });
+
+    // Check all 8 required profile fields
+    const isProfileComplete = !!(
+      profile &&
+      (profile as any).name &&
+      (profile as any).grade &&
+      (profile as any).school &&
+      ((profile as any).district || (profile as any).city) &&
+      ((profile as any).birth || (profile as any).dateOfBirth) &&
+      ((profile as any).language || (profile as any).preferred_language) &&
+      ((profile as any).favourite || (profile as any).favourite_subject) &&
+      ((profile as any).studytime || (profile as any).preferred_study_time)
+    );
+
+    const isDiagnosticComplete = isProfileComplete && (profile as any).diagnostic_completed === true;
+    const gradeLevel = profile?.grade ? parseInt(String(profile.grade), 10) : 1;
+
+    sendSuccess(res, {
+      profileCompleted: isProfileComplete,
+      diagnosticCompleted: isDiagnosticComplete,
+      gradeLevel,
+      profile
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function generateAdaptiveQuestion(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { studentGrade, subject, topic, difficulty, previousAnswers } = req.body;
+    const grade = Number(studentGrade) || req.user?.grade || 3;
+    const subj = subject || 'Mathematics';
+    const top = topic || 'Addition';
+    const diff = (difficulty === 'easy' || difficulty === 'medium' || difficulty === 'hard') ? difficulty : 'medium';
+
+    const question = await GeminiPracticeService.generateAdaptiveQuestion(
+      top,
+      grade,
+      diff === 'easy' ? 1 : diff === 'medium' ? 2 : 3,
+      subj,
+      diff,
+      previousAnswers
+    );
+
+    sendSuccess(res, {
+      id: question.id,
+      question: question.equation,
+      options: question.options,
+      correctAnswer: String(question.answer),
+      subject: question.subject,
+      topic: question.topic,
+      gradeLevel: grade,
+      difficulty: diff,
+      explanation: question.explanation
+    });
   } catch (err) {
     next(err);
   }

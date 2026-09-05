@@ -25,112 +25,33 @@
     {
       "id": "mathematics",
       "name": "Mathematics",
-      "shortName": "Maths",
-      "score": 63,
-      "mastery": 55,
-      "learningMinutes": 17,
-      "status": "Building skills",
+      "score": 77,
+      "mastery": 75,
+      "learningMinutes": 61,
+      "status": "On track",
       "strength": "Addition",
       "topics": [
         {
-          "id": "mathematics-t1",
+          "id": "addition",
           "name": "Addition",
-          "score": 80,
+          "score": 85,
           "status": "Mastered",
-          "correctAnswers": 2,
-          "totalAnswers": 2,
-          "timeSpentMinutes": 2
+          "correctAnswers": 8,
+          "totalAnswers": 10,
+          "timeSpentMinutes": 20
         },
         {
-          "id": "mathematics-t2",
-          "name": "Decimals",
-          "score": 45,
-          "status": "Developing"
+          "id": "subtraction",
+          "name": "Subtraction",
+          "score": 69,
+          "status": "Developing",
+          "correctAnswers": 6,
+          "totalAnswers": 11,
+          "timeSpentMinutes": 21
         }
       ],
       "learningGaps": [
-        "Decimals"
-      ]
-    },
-    {
-      "id": "bahasa-melayu",
-      "name": "Bahasa Melayu",
-      "shortName": "BM",
-      "score": 95,
-      "mastery": 95,
-      "learningMinutes": 15,
-      "status": "On track",
-      "strength": "Vocabulary",
-      "topics": [
-        {
-          "id": "bahasa-melayu-t1",
-          "name": "Vocabulary",
-          "score": 95,
-          "status": "Strong"
-        },
-        {
-          "id": "bahasa-melayu-t2",
-          "name": "Decimals",
-          "score": 80,
-          "status": "Developing"
-        }
-      ],
-      "learningGaps": [
-        "Decimals"
-      ]
-    },
-    {
-      "id": "english",
-      "name": "English",
-      "shortName": "English",
-      "score": 95,
-      "mastery": 95,
-      "learningMinutes": 15,
-      "status": "On track",
-      "strength": "Vocabulary",
-      "topics": [
-        {
-          "id": "english-t1",
-          "name": "Vocabulary",
-          "score": 95,
-          "status": "Strong"
-        },
-        {
-          "id": "english-t2",
-          "name": "Decimals",
-          "score": 80,
-          "status": "Developing"
-        }
-      ],
-      "learningGaps": [
-        "Decimals"
-      ]
-    },
-    {
-      "id": "science",
-      "name": "Science",
-      "shortName": "Science",
-      "score": 95,
-      "mastery": 95,
-      "learningMinutes": 15,
-      "status": "On track",
-      "strength": "Living things",
-      "topics": [
-        {
-          "id": "science-t1",
-          "name": "Living things",
-          "score": 95,
-          "status": "Strong"
-        },
-        {
-          "id": "science-t2",
-          "name": "Decimals",
-          "score": 80,
-          "status": "Developing"
-        }
-      ],
-      "learningGaps": [
-        "Decimals"
+        "Subtraction"
       ]
     }
   ],
@@ -151,6 +72,26 @@
       "initials": "AL",
       "primarySubject": "Mathematics",
       "learningMinutes": 2,
+      "healthScore": 60,
+      "status": "watch",
+      "trend": "up"
+    },
+    {
+      "id": "student-test-1788627225821",
+      "name": "New Learner",
+      "initials": "NL",
+      "primarySubject": "English",
+      "learningMinutes": 15,
+      "healthScore": 65,
+      "status": "on track",
+      "trend": "up"
+    },
+    {
+      "id": "test-student-flow-001",
+      "name": "Active Learner",
+      "initials": "AL",
+      "primarySubject": "Mathematics",
+      "learningMinutes": 1,
       "healthScore": 60,
       "status": "watch",
       "trend": "up"
@@ -181,14 +122,26 @@
       "isCorrect": true,
       "timeSpentSeconds": 6,
       "attemptedAt": "2026-09-05T16:40:48.178Z"
+    },
+    {
+      "id": "att-1788627246126-532",
+      "studentId": "test-student-flow-001",
+      "topic": "Subtraction",
+      "level": 1,
+      "question": "15 - 7 = ?",
+      "submittedAnswer": "8",
+      "correctAnswer": "8",
+      "isCorrect": true,
+      "timeSpentSeconds": 15,
+      "attemptedAt": "2026-09-05T16:54:06.126Z"
     }
   ],
   "dashboard": {
-    "overallPerformance": 87,
-    "healthScore": 95,
+    "overallPerformance": 77,
+    "healthScore": 65,
     "learningStreakDays": 1,
     "streakIncreaseThisWeek": 1,
-    "studyActivityMinutes": 17,
+    "studyActivityMinutes": 16,
     "studyActivityChangePercent": 0,
     "availableFocusMinutes": 45,
     "bestFocusWindow": "7:00 PM",
@@ -223,20 +176,20 @@
       }
     ],
     "recommendedPractice": {
-      "title": "Strengthen Decimals",
-      "description": "Your score in Decimals is 45%. A 15-minute focused session will help establish mastery."
+      "title": "Build confidence in Subtraction",
+      "description": "Your Subtraction score is 69%. Continuing adaptive practice will close this learning gap."
     }
   },
   "classDashboard": {},
   "recommendations": [
     {
-      "id": "rec-1788625584584",
-      "studentId": "new-student-001",
-      "subject": "Mathematics",
-      "topic": "Decimals",
-      "title": "Build confidence in decimals",
-      "reason": "Your Quick Learning Check highlighted decimals as your key growth area. A 15-minute focused session will help establish foundational mastery.",
-      "currentScore": 90,
+      "id": "rec-1788627225827",
+      "studentId": "student-test-1788627225821",
+      "subject": "English",
+      "topic": "Tenses",
+      "title": "Build confidence in tenses",
+      "reason": "Your Quick Learning Check highlighted tenses as your key growth area. A 15-minute focused session will help establish foundational mastery.",
+      "currentScore": 60,
       "timeSpentMinutes": 15,
       "recommendedMinutes": 15,
       "status": "active"

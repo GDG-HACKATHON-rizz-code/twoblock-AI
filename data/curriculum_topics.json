@@ -1,0 +1,332 @@
+[
+  {
+    "id": "curr-math-g1-01",
+    "grade": 1,
+    "subject": "Mathematics",
+    "topic": "Addition",
+    "subtopic": "Adding within 10",
+    "difficultyMin": "easy",
+    "difficultyMax": "medium",
+    "learningObjective": "Add two single-digit numbers up to 10 using counting on or visual models."
+  },
+  {
+    "id": "curr-math-g1-02",
+    "grade": 1,
+    "subject": "Mathematics",
+    "topic": "Subtraction",
+    "subtopic": "Subtracting within 10",
+    "difficultyMin": "easy",
+    "difficultyMax": "medium",
+    "learningObjective": "Subtract single-digit numbers within 10 using take-away concepts."
+  },
+  {
+    "id": "curr-math-g1-03",
+    "grade": 1,
+    "subject": "Mathematics",
+    "topic": "Number recognition",
+    "subtopic": "Numbers up to 20",
+    "difficultyMin": "easy",
+    "difficultyMax": "easy",
+    "learningObjective": "Identify, count, and compare quantities up to 20."
+  },
+  {
+    "id": "curr-math-g2-01",
+    "grade": 2,
+    "subject": "Mathematics",
+    "topic": "Addition",
+    "subtopic": "Adding two-digit numbers",
+    "difficultyMin": "easy",
+    "difficultyMax": "medium",
+    "learningObjective": "Add two-digit numbers with and without regrouping up to 100."
+  },
+  {
+    "id": "curr-math-g2-02",
+    "grade": 2,
+    "subject": "Mathematics",
+    "topic": "Subtraction",
+    "subtopic": "Subtracting two-digit numbers",
+    "difficultyMin": "easy",
+    "difficultyMax": "medium",
+    "learningObjective": "Subtract two-digit numbers with and without borrowing."
+  },
+  {
+    "id": "curr-math-g3-01",
+    "grade": 3,
+    "subject": "Mathematics",
+    "topic": "Multiplication",
+    "subtopic": "Multiplication tables 2 to 9",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Recall and apply multiplication facts up to 9 x 9."
+  },
+  {
+    "id": "curr-math-g3-02",
+    "grade": 3,
+    "subject": "Mathematics",
+    "topic": "Division",
+    "subtopic": "Equal grouping and remainders",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Divide two-digit numbers by single-digit divisors."
+  },
+  {
+    "id": "curr-math-g3-03",
+    "grade": 3,
+    "subject": "Mathematics",
+    "topic": "Fractions",
+    "subtopic": "Proper fractions and halves/quarters",
+    "difficultyMin": "easy",
+    "difficultyMax": "medium",
+    "learningObjective": "Understand unit and simple fractions representing parts of a whole."
+  },
+  {
+    "id": "curr-math-g4-01",
+    "grade": 4,
+    "subject": "Mathematics",
+    "topic": "Fractions",
+    "subtopic": "Equivalent and mixed fractions",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Simplify fractions and convert between improper fractions and mixed numbers."
+  },
+  {
+    "id": "curr-math-g5-01",
+    "grade": 5,
+    "subject": "Mathematics",
+    "topic": "Decimals",
+    "subtopic": "Decimal operations to 2 decimal places",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Add, subtract, and multiply decimals with place value accuracy."
+  },
+  {
+    "id": "curr-math-g5-02",
+    "grade": 5,
+    "subject": "Mathematics",
+    "topic": "Percentages",
+    "subtopic": "Converting fractions to percentages",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Calculate percentages of quantities and convert between fractions and percentages."
+  },
+  {
+    "id": "curr-math-g6-01",
+    "grade": 6,
+    "subject": "Mathematics",
+    "topic": "Percentages & Ratios",
+    "subtopic": "Ratio and proportional reasoning",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Solve multi-step word problems involving percentages, ratios, and rates."
+  },
+  {
+    "id": "curr-bm-g1-01",
+    "grade": 1,
+    "subject": "Bahasa Melayu",
+    "topic": "Kata nama",
+    "subtopic": "Kata nama am",
+    "difficultyMin": "easy",
+    "difficultyMax": "medium",
+    "learningObjective": "Mengenal pasti kata nama am hidup dan bukan hidup dalam ayat mudah."
+  },
+  {
+    "id": "curr-bm-g1-02",
+    "grade": 1,
+    "subject": "Bahasa Melayu",
+    "topic": "Kata kerja",
+    "subtopic": "Kata kerja perbuatan",
+    "difficultyMin": "easy",
+    "difficultyMax": "medium",
+    "learningObjective": "Mengenal pasti kata kerja perbuatan harian dalam ayat."
+  },
+  {
+    "id": "curr-bm-g2-01",
+    "grade": 2,
+    "subject": "Bahasa Melayu",
+    "topic": "Kata adjektif",
+    "subtopic": "Sifat dan warna",
+    "difficultyMin": "easy",
+    "difficultyMax": "medium",
+    "learningObjective": "Memilih kata adjektif yang sesuai untuk menerangkan rupa, warna, dan sifat."
+  },
+  {
+    "id": "curr-bm-g3-01",
+    "grade": 3,
+    "subject": "Bahasa Melayu",
+    "topic": "Imbuhan",
+    "subtopic": "Imbuhan awalan meN- dan ber-",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Membina perkataan berimbuhan awalan mengikut konteks ayat."
+  },
+  {
+    "id": "curr-bm-g4-01",
+    "grade": 4,
+    "subject": "Bahasa Melayu",
+    "topic": "Penjodoh bilangan",
+    "subtopic": "Penggunaan penjodoh bilangan",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Menggunakan pelbagai penjodoh bilangan yang betul mengikut objek dan benda."
+  },
+  {
+    "id": "curr-bm-g4-02",
+    "grade": 4,
+    "subject": "Bahasa Melayu",
+    "topic": "Ayat majmuk",
+    "subtopic": "Kata hubung gabungan",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Membina dan melengkapkan ayat majmuk menggunakan kata hubung yang sesuai."
+  },
+  {
+    "id": "curr-bm-g5-01",
+    "grade": 5,
+    "subject": "Bahasa Melayu",
+    "topic": "Peribahasa",
+    "subtopic": "Simpulan bahasa lazim",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Memahami maksud simpulan bahasa dan menggunakannya dalam ayat."
+  },
+  {
+    "id": "curr-bm-g6-01",
+    "grade": 6,
+    "subject": "Bahasa Melayu",
+    "topic": "Tatabahasa lanjutan",
+    "subtopic": "Ayat aktif dan ayat pasif",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Menukar ayat aktif kepada ayat pasif dengan susunan tatabahasa tepat."
+  },
+  {
+    "id": "curr-bi-g1-01",
+    "grade": 1,
+    "subject": "English",
+    "topic": "Vocabulary",
+    "subtopic": "Common nouns and animals",
+    "difficultyMin": "easy",
+    "difficultyMax": "medium",
+    "learningObjective": "Recognise familiar words for everyday objects, colours, and animals."
+  },
+  {
+    "id": "curr-bi-g1-02",
+    "grade": 1,
+    "subject": "English",
+    "topic": "Simple sentences",
+    "subtopic": "Subject-verb matching",
+    "difficultyMin": "easy",
+    "difficultyMax": "medium",
+    "learningObjective": "Complete simple three to four-word sentences with correct verbs."
+  },
+  {
+    "id": "curr-bi-g2-01",
+    "grade": 2,
+    "subject": "English",
+    "topic": "Punctuation & Capitalisation",
+    "subtopic": "Full stops and capitals",
+    "difficultyMin": "easy",
+    "difficultyMax": "medium",
+    "learningObjective": "Apply capital letters for names/starts of sentences and full stops."
+  },
+  {
+    "id": "curr-bi-g3-01",
+    "grade": 3,
+    "subject": "English",
+    "topic": "Pronouns & Prepositions",
+    "subtopic": "Personal pronouns and position",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Use prepositions of place (in, on, under, behind) and subject pronouns correctly."
+  },
+  {
+    "id": "curr-bi-g4-01",
+    "grade": 4,
+    "subject": "English",
+    "topic": "Tenses",
+    "subtopic": "Simple past tense (regular and irregular)",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Form and identify regular and irregular past tense verbs in short stories."
+  },
+  {
+    "id": "curr-bi-g5-01",
+    "grade": 5,
+    "subject": "English",
+    "topic": "Adjectives & Adverbs",
+    "subtopic": "Comparative and superlative forms",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Use comparative and superlative adjectives accurately in descriptive sentences."
+  },
+  {
+    "id": "curr-bi-g6-01",
+    "grade": 6,
+    "subject": "English",
+    "topic": "Grammar and comprehension",
+    "subtopic": "Inference and complex clauses",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Draw inferences from short passages and identify conjunctions connecting clauses."
+  },
+  {
+    "id": "curr-sci-g1-01",
+    "grade": 1,
+    "subject": "Science",
+    "topic": "Living things and senses",
+    "subtopic": "Characteristics of living things",
+    "difficultyMin": "easy",
+    "difficultyMax": "medium",
+    "learningObjective": "Distinguish between living and non-living things and identify human senses."
+  },
+  {
+    "id": "curr-sci-g2-01",
+    "grade": 2,
+    "subject": "Science",
+    "topic": "Plants and animals",
+    "subtopic": "Basic needs and growth",
+    "difficultyMin": "easy",
+    "difficultyMax": "medium",
+    "learningObjective": "Explain basic needs of living things: water, air, food, and shelter."
+  },
+  {
+    "id": "curr-sci-g3-01",
+    "grade": 3,
+    "subject": "Science",
+    "topic": "Magnets and forces",
+    "subtopic": "Magnetic attraction and repulsion",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Identify magnetic materials and the behaviour of magnetic poles."
+  },
+  {
+    "id": "curr-sci-g4-01",
+    "grade": 4,
+    "subject": "Science",
+    "topic": "States of matter",
+    "subtopic": "Solids, liquids, and gases",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Classify materials by states of matter and observe changes of state."
+  },
+  {
+    "id": "curr-sci-g5-01",
+    "grade": 5,
+    "subject": "Science",
+    "topic": "Energy and light",
+    "subtopic": "Sources and forms of energy",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Identify renewable and non-renewable energy sources and light reflection."
+  },
+  {
+    "id": "curr-sci-g6-01",
+    "grade": 6,
+    "subject": "Science",
+    "topic": "Electricity and energy",
+    "subtopic": "Electric circuits and conductors",
+    "difficultyMin": "medium",
+    "difficultyMax": "hard",
+    "learningObjective": "Construct complete series and parallel circuits and identify conductors and insulators."
+  }
+]
