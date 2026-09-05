@@ -14,7 +14,8 @@ import {
   submitDiagnosticAnswer,
   getDiagnosticQuestions,
   getDiagnosticStatus,
-  generateAdaptiveQuestion
+  generateAdaptiveQuestion,
+  generateSyllabusQuestion
 } from '../controllers/studentController.js';
 
 const router = Router();
@@ -23,6 +24,7 @@ router.get('/dashboard', getDashboard);
 router.get('/learning', getLearning);
 router.get('/practice/questions', getPracticeQuestion);
 router.post('/practice/generate-adaptive-question', generateAdaptiveQuestion);
+router.post('/practice/generate-syllabus-question', generateSyllabusQuestion);
 router.post('/practice/answer', submitAnswer);
 router.post('/practice/process-result', processPracticeResult);
 router.post('/practice/end', endPracticeSession);

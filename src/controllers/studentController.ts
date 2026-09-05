@@ -513,3 +513,38 @@ export async function generateAdaptiveQuestion(req: Request, res: Response, next
     next(err);
   }
 }
+
+export async function generateSyllabusQuestion(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const studentId = req.user?.id || req.body.studentId;
+    const {
+      subject,
+      studentGrade,
+      topicId,
+      topicName,
+      subtopicName,
+      difficulty,
+      recentAccuracy,
+      previousAnswers,
+      excludeQuestionTexts
+    } = req.body;
+
+    const question = await GeminiPracticeService.generateSyllabusQuestion({
+      studentId,
+      subject: subject || 'Mathematics',
+      studentGrade: Number(studentGrade) || 5,
+      topicId,
+      topicName,
+      subtopicName,
+      difficulty,
+      recentAccuracy: Number(recentAccuracy) || 70,
+      previousAnswers,
+      excludeQuestionTexts
+    });
+
+    sendSuccess(res, question);
+  } catch (err) {
+    next(err);
+  }
+}
+

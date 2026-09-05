@@ -6,4 +6,5 @@ coverage/
 *.log
 twoblock_AI_all_code.*
 *.original.*
-scripts/
+/scripts/
+

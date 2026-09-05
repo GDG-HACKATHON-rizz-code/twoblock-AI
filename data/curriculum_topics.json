@@ -90,26 +90,6 @@
     "learningObjective": "Simplify fractions and convert between improper fractions and mixed numbers."
   },
   {
-    "id": "curr-math-g5-01",
-    "grade": 5,
-    "subject": "Mathematics",
-    "topic": "Decimals",
-    "subtopic": "Decimal operations to 2 decimal places",
-    "difficultyMin": "medium",
-    "difficultyMax": "hard",
-    "learningObjective": "Add, subtract, and multiply decimals with place value accuracy."
-  },
-  {
-    "id": "curr-math-g5-02",
-    "grade": 5,
-    "subject": "Mathematics",
-    "topic": "Percentages",
-    "subtopic": "Converting fractions to percentages",
-    "difficultyMin": "medium",
-    "difficultyMax": "hard",
-    "learningObjective": "Calculate percentages of quantities and convert between fractions and percentages."
-  },
-  {
     "id": "curr-math-g6-01",
     "grade": 6,
     "subject": "Mathematics",
@@ -178,16 +158,6 @@
     "difficultyMin": "medium",
     "difficultyMax": "hard",
     "learningObjective": "Membina dan melengkapkan ayat majmuk menggunakan kata hubung yang sesuai."
-  },
-  {
-    "id": "curr-bm-g5-01",
-    "grade": 5,
-    "subject": "Bahasa Melayu",
-    "topic": "Peribahasa",
-    "subtopic": "Simpulan bahasa lazim",
-    "difficultyMin": "medium",
-    "difficultyMax": "hard",
-    "learningObjective": "Memahami maksud simpulan bahasa dan menggunakannya dalam ayat."
   },
   {
     "id": "curr-bm-g6-01",
@@ -328,5 +298,135 @@
     "difficultyMin": "medium",
     "difficultyMax": "hard",
     "learningObjective": "Construct complete series and parallel circuits and identify conductors and insulators."
+  },
+  {
+    "id": "curr-baha-g5-1",
+    "grade": 5,
+    "subject": "Bahasa Melayu",
+    "topic": "Kata Adjektif",
+    "subtopic": "Sifat",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Mengenal pasti dan membina ayat menggunakan kata adjektif sifat dengan tepat."
+  },
+  {
+    "id": "curr-baha-g5-2",
+    "grade": 5,
+    "subject": "Bahasa Melayu",
+    "topic": "Kata Adjektif",
+    "subtopic": "Warna",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Mengenal pasti dan membina ayat menggunakan kata adjektif warna dengan tepat."
+  },
+  {
+    "id": "curr-baha-g5-3",
+    "grade": 5,
+    "subject": "Bahasa Melayu",
+    "topic": "Kata Adjektif",
+    "subtopic": "Bentuk",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Mengenal pasti dan membina ayat menggunakan kata adjektif bentuk dengan tepat."
+  },
+  {
+    "id": "curr-baha-g5-4",
+    "grade": 5,
+    "subject": "Bahasa Melayu",
+    "topic": "Kata Nama",
+    "subtopic": "Kata Nama Am",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Memahami fungsi dan menggunakan kata nama am mengikut konteks ayat standard."
+  },
+  {
+    "id": "curr-baha-g5-5",
+    "grade": 5,
+    "subject": "Bahasa Melayu",
+    "topic": "Kata Nama",
+    "subtopic": "Kata Nama Khas",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Memahami fungsi dan menggunakan kata nama khas mengikut konteks ayat standard."
+  },
+  {
+    "id": "curr-baha-g5-6",
+    "grade": 5,
+    "subject": "Bahasa Melayu",
+    "topic": "Kata Nama",
+    "subtopic": "Kata Ganti Nama",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Memahami fungsi dan menggunakan kata ganti nama mengikut konteks ayat standard."
+  },
+  {
+    "id": "curr-math-g5-7",
+    "grade": 5,
+    "subject": "Mathematics",
+    "topic": "Pecahan",
+    "subtopic": "Pecahan setara",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Menyelesaikan operasi pecahan (pecahan setara) mengikut sukatan Matematik Tahun 5."
+  },
+  {
+    "id": "curr-math-g5-8",
+    "grade": 5,
+    "subject": "Mathematics",
+    "topic": "Pecahan",
+    "subtopic": "Tambah pecahan",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Menyelesaikan operasi pecahan (tambah pecahan) mengikut sukatan Matematik Tahun 5."
+  },
+  {
+    "id": "curr-math-g5-9",
+    "grade": 5,
+    "subject": "Mathematics",
+    "topic": "Pecahan",
+    "subtopic": "Tolak pecahan",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Menyelesaikan operasi pecahan (tolak pecahan) mengikut sukatan Matematik Tahun 5."
+  },
+  {
+    "id": "curr-math-g5-10",
+    "grade": 5,
+    "subject": "Mathematics",
+    "topic": "Nombor Bulat",
+    "subtopic": "Nilai Tempat",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Menentukan nilai tempat, nilai digit dan cerakinan nombor hingga 1,000,000."
+  },
+  {
+    "id": "curr-math-g5-11",
+    "grade": 5,
+    "subject": "Mathematics",
+    "topic": "Operasi Asas",
+    "subtopic": "Tambah",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Menyelesaikan operasi asas tambah melibatkan nombor bulat sehingga ratus ribu."
+  },
+  {
+    "id": "curr-math-g5-12",
+    "grade": 5,
+    "subject": "Mathematics",
+    "topic": "Operasi Asas",
+    "subtopic": "Tolak",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Menyelesaikan operasi asas tolak melibatkan nombor bulat sehingga ratus ribu."
+  },
+  {
+    "id": "curr-math-g5-13",
+    "grade": 5,
+    "subject": "Mathematics",
+    "topic": "Operasi Asas",
+    "subtopic": "Darab",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Menyelesaikan operasi asas darab melibatkan nombor bulat sehingga ratus ribu."
   }
 ]
