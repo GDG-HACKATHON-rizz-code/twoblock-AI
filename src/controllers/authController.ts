@@ -20,6 +20,16 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
   }
 }
 
+export async function demoLogin(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const role = (req.body.role || 'student').toLowerCase() as 'student' | 'teacher';
+    const result = await authService.demoLogin(role);
+    sendSuccess(res, result, 200);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function getMe(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     sendSuccess(res, { user: req.user }, 200);

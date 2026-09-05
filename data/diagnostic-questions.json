@@ -1,0 +1,202 @@
+[
+  {
+    "id": "math-g1-01",
+    "subject": "Mathematics",
+    "grade": 1,
+    "topic": "Addition",
+    "question": "What is 3 + 2?",
+    "options": ["4", "5", "6", "7"],
+    "correctAnswer": "5",
+    "explanation": "Three plus two equals five."
+  },
+  {
+    "id": "bm-g1-01",
+    "subject": "Bahasa Melayu",
+    "grade": 1,
+    "topic": "Kata nama",
+    "question": "Pilih kata nama.",
+    "options": ["lari", "cantik", "buku", "cepat"],
+    "correctAnswer": "buku",
+    "explanation": "Buku ialah kata nama."
+  },
+  {
+    "id": "bi-g1-01",
+    "subject": "English",
+    "grade": 1,
+    "topic": "Vocabulary",
+    "question": "Which word names an animal?",
+    "options": ["Cat", "Run", "Blue", "Happy"],
+    "correctAnswer": "Cat",
+    "explanation": "A cat is an animal."
+  },
+  {
+    "id": "science-g1-01",
+    "subject": "Science",
+    "grade": 1,
+    "topic": "Living things",
+    "question": "Which one is a living thing?",
+    "options": ["Rock", "Tree", "Chair", "Pencil"],
+    "correctAnswer": "Tree",
+    "explanation": "A tree is a living thing because it grows."
+  },
+  {
+    "id": "math-g2-01",
+    "subject": "Mathematics",
+    "grade": 2,
+    "topic": "Subtraction",
+    "question": "What is 14 - 6?",
+    "options": ["6", "7", "8", "9"],
+    "correctAnswer": "8",
+    "explanation": "Fourteen take away six equals eight."
+  },
+  {
+    "id": "bm-g2-01",
+    "subject": "Bahasa Melayu",
+    "grade": 2,
+    "topic": "Kata kerja",
+    "question": "Pilih kata kerja dalam ayat: Ali sedang membaca buku.",
+    "options": ["Ali", "sedang", "membaca", "buku"],
+    "correctAnswer": "membaca",
+    "explanation": "Membaca ialah kata kerja."
+  },
+  {
+    "id": "bi-g2-01",
+    "subject": "English",
+    "grade": 2,
+    "topic": "Grammar",
+    "question": "Choose the correct sentence.",
+    "options": ["She are happy.", "She is happy.", "She am happy.", "She be happy."],
+    "correctAnswer": "She is happy.",
+    "explanation": "We use 'is' with she."
+  },
+  {
+    "id": "science-g2-01",
+    "subject": "Science",
+    "grade": 2,
+    "topic": "Plants",
+    "question": "What does a plant need to grow?",
+    "options": ["Water", "Plastic", "Glass", "Metal"],
+    "correctAnswer": "Water",
+    "explanation": "Plants need water to grow."
+  },
+  {
+    "id": "math-g3-01",
+    "subject": "Mathematics",
+    "grade": 3,
+    "topic": "Multiplication",
+    "question": "What is 4 × 3?",
+    "options": ["7", "10", "12", "14"],
+    "correctAnswer": "12",
+    "explanation": "Four groups of three equals twelve."
+  },
+  {
+    "id": "bm-g3-01",
+    "subject": "Bahasa Melayu",
+    "grade": 3,
+    "topic": "Ayat majmuk",
+    "question": "Pilih ayat majmuk.",
+    "options": ["Siti tidur.", "Ali makan dan minum.", "Buku itu baru.", "Adik kecil."],
+    "correctAnswer": "Ali makan dan minum.",
+    "explanation": "Ayat ini mempunyai dua perbuatan yang dihubungkan dengan 'dan'."
+  },
+  {
+    "id": "bi-g3-01",
+    "subject": "English",
+    "grade": 3,
+    "topic": "Reading comprehension",
+    "question": "Aina has a red ball. What colour is Aina's ball?",
+    "options": ["Blue", "Green", "Red", "Yellow"],
+    "correctAnswer": "Red",
+    "explanation": "The sentence says Aina has a red ball."
+  },
+  {
+    "id": "science-g3-01",
+    "subject": "Science",
+    "grade": 3,
+    "topic": "Materials",
+    "question": "Which material is best for making a raincoat?",
+    "options": ["Paper", "Plastic", "Cotton", "Wood"],
+    "correctAnswer": "Plastic",
+    "explanation": "Plastic helps keep water out."
+  },
+  {
+    "id": "math-g4-01",
+    "subject": "Mathematics",
+    "grade": 4,
+    "topic": "Fractions",
+    "question": "Which fraction is equal to one half?",
+    "options": ["1/4", "2/4", "3/4", "4/4"],
+    "correctAnswer": "2/4",
+    "explanation": "Two out of four equal parts is one half."
+  },
+  {
+    "id": "bm-g4-01",
+    "subject": "Bahasa Melayu",
+    "grade": 4,
+    "topic": "Penjodoh bilangan",
+    "question": "Pilih penjodoh bilangan yang betul: Dua ___ pensel.",
+    "options": ["buah", "batang", "ekor", "helai"],
+    "correctAnswer": "batang",
+    "explanation": "Penjodoh bilangan untuk pensel ialah batang."
+  },
+  {
+    "id": "bi-g4-01",
+    "subject": "English",
+    "grade": 4,
+    "topic": "Tenses",
+    "question": "Choose the correct past tense: Yesterday, I ___ to school.",
+    "options": ["walk", "walked", "walking", "walks"],
+    "correctAnswer": "walked",
+    "explanation": "Walked is the past tense of walk."
+  },
+  {
+    "id": "science-g4-01",
+    "subject": "Science",
+    "grade": 4,
+    "topic": "Energy",
+    "question": "Which is a source of light energy?",
+    "options": ["The Sun", "A book", "A chair", "A stone"],
+    "correctAnswer": "The Sun",
+    "explanation": "The Sun gives us light energy."
+  },
+  {
+    "id": "math-g5-01",
+    "subject": "Mathematics",
+    "grade": 5,
+    "topic": "Decimals",
+    "question": "What is 2.5 + 1.2?",
+    "options": ["3.5", "3.7", "4.7", "2.7"],
+    "correctAnswer": "3.7",
+    "explanation": "Two point five plus one point two equals three point seven."
+  },
+  {
+    "id": "bm-g5-01",
+    "subject": "Bahasa Melayu",
+    "grade": 5,
+    "topic": "Simpulan bahasa",
+    "question": "Apakah maksud simpulan bahasa 'ringan tulang'?",
+    "options": ["Malas", "Rajin bekerja", "Sedih", "Marah"],
+    "correctAnswer": "Rajin bekerja",
+    "explanation": "Ringan tulang bermaksud rajin bekerja."
+  },
+  {
+    "id": "bi-g6-01",
+    "subject": "English",
+    "grade": 6,
+    "topic": "Grammar",
+    "question": "Choose the correct sentence.",
+    "options": ["The pupils was reading.", "The pupils were reading.", "The pupils is reading.", "The pupils reading."],
+    "correctAnswer": "The pupils were reading.",
+    "explanation": "We use 'were' with plural subjects such as pupils."
+  },
+  {
+    "id": "science-g6-01",
+    "subject": "Science",
+    "grade": 6,
+    "topic": "Electricity",
+    "question": "Which material is a good conductor of electricity?",
+    "options": ["Rubber", "Plastic", "Copper", "Wood"],
+    "correctAnswer": "Copper",
+    "explanation": "Copper is a metal that conducts electricity well."
+  }
+]

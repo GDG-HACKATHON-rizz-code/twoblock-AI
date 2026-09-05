@@ -1,0 +1,139 @@
+{
+  "teacher": {
+    "id": "teacher-liyana-001",
+    "name": "Liyana K.",
+    "initials": "LK",
+    "teacherId": "TCH-10482",
+    "school": "Sekolah Menengah Maju Jaya",
+    "district": "Kuala Lumpur",
+    "primarySubject": "Mathematics",
+    "teachingLevel": "Year 10",
+    "classes": [
+      { "id": "year10-amanah", "name": "Year 10 Amanah", "studentCount": 30, "subject": "Mathematics" },
+      { "id": "year10-bestari", "name": "Year 10 Bestari", "studentCount": 28, "subject": "Mathematics" },
+      { "id": "year10-cemerlang", "name": "Year 10 Cemerlang", "studentCount": 26, "subject": "Mathematics" }
+    ]
+  },
+  "classDashboard": {
+    "classId": "year10-amanah",
+    "studentCount": 30,
+    "classHealthScore": 78,
+    "onTrackCount": 21,
+    "needsSupportCount": 9,
+    "averageLoginMinutesPerDay": 42,
+    "weeklyPerformance": [
+      { "day": "Mon", "score": 54 },
+      { "day": "Tue", "score": 60 },
+      { "day": "Wed", "score": 66 },
+      { "day": "Thu", "score": 72 },
+      { "day": "Fri", "score": 78 },
+      { "day": "Sat", "score": 69 },
+      { "day": "Sun", "score": 74 }
+    ],
+    "subjectPerformance": [
+      {
+        "subject": "Mathematics",
+        "score": 70,
+        "changePercent": 8,
+        "priority": "Subtraction",
+        "weeklyScores": [43, 55, 48, 66, 72, 62, 70]
+      },
+      {
+        "subject": "Bahasa Melayu",
+        "score": 67,
+        "changePercent": 3,
+        "priority": "Sentence structure",
+        "weeklyScores": [54, 49, 61, 65, 58, 68, 67]
+      },
+      {
+        "subject": "English",
+        "score": 67,
+        "changePercent": 4,
+        "priority": "Essay evidence",
+        "weeklyScores": [45, 56, 59, 62, 68, 65, 67]
+      },
+      {
+        "subject": "Science",
+        "score": 90,
+        "changePercent": 10,
+        "priority": "Strong",
+        "weeklyScores": [73, 78, 82, 79, 88, 86, 90]
+      }
+    ]
+  },
+  "students": [
+    { "id": "student-amira-001", "name": "Amira M.", "initials": "AM", "primarySubject": "Mathematics", "learningMinutes": 252, "healthScore": 91, "status": "thriving", "trend": "up" },
+    { "id": "student-jin-002", "name": "Jin L.", "initials": "JL", "primarySubject": "Science", "learningMinutes": 68, "healthScore": 68, "status": "watch", "trend": "steady" },
+    { "id": "student-omar-003", "name": "Omar P.", "initials": "OP", "primarySubject": "Mathematics", "learningMinutes": 38, "healthScore": 47, "status": "support", "trend": "down" },
+    { "id": "student-sofia-004", "name": "Sofia R.", "initials": "SR", "primarySubject": "English", "learningMinutes": 161, "healthScore": 86, "status": "thriving", "trend": "up" },
+    { "id": "student-alya-005", "name": "Alya N.", "initials": "AN", "primarySubject": "Bahasa Melayu", "learningMinutes": 95, "healthScore": 79, "status": "on track", "trend": "up" },
+    { "id": "student-daniel-006", "name": "Daniel K.", "initials": "DK", "primarySubject": "Mathematics", "learningMinutes": 71, "healthScore": 63, "status": "watch", "trend": "steady" },
+    { "id": "student-ethan-007", "name": "Ethan W.", "initials": "EW", "primarySubject": "Science", "learningMinutes": 122, "healthScore": 88, "status": "thriving", "trend": "up" },
+    { "id": "student-farah-008", "name": "Farah A.", "initials": "FA", "primarySubject": "English", "learningMinutes": 83, "healthScore": 72, "status": "on track", "trend": "up" },
+    { "id": "student-hana-009", "name": "Hana R.", "initials": "HR", "primarySubject": "Mathematics", "learningMinutes": 46, "healthScore": 52, "status": "watch", "trend": "down" },
+    { "id": "student-oliver-016", "name": "Oliver B.", "initials": "OB", "primarySubject": "English", "learningMinutes": 35, "healthScore": 49, "status": "support", "trend": "down" },
+    { "id": "student-yasmin-026", "name": "Yasmin S.", "initials": "YS", "primarySubject": "Mathematics", "learningMinutes": 49, "healthScore": 56, "status": "watch", "trend": "down" },
+    { "id": "student-chong-030", "name": "Chong L.", "initials": "CL", "primarySubject": "Mathematics", "learningMinutes": 41, "healthScore": 48, "status": "support", "trend": "down" }
+  ],
+  "interventions": [
+    {
+      "id": "intervention-omar-subtraction",
+      "studentId": "student-omar-003",
+      "status": "problem",
+      "classification": "Low Mathematics performance",
+      "subject": "Mathematics",
+      "topic": "Subtraction",
+      "healthScore": 47,
+      "topicScore": 54,
+      "learningMinutes": 38,
+      "recommendation": "Schedule a 15-minute guided subtraction activity: visual warm-up, guided questions, then a quick review.",
+      "reviewDueDate": "2026-09-08"
+    },
+    {
+      "id": "intervention-chong-subtraction",
+      "studentId": "student-chong-030",
+      "status": "problem",
+      "classification": "Low topic mastery",
+      "subject": "Mathematics",
+      "topic": "Subtraction",
+      "healthScore": 48,
+      "topicScore": 52,
+      "learningMinutes": 41,
+      "recommendation": "Use visual counters in a small-group session, then assess understanding with three simple questions.",
+      "reviewDueDate": "2026-09-08"
+    },
+    {
+      "id": "intervention-oliver-engagement",
+      "studentId": "student-oliver-016",
+      "status": "problem",
+      "classification": "Low engagement",
+      "subject": "English",
+      "topic": "Reading engagement",
+      "healthScore": 49,
+      "topicScore": 58,
+      "learningMinutes": 35,
+      "recommendation": "Schedule a short check-in and assign one achievable reading activity with encouragement.",
+      "reviewDueDate": "2026-09-09"
+    },
+    {
+      "id": "intervention-amira-extension",
+      "studentId": "student-amira-001",
+      "status": "review",
+      "classification": "Review due",
+      "subject": "Science",
+      "topic": "Extension activity",
+      "healthScore": 91,
+      "topicScore": 90,
+      "learningMinutes": 252,
+      "recommendation": "Review the Science extension activity and confirm the next challenge.",
+      "reviewDueDate": "2026-09-07"
+    }
+  ],
+  "report": {
+    "period": "September 2026",
+    "averagePerformance": 74,
+    "studentsOnTrack": 21,
+    "studentsNeedingSupport": 9,
+    "recommendedNextAction": "Reteach subtraction in a small group, then assign Level 1 adaptive practice and review results next week."
+  }
+}

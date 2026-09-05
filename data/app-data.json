@@ -1,0 +1,238 @@
+{
+  "users": [],
+  "studentProfiles": {
+    "new-student-001": {
+      "userId": "new-student-001",
+      "name": "adam haziq",
+      "initials": "AH",
+      "grade": 5,
+      "school": "Sk adam",
+      "district": "Kuala lumpur",
+      "dateOfBirth": "2006-02-04",
+      "learningLanguages": [
+        "English"
+      ],
+      "preferredLanguage": "English",
+      "favouriteSubject": "Mathematics",
+      "preferredStudyTime": "Evening",
+      "diagnostic_completed": true
+    }
+  },
+  "teacherProfiles": {},
+  "classes": [],
+  "subjects": [
+    {
+      "id": "mathematics",
+      "name": "Mathematics",
+      "shortName": "Maths",
+      "score": 45,
+      "mastery": 45,
+      "learningMinutes": 15,
+      "status": "Developing",
+      "strength": "Addition",
+      "topics": [
+        {
+          "id": "mathematics-t1",
+          "name": "Addition",
+          "score": 55,
+          "status": "Strong"
+        },
+        {
+          "id": "mathematics-t2",
+          "name": "Reading comprehension",
+          "score": 45,
+          "status": "Developing"
+        }
+      ],
+      "learningGaps": [
+        "Reading comprehension",
+        "Grammar",
+        "Kata kerja",
+        "Kata nama",
+        "Addition",
+        "Living things",
+        "Subtraction",
+        "Multiplication"
+      ]
+    },
+    {
+      "id": "bahasa-melayu",
+      "name": "Bahasa Melayu",
+      "shortName": "BM",
+      "score": 45,
+      "mastery": 45,
+      "learningMinutes": 15,
+      "status": "Developing",
+      "strength": "Vocabulary",
+      "topics": [
+        {
+          "id": "bahasa-melayu-t1",
+          "name": "Vocabulary",
+          "score": 55,
+          "status": "Strong"
+        },
+        {
+          "id": "bahasa-melayu-t2",
+          "name": "Reading comprehension",
+          "score": 45,
+          "status": "Developing"
+        }
+      ],
+      "learningGaps": [
+        "Reading comprehension",
+        "Grammar",
+        "Kata kerja",
+        "Kata nama",
+        "Addition",
+        "Living things",
+        "Subtraction",
+        "Multiplication"
+      ]
+    },
+    {
+      "id": "english",
+      "name": "English",
+      "shortName": "English",
+      "score": 45,
+      "mastery": 45,
+      "learningMinutes": 15,
+      "status": "Developing",
+      "strength": "Vocabulary",
+      "topics": [
+        {
+          "id": "english-t1",
+          "name": "Vocabulary",
+          "score": 55,
+          "status": "Strong"
+        },
+        {
+          "id": "english-t2",
+          "name": "Reading comprehension",
+          "score": 45,
+          "status": "Developing"
+        }
+      ],
+      "learningGaps": [
+        "Reading comprehension",
+        "Grammar",
+        "Kata kerja",
+        "Kata nama",
+        "Addition",
+        "Living things",
+        "Subtraction",
+        "Multiplication"
+      ]
+    },
+    {
+      "id": "science",
+      "name": "Science",
+      "shortName": "Science",
+      "score": 50,
+      "mastery": 50,
+      "learningMinutes": 15,
+      "status": "Developing",
+      "strength": "Living things",
+      "topics": [
+        {
+          "id": "science-t1",
+          "name": "Living things",
+          "score": 60,
+          "status": "Strong"
+        },
+        {
+          "id": "science-t2",
+          "name": "Reading comprehension",
+          "score": 45,
+          "status": "Developing"
+        }
+      ],
+      "learningGaps": [
+        "Reading comprehension",
+        "Grammar",
+        "Kata kerja",
+        "Kata nama",
+        "Addition",
+        "Living things",
+        "Subtraction",
+        "Multiplication"
+      ]
+    }
+  ],
+  "students": [
+    {
+      "id": "new-student-001",
+      "name": "Amira Testing",
+      "initials": "AT",
+      "primarySubject": "English",
+      "learningMinutes": 15,
+      "healthScore": 25,
+      "status": "support",
+      "trend": "up"
+    }
+  ],
+  "interventions": [],
+  "practiceAttempts": [],
+  "dashboard": {
+    "overallPerformance": 18,
+    "healthScore": 23,
+    "learningStreakDays": 1,
+    "streakIncreaseThisWeek": 1,
+    "studyActivityMinutes": 15,
+    "studyActivityChangePercent": 0,
+    "availableFocusMinutes": 45,
+    "bestFocusWindow": "7:00 PM",
+    "weeklyActivity": [
+      {
+        "day": "Mon",
+        "minutes": 0
+      },
+      {
+        "day": "Tue",
+        "minutes": 0
+      },
+      {
+        "day": "Wed",
+        "minutes": 0
+      },
+      {
+        "day": "Thu",
+        "minutes": 0
+      },
+      {
+        "day": "Fri",
+        "minutes": 0
+      },
+      {
+        "day": "Sat",
+        "minutes": 0
+      },
+      {
+        "day": "Sun",
+        "minutes": 15
+      }
+    ],
+    "recommendedPractice": {
+      "subject": "English",
+      "topic": "Reading comprehension",
+      "description": "Strengthen reading comprehension in a 15-minute session calibrated to your diagnostic results.",
+      "durationMinutes": 15
+    }
+  },
+  "classDashboard": {},
+  "recommendations": [
+    {
+      "id": "rec-1788625229381",
+      "studentId": "new-student-001",
+      "subject": "English",
+      "topic": "Reading comprehension",
+      "title": "Build confidence in reading comprehension",
+      "reason": "Your Quick Learning Check highlighted reading comprehension as your key growth area. A 15-minute focused session will help establish foundational mastery.",
+      "currentScore": 18,
+      "timeSpentMinutes": 15,
+      "recommendedMinutes": 15,
+      "status": "active"
+    }
+  ],
+  "recentActivity": [],
+  "assignedInterventionStudents": []
+}

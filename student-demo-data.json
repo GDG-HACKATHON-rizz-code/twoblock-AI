@@ -1,0 +1,125 @@
+{
+  "student": {
+    "id": "student-amira-001",
+    "name": "Amira M.",
+    "initials": "AM",
+    "grade": "Grade 1",
+    "school": "Sekolah Kebangsaan Maju Jaya",
+    "district": "Kuala Lumpur",
+    "dateOfBirth": "2019-03-18",
+    "learningLanguages": ["Bahasa Melayu", "English"],
+    "favouriteSubject": "Science",
+    "preferredStudyTime": "19:00"
+  },
+  "dashboard": {
+    "overallPerformance": 84,
+    "learningStreakDays": 12,
+    "streakIncreaseThisWeek": 3,
+    "studyActivityMinutes": 385,
+    "studyActivityChangePercent": 18,
+    "availableFocusMinutes": 45,
+    "bestFocusWindow": "19:00",
+    "weeklyActivity": [
+      { "day": "Mon", "minutes": 42 },
+      { "day": "Tue", "minutes": 63 },
+      { "day": "Wed", "minutes": 49 },
+      { "day": "Thu", "minutes": 87 },
+      { "day": "Fri", "minutes": 68 },
+      { "day": "Sat", "minutes": 31 },
+      { "day": "Sun", "minutes": 23 }
+    ]
+  },
+  "subjects": [
+    {
+      "id": "mathematics",
+      "name": "Mathematics",
+      "score": 70,
+      "mastery": 79,
+      "learningMinutes": 683,
+      "status": "On track",
+      "strength": "Addition",
+      "topics": [
+        { "id": "addition", "name": "Addition", "score": 88, "status": "Strong" },
+        { "id": "subtraction", "name": "Subtraction", "score": 54, "status": "Needs focus" },
+        { "id": "multiplication", "name": "Multiplication", "score": 62, "status": "Developing" },
+        { "id": "division", "name": "Division", "score": 58, "status": "Needs focus" }
+      ],
+      "learningGaps": ["Algebraic fractions", "Integrate", "Simplify"]
+    },
+    {
+      "id": "bahasa-melayu",
+      "name": "Bahasa Melayu",
+      "shortName": "BM",
+      "score": 67,
+      "mastery": 60,
+      "learningMinutes": 72,
+      "status": "Building skills",
+      "strength": "Kata nama",
+      "topics": [
+        { "id": "kata-nama", "name": "Kata nama", "score": 81, "status": "Strong" },
+        { "id": "kata-kerja", "name": "Kata kerja", "score": 70, "status": "On track" },
+        { "id": "ayat-majmuk", "name": "Ayat majmuk", "score": 59, "status": "Developing" },
+        { "id": "penanda-wacana", "name": "Penanda wacana", "score": 55, "status": "Needs focus" }
+      ],
+      "learningGaps": ["Penanda wacana", "Ayat majmuk"]
+    },
+    {
+      "id": "english",
+      "name": "English",
+      "shortName": "BI",
+      "score": 67,
+      "mastery": 60,
+      "learningMinutes": 82,
+      "status": "Building skills",
+      "strength": "Reading comprehension",
+      "topics": [
+        { "id": "reading-comprehension", "name": "Reading comprehension", "score": 78, "status": "Strong" },
+        { "id": "vocabulary", "name": "Vocabulary", "score": 73, "status": "On track" },
+        { "id": "sentence-structure", "name": "Sentence structure", "score": 62, "status": "Developing" },
+        { "id": "essay-evidence", "name": "Essay evidence", "score": 55, "status": "Needs focus" }
+      ],
+      "learningGaps": ["Evidence in essays", "Sentence structure"]
+    },
+    {
+      "id": "science",
+      "name": "Science",
+      "score": 90,
+      "mastery": 90,
+      "learningMinutes": 150,
+      "status": "Excellent",
+      "strength": "Living things",
+      "topics": [
+        { "id": "living-things", "name": "Living things", "score": 94, "status": "Strong" },
+        { "id": "cell-structure", "name": "Cell structure", "score": 90, "status": "Strong" },
+        { "id": "energy-transfer", "name": "Energy transfer", "score": 87, "status": "Strong" },
+        { "id": "matter", "name": "Matter", "score": 88, "status": "Strong" }
+      ],
+      "learningGaps": ["Cell structure", "Energy transfer"]
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "rec-subtraction-001",
+      "subjectId": "mathematics",
+      "topicId": "subtraction",
+      "title": "Build confidence in subtraction",
+      "currentScore": 54,
+      "timeSpentMinutes": 48,
+      "recentCorrectAnswers": 6,
+      "recentTotalAnswers": 12,
+      "recommendedDurationMinutes": 15,
+      "reason": "Subtraction is the lowest Mathematics topic and supports future division learning."
+    }
+  ],
+  "practice": {
+    "currentLevel": 1,
+    "grade": "Grade 1",
+    "endRoundAfterWrongAnswers": 3,
+    "completedRounds": 24
+  },
+  "recentActivity": [
+    { "type": "practice", "subject": "Mathematics", "topic": "Subtraction", "durationMinutes": 15, "date": "2026-09-05" },
+    { "type": "lesson", "subject": "Science", "topic": "Cell structure", "durationMinutes": 28, "date": "2026-09-04" },
+    { "type": "achievement", "name": "Learning streak", "value": "12 days active", "date": "2026-09-05" }
+  ]
+}

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { register, login, getMe } from '../controllers/authController.js';
+import { register, login, demoLogin, getMe } from '../controllers/authController.js';
 import { validate } from '../middlewares/validate.js';
 import { authenticate } from '../middlewares/auth.js';
 
@@ -24,8 +24,15 @@ const loginSchema = z.object({
   }),
 });
 
+const demoLoginSchema = z.object({
+  body: z.object({
+    role: z.enum(['student', 'teacher']).optional(),
+  }),
+});
+
 router.post('/register', validate(registerSchema), register);
 router.post('/login', validate(loginSchema), login);
+router.post('/demo-login', validate(demoLoginSchema), demoLogin);
 router.get('/me', authenticate, getMe);
 
 export default router;
