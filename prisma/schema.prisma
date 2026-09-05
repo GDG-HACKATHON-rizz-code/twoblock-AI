@@ -1,0 +1,500 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// --------------------------------------------------------
+// ENUMS
+// --------------------------------------------------------
+
+enum UserRole {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum ContentLanguage {
+  ms
+  en
+}
+
+enum QuestionType {
+  mcq
+  short_answer
+}
+
+enum SessionStatus {
+  CREATED
+  IN_PROGRESS
+  RECOVERY_MODE
+  COMPLETED
+  ABANDONED
+}
+
+enum GapType {
+  repeated_mistake_gap
+  mastery_decline_gap
+  persistent_weak_gap
+}
+
+enum MasterySource {
+  diagnostic_estimate
+  calculated
+}
+
+// --------------------------------------------------------
+// 1. USERS
+// --------------------------------------------------------
+model User {
+  id            String   @id @default(uuid()) @db.Uuid
+  email         String   @unique
+  password_hash String
+  role          UserRole @default(STUDENT)
+  full_name     String
+  avatar_url    String?
+  is_active     Boolean  @default(true)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  // Relations
+  student_profile           StudentProfile?
+  teacher_profile           TeacherProfile?
+  classes_taught            Class[]                      @relation("TeacherClasses")
+  enrolments                ClassEnrolment[]             @relation("StudentEnrolments")
+  practice_sessions         PracticeSession[]            @relation("StudentPracticeSessions")
+  question_attempts         QuestionAttempt[]            @relation("StudentQuestionAttempts")
+  learning_events           LearningEvent[]              @relation("StudentLearningEvents")
+  topic_progress            StudentTopicProgress[]       @relation("StudentTopicProgress")
+  topic_progress_history    StudentTopicProgressHistory[] @relation("StudentTopicProgressHistory")
+  subject_progress          StudentSubjectProgress[]     @relation("StudentSubjectProgress")
+  health_scores             StudentHealthScore[]         @relation("StudentHealthScores")
+  interventions_assigned    TeacherIntervention[]        @relation("TeacherAssignedInterventions")
+  interventions_received    TeacherIntervention[]        @relation("StudentReceivedInterventions")
+  notes_created             TeacherNote[]                @relation("TeacherCreatedNotes")
+  notes_received            TeacherNote[]                @relation("StudentReceivedNotes")
+  ai_recommendations        AiRecommendation[]           @relation("StudentAiRecommendations")
+  questions_created         Question[]                   @relation("UserQuestionsCreated")
+
+  @@map("users")
+}
+
+// --------------------------------------------------------
+// 2. STUDENT PROFILES
+// --------------------------------------------------------
+model StudentProfile {
+  id                   String   @id @default(uuid()) @db.Uuid
+  user_id              String   @unique @db.Uuid
+  grade_level          Int      @default(1)
+  school_name          String?
+  current_streak       Int      @default(0)
+  total_points         Int      @default(0)
+  diagnostic_completed Boolean  @default(false)
+  created_at           DateTime @default(now())
+  updated_at           DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("student_profiles")
+}
+
+// --------------------------------------------------------
+// 3. TEACHER PROFILES
+// --------------------------------------------------------
+model TeacherProfile {
+  id           String   @id @default(uuid()) @db.Uuid
+  user_id      String   @unique @db.Uuid
+  school_name  String?
+  department   String?
+  phone_number String?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("teacher_profiles")
+}
+
+// --------------------------------------------------------
+// 4. CLASSES
+// --------------------------------------------------------
+model Class {
+  id            String   @id @default(uuid()) @db.Uuid
+  teacher_id    String   @db.Uuid
+  name          String
+  grade_level   Int
+  academic_year String
+  join_code     String   @unique
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  teacher    User             @relation("TeacherClasses", fields: [teacher_id], references: [id], onDelete: Cascade)
+  enrolments ClassEnrolment[]
+
+  @@index([teacher_id])
+  @@map("classes")
+}
+
+// --------------------------------------------------------
+// 5. CLASS ENROLMENTS
+// --------------------------------------------------------
+model ClassEnrolment {
+  id          String   @id @default(uuid()) @db.Uuid
+  class_id    String   @db.Uuid
+  student_id  String   @db.Uuid
+  status      String   @default("ACTIVE")
+  enrolled_at DateTime @default(now())
+
+  class   Class @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  student User  @relation("StudentEnrolments", fields: [student_id], references: [id], onDelete: Cascade)
+
+  @@unique([class_id, student_id])
+  @@index([student_id])
+  @@index([class_id])
+  @@map("class_enrolments")
+}
+
+// --------------------------------------------------------
+// 6. SUBJECTS
+// --------------------------------------------------------
+model Subject {
+  id          String   @id @default(uuid()) @db.Uuid
+  code        String   @unique
+  name_ms     String
+  name_en     String
+  grade_level Int      @default(1)
+  icon_url    String?
+  is_active   Boolean  @default(true)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  topics           Topic[]
+  questions        Question[]
+  subject_progress StudentSubjectProgress[]
+  health_scores    StudentHealthScore[]
+
+  @@map("subjects")
+}
+
+// --------------------------------------------------------
+// 7. TOPICS
+// --------------------------------------------------------
+model Topic {
+  id         String   @id @default(uuid()) @db.Uuid
+  subject_id String   @db.Uuid
+  code       String
+  title_ms   String
+  title_en   String
+  order_seq  Int      @default(1)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  subject   Subject    @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  subtopics Subtopic[]
+  questions Question[]
+
+  @@index([subject_id])
+  @@map("topics")
+}
+
+// --------------------------------------------------------
+// 8. SUBTOPICS
+// --------------------------------------------------------
+model Subtopic {
+  id              String   @id @default(uuid()) @db.Uuid
+  topic_id        String   @db.Uuid
+  code            String
+  title_ms        String
+  title_en        String
+  order_seq       Int      @default(1)
+  difficulty_tier Int      @default(1)
+  is_foundational Boolean  @default(false)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  topic                  Topic                         @relation(fields: [topic_id], references: [id], onDelete: Cascade)
+  questions              Question[]
+  practice_sessions      PracticeSession[]
+  topic_progress         StudentTopicProgress[]
+  topic_progress_history StudentTopicProgressHistory[]
+  interventions          TeacherIntervention[]
+  ai_recommendations     AiRecommendation[]
+
+  @@index([topic_id])
+  @@index([is_foundational])
+  @@map("subtopics")
+}
+
+// --------------------------------------------------------
+// 9. QUESTIONS
+// --------------------------------------------------------
+model Question {
+  id                     String          @id @default(uuid()) @db.Uuid
+  subject_id             String          @db.Uuid
+  topic_id               String          @db.Uuid
+  subtopic_id            String          @db.Uuid
+  difficulty_level       Int             @default(1)
+  question_text          String
+  question_type          QuestionType    @default(mcq)
+  options                Json
+  correct_answer         Json
+  explanation            String
+  language               ContentLanguage @default(ms)
+  is_diagnostic          Boolean         @default(false)
+  grade_level            Int             @default(1)
+  estimated_time_seconds Int             @default(60)
+  is_active              Boolean         @default(true)
+  created_by             String?         @db.Uuid
+  created_at             DateTime        @default(now())
+  updated_at             DateTime        @updatedAt
+
+  subject   Subject           @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  topic     Topic             @relation(fields: [topic_id], references: [id], onDelete: Cascade)
+  subtopic  Subtopic          @relation(fields: [subtopic_id], references: [id], onDelete: Cascade)
+  creator   User?             @relation("UserQuestionsCreated", fields: [created_by], references: [id], onDelete: SetNull)
+  attempts  QuestionAttempt[]
+
+  @@index([subject_id])
+  @@index([topic_id])
+  @@index([subtopic_id])
+  @@index([difficulty_level])
+  @@index([language])
+  @@index([created_by])
+  @@map("questions")
+}
+
+// --------------------------------------------------------
+// 10. PRACTICE SESSIONS
+// --------------------------------------------------------
+model PracticeSession {
+  id              String        @id @default(uuid()) @db.Uuid
+  student_id      String        @db.Uuid
+  subtopic_id     String?       @db.Uuid
+  mode            String        @default("PRACTICE")
+  status          SessionStatus @default(CREATED)
+  total_questions Int           @default(0)
+  correct_count   Int           @default(0)
+  start_time      DateTime      @default(now())
+  end_time        DateTime?
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+
+  student  User              @relation("StudentPracticeSessions", fields: [student_id], references: [id], onDelete: Cascade)
+  subtopic Subtopic?         @relation(fields: [subtopic_id], references: [id], onDelete: SetNull)
+  attempts QuestionAttempt[]
+
+  @@index([student_id])
+  @@index([subtopic_id])
+  @@index([status])
+  @@map("practice_sessions")
+}
+
+// --------------------------------------------------------
+// 11. QUESTION ATTEMPTS
+// --------------------------------------------------------
+model QuestionAttempt {
+  id                    String   @id @default(uuid()) @db.Uuid
+  session_id            String   @db.Uuid
+  question_id           String   @db.Uuid
+  student_id            String   @db.Uuid
+  student_answer        Json
+  is_correct            Boolean
+  response_time_seconds Int      @default(0)
+  hints_used            Int      @default(0)
+  score                 Float    @default(0.0)
+  created_at            DateTime @default(now())
+
+  session  PracticeSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  question Question        @relation(fields: [question_id], references: [id], onDelete: Cascade)
+  student  User            @relation("StudentQuestionAttempts", fields: [student_id], references: [id], onDelete: Cascade)
+
+  @@index([session_id])
+  @@index([question_id])
+  @@index([student_id])
+  @@map("question_attempts")
+}
+
+// --------------------------------------------------------
+// 12. LEARNING EVENTS
+// --------------------------------------------------------
+model LearningEvent {
+  id         String   @id @default(uuid()) @db.Uuid
+  student_id String   @db.Uuid
+  event_type String
+  gap_type   GapType?
+  event_data Json
+  created_at DateTime @default(now())
+
+  student User @relation("StudentLearningEvents", fields: [student_id], references: [id], onDelete: Cascade)
+
+  @@index([student_id])
+  @@index([gap_type])
+  @@index([event_type])
+  @@map("learning_events")
+}
+
+// --------------------------------------------------------
+// 13. STUDENT TOPIC PROGRESS
+// --------------------------------------------------------
+model StudentTopicProgress {
+  id                   String        @id @default(uuid()) @db.Uuid
+  student_id           String        @db.Uuid
+  subtopic_id          String        @db.Uuid
+  mastery_level        Float         @default(0.0)
+  mastery_source       MasterySource @default(calculated)
+  contributing_factors Json?
+  total_attempts       Int           @default(0)
+  correct_attempts     Int           @default(0)
+  last_practiced_at    DateTime?
+  status               String        @default("NOT_STARTED")
+  created_at           DateTime      @default(now())
+  updated_at           DateTime      @updatedAt
+
+  student  User     @relation("StudentTopicProgress", fields: [student_id], references: [id], onDelete: Cascade)
+  subtopic Subtopic @relation(fields: [subtopic_id], references: [id], onDelete: Cascade)
+
+  @@unique([student_id, subtopic_id])
+  @@index([student_id])
+  @@index([subtopic_id])
+  @@map("student_topic_progress")
+}
+
+// --------------------------------------------------------
+// 14. STUDENT TOPIC PROGRESS HISTORY
+// --------------------------------------------------------
+model StudentTopicProgressHistory {
+  id               String   @id @default(uuid()) @db.Uuid
+  student_id       String   @db.Uuid
+  subtopic_id      String   @db.Uuid
+  previous_mastery Float
+  new_mastery      Float
+  trigger_event    String
+  recorded_at      DateTime @default(now())
+
+  student  User     @relation("StudentTopicProgressHistory", fields: [student_id], references: [id], onDelete: Cascade)
+  subtopic Subtopic @relation(fields: [subtopic_id], references: [id], onDelete: Cascade)
+
+  @@index([student_id])
+  @@index([subtopic_id])
+  @@map("student_topic_progress_history")
+}
+
+// --------------------------------------------------------
+// 15. STUDENT SUBJECT PROGRESS
+// --------------------------------------------------------
+model StudentSubjectProgress {
+  id                        String        @id @default(uuid()) @db.Uuid
+  student_id                String        @db.Uuid
+  subject_id                String        @db.Uuid
+  overall_mastery           Float         @default(0.0)
+  mastery_source            MasterySource @default(calculated)
+  contributing_factors      Json?
+  total_time_spent_seconds  Int           @default(0)
+  completed_subtopics_count Int           @default(0)
+  last_active_at            DateTime?
+  created_at                DateTime      @default(now())
+  updated_at                DateTime      @updatedAt
+
+  student User    @relation("StudentSubjectProgress", fields: [student_id], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+
+  @@unique([student_id, subject_id])
+  @@index([student_id])
+  @@index([subject_id])
+  @@map("student_subject_progress")
+}
+
+// --------------------------------------------------------
+// 16. STUDENT HEALTH SCORES (APPEND-ONLY, NO updatedAt)
+// --------------------------------------------------------
+model StudentHealthScore {
+  id                   String   @id @default(uuid()) @db.Uuid
+  student_id           String   @db.Uuid
+  subject_id           String?  @db.Uuid
+  health_score         Float
+  risk_level           String   @default("LOW")
+  gap_indicators       Json?
+  contributing_factors Json?
+  created_at           DateTime @default(now())
+
+  student User     @relation("StudentHealthScores", fields: [student_id], references: [id], onDelete: Cascade)
+  subject Subject? @relation(fields: [subject_id], references: [id], onDelete: SetNull)
+
+  @@index([student_id])
+  @@index([subject_id])
+  @@index([created_at])
+  @@map("student_health_scores")
+}
+
+// --------------------------------------------------------
+// 17. TEACHER INTERVENTIONS
+// --------------------------------------------------------
+model TeacherIntervention {
+  id                String    @id @default(uuid()) @db.Uuid
+  teacher_id        String    @db.Uuid
+  student_id        String    @db.Uuid
+  subtopic_id       String?   @db.Uuid
+  intervention_type String
+  status            String    @default("PENDING")
+  notes             String?
+  edited_notes      String?
+  assigned_at       DateTime  @default(now())
+  resolved_at       DateTime?
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+
+  teacher  User      @relation("TeacherAssignedInterventions", fields: [teacher_id], references: [id], onDelete: Cascade)
+  student  User      @relation("StudentReceivedInterventions", fields: [student_id], references: [id], onDelete: Cascade)
+  subtopic Subtopic? @relation(fields: [subtopic_id], references: [id], onDelete: SetNull)
+
+  @@index([teacher_id])
+  @@index([student_id])
+  @@map("teacher_interventions")
+}
+
+// --------------------------------------------------------
+// 18. TEACHER NOTES
+// --------------------------------------------------------
+model TeacherNote {
+  id         String   @id @default(uuid()) @db.Uuid
+  teacher_id String   @db.Uuid
+  student_id String   @db.Uuid
+  note_text  String
+  is_private Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  teacher User @relation("TeacherCreatedNotes", fields: [teacher_id], references: [id], onDelete: Cascade)
+  student User @relation("StudentReceivedNotes", fields: [student_id], references: [id], onDelete: Cascade)
+
+  @@index([teacher_id])
+  @@index([student_id])
+  @@map("teacher_notes")
+}
+
+// --------------------------------------------------------
+// 19. AI RECOMMENDATIONS
+// --------------------------------------------------------
+model AiRecommendation {
+  id                  String   @id @default(uuid()) @db.Uuid
+  student_id          String   @db.Uuid
+  subtopic_id         String?  @db.Uuid
+  recommendation_type String
+  reason_ms           String
+  reason_en           String
+  edited_text         String?
+  priority            Int      @default(1)
+  status              String   @default("ACTIVE")
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  student  User      @relation("StudentAiRecommendations", fields: [student_id], references: [id], onDelete: Cascade)
+  subtopic Subtopic? @relation(fields: [subtopic_id], references: [id], onDelete: SetNull)
+
+  @@index([student_id])
+  @@index([status])
+  @@map("ai_recommendations")
+}

@@ -1,0 +1,47 @@
+{
+  "system": {
+    "server_running": "Server is running on port {port}",
+    "db_connected": "Database successfully connected",
+    "db_disconnected": "Database disconnected"
+  },
+  "errors": {
+    "INTERNAL_SERVER_ERROR": "Internal server error occurred. Please try again later.",
+    "NOT_FOUND": "Requested resource was not found: {path}",
+    "VALIDATION_ERROR": "Input validation error. Please check the supplied parameters.",
+    "UNAUTHORIZED": "Unauthorized access. Please log in again.",
+    "FORBIDDEN": "You do not have permission to access this resource.",
+    "FORBIDDEN_ROLE": "Your role ({role}) is not authorized to perform this action.",
+    "FORBIDDEN_OWNERSHIP": "You can only edit or delete your own questions.",
+    "BAD_REQUEST": "Bad request.",
+    "CONFLICT": "Resource already exists or data conflict occurred.",
+    "DB_CONNECTION_ERROR": "Failed to connect to the database.",
+    "USER_ALREADY_EXISTS": "User with this email already exists.",
+    "INVALID_CREDENTIALS": "Invalid email or password.",
+    "QUESTION_NOT_FOUND": "Requested question was not found.",
+    "SUBJECT_NOT_FOUND": "Subject not found.",
+    "TOPIC_NOT_FOUND": "Topic not found.",
+    "SUBTOPIC_NOT_FOUND": "Subtopic not found.",
+    "INVALID_OPTIONS_COUNT": "Multiple-choice questions (MCQ) must have exactly 4 answer options.",
+    "CORRECT_ANSWER_MISMATCH": "Correct answer must match one of the provided option keys.",
+    "LANGUAGE_MISMATCH": "Question language '{language}' is invalid for subject {subject}. Mathematics & Science must be in Bahasa Melayu ('ms').",
+    "SUBTOPIC_TOPIC_MISMATCH": "Selected subtopic does not belong to the specified topic.",
+    "TOPIC_SUBJECT_MISMATCH": "Selected topic does not belong to the specified subject.",
+    "EXPLANATION_REQUIRED": "Answer explanation is required and cannot be empty.",
+    "NO_FOUNDATIONAL_SUBTOPICS": "No foundational subtopic set for this subject.",
+    "INSUFFICIENT_DIAGNOSTIC_QUESTIONS": "Insufficient diagnostic questions for this subject (5 questions across L1, L2, L3 required).",
+    "INVALID_DIAGNOSTIC_ANSWERS_COUNT": "Submitted answer count ({count}) does not match the 5 diagnostic questions.",
+    "DIAGNOSTIC_ALREADY_COMPLETED": "Diagnostic assessment has already been completed for this session.",
+    "DIAGNOSTIC_SESSION_NOT_FOUND": "Diagnostic session not found.",
+    "SESSION_ALREADY_ENDED": "This practice session has already ended or been abandoned.",
+    "SESSION_NOT_FOUND": "Practice session not found.",
+    "NO_QUESTIONS_AVAILABLE": "No further questions available for this subtopic.",
+    "SESSION_TIMEOUT": "Practice session has timed out due to 30 minutes of inactivity."
+  },
+  "validation": {
+    "required": "Field {field} is required.",
+    "invalid_email": "Invalid email format.",
+    "min_length": "Field {field} must be at least {min} characters long.",
+    "max_length": "Field {field} must not exceed {max} characters.",
+    "invalid_type": "Invalid data type for field {field}."
+  }
+}

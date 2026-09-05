@@ -1,0 +1,47 @@
+{
+  "system": {
+    "server_running": "Pelayan sedang berjalan pada port {port}",
+    "db_connected": "Pangkalan data berjaya disambungkan",
+    "db_disconnected": "Pangkalan data terputus"
+  },
+  "errors": {
+    "INTERNAL_SERVER_ERROR": "Ralat dalaman pelayan berlaku. Sila cuba lagi kemudian.",
+    "NOT_FOUND": "Sumber yang diminta tidak dijumpai: {path}",
+    "VALIDATION_ERROR": "Ralat pengesahan data input. Sila semak semula parameter yang dihantar.",
+    "UNAUTHORIZED": "Akses tidak dibenarkan. Sila log masuk semula.",
+    "FORBIDDEN": "Anda tidak mempunyai kebenaran untuk mengakses sumber ini.",
+    "FORBIDDEN_ROLE": "Peranan anda ({role}) tidak dibenarkan untuk melakukan tindakan ini.",
+    "FORBIDDEN_OWNERSHIP": "Anda hanya boleh mengedit atau memadam soalan ciptaan anda sendiri.",
+    "BAD_REQUEST": "Permintaan tidak sah.",
+    "CONFLICT": "Sumber sudah wujud atau terdapat konflik data.",
+    "DB_CONNECTION_ERROR": "Gagal menyambung ke pangkalan data.",
+    "USER_ALREADY_EXISTS": "Pengguna dengan e-mel ini sudah wujud.",
+    "INVALID_CREDENTIALS": "E-mel atau kata laluan tidak sah.",
+    "QUESTION_NOT_FOUND": "Soalan yang diminta tidak dijumpai.",
+    "SUBJECT_NOT_FOUND": "Subjek tidak dijumpai.",
+    "TOPIC_NOT_FOUND": "Topik tidak dijumpai.",
+    "SUBTOPIC_NOT_FOUND": "Subtopik tidak dijumpai.",
+    "INVALID_OPTIONS_COUNT": "Soalan aneka pilihan (MCQ) wajib mempunyai tepat 4 pilihan jawapan.",
+    "CORRECT_ANSWER_MISMATCH": "Jawapan betul mesti sepadan dengan salah satu kunci pilihan jawapan yang disediakan.",
+    "LANGUAGE_MISMATCH": "Bahasa soalan '{language}' tidak sah untuk subjek {subject}. Matematik & Sains mestilah dalam Bahasa Melayu ('ms').",
+    "SUBTOPIC_TOPIC_MISMATCH": "Subtopik yang dipilih tidak tergolong dalam topik yang dinyatakan.",
+    "TOPIC_SUBJECT_MISMATCH": "Topik yang dipilih tidak tergolong dalam subjek yang dinyatakan.",
+    "EXPLANATION_REQUIRED": "Penerangan jawapan (explanation) wajib diisi dan tidak boleh dibiarkan kosong.",
+    "NO_FOUNDATIONAL_SUBTOPICS": "Tiada subtopic asas ditetapkan untuk subjek ini.",
+    "INSUFFICIENT_DIAGNOSTIC_QUESTIONS": "Soalan diagnostik tidak mencukupi untuk subjek ini (diperlukan 5 soalan mengikut tahap L1, L2, L3).",
+    "INVALID_DIAGNOSTIC_ANSWERS_COUNT": "Bilangan jawapan yang dihantar ({count}) tidak sepadan dengan 5 soalan diagnostik.",
+    "DIAGNOSTIC_ALREADY_COMPLETED": "Pentaksiran diagnostik telah selesai untuk sesi ini.",
+    "DIAGNOSTIC_SESSION_NOT_FOUND": "Sesi diagnostik tidak dijumpai.",
+    "SESSION_ALREADY_ENDED": "Sesi latihan ini telah ditamatkan atau ditinggalkan.",
+    "SESSION_NOT_FOUND": "Sesi latihan tidak dijumpai.",
+    "NO_QUESTIONS_AVAILABLE": "Tiada soalan tambahan tersedia untuk subtopik ini.",
+    "SESSION_TIMEOUT": "Sesi latihan telah tamat tempoh kerana tiada aktiviti selama 30 minit."
+  },
+  "validation": {
+    "required": "Medan {field} diperlukan.",
+    "invalid_email": "Format e-mel tidak sah.",
+    "min_length": "Medan {field} mesti mempunyai sekurang-kurangnya {min} aksara.",
+    "max_length": "Medan {field} tidak boleh melebihi {max} aksara.",
+    "invalid_type": "Jenis data tidak sah untuk medan {field}."
+  }
+}
