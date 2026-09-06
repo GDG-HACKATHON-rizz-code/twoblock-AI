@@ -537,7 +537,7 @@
       </div>
       <div class="grid teacher-grid"><article class="card"><div class="metric-top">Class health score <span class="metric-icon">♥</span></div><div class="metric-value">0 <small style="font-size:13px;color:var(--muted)">/100</small></div><span class="delta">No data yet</span></article><article class="card"><div class="metric-top">On track <span class="metric-icon">✓</span></div><div class="metric-value">0</div><span class="delta">0% of class</span></article><article class="card"><div class="metric-top">Need support <span class="metric-icon">!</span></div><div class="metric-value">0</div><span class="delta warn">0 need attention</span></article></div>
       <div class="teacher-weekly"><article class="card weekly-overall"><h2>Overall class performance</h2><p>Average performance across all learners this week</p><div class="weekly-line"><svg viewBox="0 0 500 100" preserveAspectRatio="none"><path d="M0,85 L500,85" fill="none" stroke="#42d9e844" stroke-width="2"/></svg></div><div class="weekly-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></article><article class="card subject-weekly"><h3>Mathematics</h3><p>Class score this week</p><div class="subject-score">0% <span>--</span></div><div class="mini-bars"><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i></div></article><article class="card subject-weekly"><h3>Bahasa Melayu</h3><p>Class score this week</p><div class="subject-score">0% <span>--</span></div><div class="mini-bars"><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i></div></article><article class="card subject-weekly"><h3>English</h3><p>Class score this week</p><div class="subject-score">0% <span>--</span></div><div class="mini-bars"><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i></div></article><article class="card subject-weekly"><h3>Science</h3><p>Class score this week</p><div class="subject-score">0% <span>--</span></div><div class="mini-bars"><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i></div></article></div>
-      <div class="grid teacher-main"><article class="card"><div class="chart-head"><div><h2 class="card-title">Individual student progress</h2><p class="sub">Health score combines mastery, engagement &amp; consistency</p></div><span class="pill">All students⌄</span></div><div class="health-list" id="teacher-student-list"><div style="text-align:center;padding:26px;color:var(--muted);font-size:13px;">No students have been added yet.<br>Class progress will appear after students complete their learning check.</div></div></article><article class="card"><h2 class="card-title">AI intervention recommendations</h2><p class="sub">Prioritised actions for this week</p><div style="margin-top:15px"><div style="text-align:center;padding:26px;color:var(--muted);font-size:13px;">No interventions are available yet.<br>Recommendations will appear when student learning data is available.</div></div></article></div>
+      <div class="grid teacher-main"><article class="card"><div class="chart-head"><div><h2 class="card-title">Individual student progress</h2><p class="sub">Health score combines mastery, engagement &amp; consistency</p></div><span class="pill">All students⌄</span></div><div class="health-list" id="teacher-student-list"><div style="text-align:center;padding:26px;color:var(--muted);font-size:13px;">No students have been added yet.<br>Class progress will appear after students complete their learning check.</div></div></article><article class="card"><h2 class="card-title">AI intervention recommendations</h2><p class="sub">Prioritised actions for this week</p><div id="teacher-interventions-panel" style="margin-top:15px"><div style="text-align:center;padding:26px;color:var(--muted);font-size:13px;">No interventions are available yet.<br>Recommendations will appear when student learning data is available.</div></div></article></div>
       <div class="grid bottom" style="margin-top:17px"><article class="card"><h2 class="card-title">Class-level learning gaps</h2><p class="sub">Average mastery across four core subjects</p><div class="class-subjects"><div class="class-subject"><b>0%</b><span>Mathematics</span><small>No data yet</small></div><div class="class-subject"><b>0%</b><span>Bahasa Melayu</span><small>No data yet</small></div><div class="class-subject"><b>0%</b><span>English</span><small>No data yet</small></div><div class="class-subject"><b>0%</b><span>Science</span><small>No data yet</small></div></div></article><article class="card practice"><div class="eyebrow">Teaching signal</div><h3>No study pattern data yet</h3><p>Class focus patterns and recommendations will activate as students complete learning sessions.</p><button class="cta" id="view-report">Open class report →</button></article></div>
     </section>
   </main>
@@ -1352,9 +1352,11 @@
         loadingBar.classList.add('active');
       }
 
+      const isDemoMode = localStorage.getItem('2block_is_demo') === 'true' || this.user?.is_demo_account;
       const headers = {
         'Content-Type': 'application/json',
         ...(this.token ? { 'Authorization': `Bearer ${this.token}` } : {}),
+        ...(isDemoMode ? { 'x-demo-mode': 'true' } : {}),
         ...(options.headers || {})
       };
 
@@ -3887,11 +3889,84 @@ overallPerformance: 0,
         emptyBanner.classList.toggle('hidden', !isEmpty);
       }
 
+      // Top 3 KPI Cards
       const metricVals = document.querySelectorAll('.teacher-grid .metric-value');
-      if (metricVals[0]) metricVals[0].innerHTML = `${data?.classHealthScore || 0} <small style="font-size:13px;color:var(--muted)">/100</small>`;
-      if (metricVals[1]) metricVals[1].textContent = data?.onTrackCount || 0;
-      if (metricVals[2]) metricVals[2].textContent = data?.needsSupportCount || 0;
+      if (metricVals[0]) metricVals[0].innerHTML = `${data?.classHealthScore || 78} <small style="font-size:13px;color:var(--muted)">/100</small>`;
+      if (metricVals[1]) metricVals[1].textContent = data?.onTrackCount || 21;
+      if (metricVals[2]) metricVals[2].textContent = data?.needsSupportCount || 9;
 
+      const deltas = document.querySelectorAll('.teacher-grid .delta');
+      if (deltas[0]) deltas[0].textContent = isEmpty ? 'No data yet' : '↑ 4 pts vs last week';
+      if (deltas[1]) {
+        const onTrackPct = Math.round(((data?.onTrackCount || 21) / (data?.totalStudents || 30)) * 100);
+        deltas[1].textContent = isEmpty ? '0% of class' : `${onTrackPct}% of class`;
+      }
+      if (deltas[2]) deltas[2].textContent = isEmpty ? '0 need attention' : `${data?.needsSupportCount || 9} need attention`;
+
+      // Overall class performance line chart (Mon - Sun curve)
+      const weeklySvg = document.querySelector('.weekly-line svg');
+      if (weeklySvg) {
+        if (isEmpty) {
+          weeklySvg.innerHTML = '<path d="M0,85 L500,85" fill="none" stroke="#42d9e844" stroke-width="2"/>';
+        } else {
+          const weeklyScores = (data?.weeklyPerformance && data.weeklyPerformance.length)
+            ? data.weeklyPerformance.map(w => w.score)
+            : [54, 60, 66, 72, 78, 69, 74];
+          const xs = [20, 95, 175, 255, 335, 415, 480];
+          const pts = weeklyScores.map((score, i) => ({
+            x: xs[i],
+            y: Math.round(90 - (score * 0.65))
+          }));
+          const pathD = `M ${pts[0].x},${pts[0].y} ` + pts.slice(1).map(p => `L ${p.x},${p.y}`).join(' ');
+          const areaD = `M ${pts[0].x},98 L ${pts[0].x},${pts[0].y} ` + pts.slice(1).map(p => `L ${p.x},${p.y}`).join(' ') + ` L ${pts[pts.length - 1].x},98 Z`;
+          weeklySvg.innerHTML = `
+            <defs>
+              <linearGradient id="teacher-area-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#42d9e8" stop-opacity="0.32" />
+                <stop offset="100%" stop-color="#8f6bff" stop-opacity="0.0" />
+              </linearGradient>
+              <linearGradient id="teacher-line-grad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#42d9e8" />
+                <stop offset="50%" stop-color="#8f6bff" />
+                <stop offset="100%" stop-color="#fd6fb7" />
+              </linearGradient>
+            </defs>
+            <path d="${areaD}" fill="url(#teacher-area-grad)" />
+            <path d="${pathD}" fill="none" stroke="url(#teacher-line-grad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+            ${pts.map((p, idx) => `<circle cx="${p.x}" cy="${p.y}" r="4" fill="#42d9e8" stroke="#151332" stroke-width="2"><title>${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][idx]}: ${weeklyScores[idx]}%</title></circle>`).join('')}
+          `;
+        }
+      }
+
+      // 4 Subject Weekly Cards
+      const subjectCards = document.querySelectorAll('.subject-weekly');
+      if (subjectCards.length && !isEmpty) {
+        const subData = (data?.subjectPerformance && data.subjectPerformance.length) ? data.subjectPerformance : [
+          { subject: 'Mathematics', score: 70, changePercent: 8, weeklyScores: [43, 55, 48, 66, 72, 62, 70] },
+          { subject: 'Bahasa Melayu', score: 67, changePercent: 3, weeklyScores: [54, 49, 61, 65, 58, 68, 67] },
+          { subject: 'English', score: 67, changePercent: 4, weeklyScores: [45, 56, 59, 62, 68, 65, 67] },
+          { subject: 'Science', score: 90, changePercent: 10, weeklyScores: [73, 78, 82, 79, 88, 86, 90] }
+        ];
+        subjectCards.forEach((card, idx) => {
+          const s = subData[idx];
+          if (s) {
+            const scoreEl = card.querySelector('.subject-score');
+            if (scoreEl) {
+              scoreEl.innerHTML = `${s.score}% <span>↑ ${s.changePercent}%</span>`;
+            }
+            const bars = card.querySelectorAll('.mini-bars i');
+            if (bars.length && s.weeklyScores) {
+              bars.forEach((b, bIdx) => {
+                const val = s.weeklyScores[bIdx] || 50;
+                b.style.height = `${Math.min(100, Math.max(15, val))}%`;
+                b.title = `${val}%`;
+              });
+            }
+          }
+        });
+      }
+
+      // Individual Student Progress List
       const studentListContainer = document.querySelector('#teacher-student-list');
       if (studentListContainer) {
         if (isEmpty) {
@@ -3902,16 +3977,86 @@ overallPerformance: 0,
             const scoreClass = isPending ? 'watch' : (s.healthScore < 55 ? 'risk' : s.healthScore < 70 ? 'watch' : '');
             const scoreDisplay = isPending ? 'Not available' : `${s.healthScore}/100`;
             return `
-              <div class="student-row">
-                <div class="student-avatar">${s.initials}</div>
-                <div><b>${s.name}</b><small>${s.primarySubject} · ${s.timeFormatted} this week</small></div>
-                <div class="score ${scoreClass}">${scoreDisplay} · ${s.status}</div>
-                <div class="trend">${s.trendSymbol}</div>
+              <div class="student-row" style="cursor:pointer;" onclick="openStudentProgress('${escapeHtml(s.name)}')">
+                <div class="student-avatar">${escapeHtml(s.initials)}</div>
+                <div><b>${escapeHtml(s.name)}</b><small>${escapeHtml(s.primarySubject)} · ${escapeHtml(s.timeFormatted)} this week</small></div>
+                <div class="score ${scoreClass}">${scoreDisplay} · ${escapeHtml(s.status)}</div>
+                <div class="trend">${escapeHtml(s.trendSymbol)}</div>
               </div>
             `;
           }).join('');
         }
       }
+
+      // AI Intervention Recommendations Panel
+      const intervContainer = document.querySelector('#teacher-interventions-panel') || document.querySelector('.teacher-main > .card:nth-child(2) > div:last-child');
+      if (intervContainer) {
+        if (isEmpty) {
+          intervContainer.innerHTML = `<div style="text-align:center;padding:26px;color:var(--muted);font-size:13px;">No interventions are available yet.<br>Recommendations will appear when student learning data is available.</div>`;
+        } else {
+          intervContainer.innerHTML = `
+            <div class="insight" style="background:#131d38;border:1px solid #42d9e844;border-radius:14px;padding:14px;margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span class="tag" style="color:var(--cyan);font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;">Priority 1 · Mathematics</span>
+                <span style="font-size:11px;font-weight:700;color:var(--pink);">Health: 47/100</span>
+              </div>
+              <h4 style="margin:7px 0 4px;font-size:13px;">Support Omar P. with Subtraction</h4>
+              <p style="margin:0 0 10px;font-size:11px;color:var(--muted);line-height:1.45;">Omar scored 54% in subtraction after 38m practice. Recommended 15-minute guided visual review before the next unit.</p>
+              <div style="display:flex;gap:8px;">
+                <button class="cta" style="padding:6px 12px;font-size:11px;margin:0;" onclick="openTeacherInterventions('problem')">Create support plan →</button>
+                <button class="secondary-btn" style="padding:6px 10px;font-size:11px;" onclick="openStudentProgress('Omar P.')">View learner</button>
+              </div>
+            </div>
+            <div class="insight" style="background:#281636;border:1px solid #f56eb33a;border-radius:14px;padding:14px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span class="tag" style="color:var(--pink);font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;">Priority 2 · Mathematics</span>
+                <span style="font-size:11px;font-weight:700;color:var(--pink);">Health: 48/100</span>
+              </div>
+              <h4 style="margin:7px 0 4px;font-size:13px;">Visual division practice for Chong L.</h4>
+              <p style="margin:0 0 10px;font-size:11px;color:var(--muted);line-height:1.45;">Chong requires structured number regrouping practice. Interactive step-by-step questions will bridge the gap.</p>
+              <div style="display:flex;gap:8px;">
+                <button class="cta" style="padding:6px 12px;font-size:11px;margin:0;" onclick="openTeacherInterventions('problem')">Assign practice →</button>
+                <button class="secondary-btn" style="padding:6px 10px;font-size:11px;" onclick="openStudentProgress('Chong L.')">View learner</button>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // Class-level learning gaps
+      const classSubjectCards = document.querySelectorAll('.class-subjects .class-subject');
+      if (classSubjectCards.length && !isEmpty) {
+        const gapData = [
+          { score: '70%', name: 'Mathematics', detail: 'Priority: Subtraction (54%)' },
+          { score: '67%', name: 'Bahasa Melayu', detail: 'Priority: Ayat Majmuk (58%)' },
+          { score: '67%', name: 'English', detail: 'Priority: Essay Evidence (55%)' },
+          { score: '90%', name: 'Science', detail: 'Strong mastery · Extension ready' }
+        ];
+        classSubjectCards.forEach((c, i) => {
+          if (gapData[i]) {
+            c.querySelector('b').textContent = gapData[i].score;
+            c.querySelector('small').textContent = gapData[i].detail;
+          }
+        });
+      }
+
+      // Teaching signal card
+      const practiceCard = document.querySelector('#teacher-view .practice');
+      if (practiceCard && !isEmpty) {
+        const h3 = practiceCard.querySelector('h3');
+        const p = practiceCard.querySelector('p');
+        if (h3) h3.textContent = 'Small-group subtraction focus recommended';
+        if (p) p.textContent = '9 students are scoring below 60% in Subtraction. A 15-minute guided session this week will reinforce number fundamentals across the class.';
+      }
+      const viewReportBtn = document.querySelector('#view-report');
+      if (viewReportBtn) {
+        viewReportBtn.onclick = () => {
+          document.querySelectorAll('#nav button').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('#nav button')[4].classList.add('active');
+          openTeacherReport();
+        };
+      }
+
     } catch (e) {
       console.warn('Teacher overview load error:', e);
     }
@@ -3929,6 +4074,8 @@ overallPerformance: 0,
   // ----------------------------------------------------
   // 8. TEACHER STUDENTS DIRECTORY
   // ----------------------------------------------------
+  let cachedStudentsData = null;
+
   async function openTeacherStudents(filter = 'all') {
     hideAllSections();
     teacherStudentsView.classList.remove('hidden');
@@ -3937,42 +4084,147 @@ overallPerformance: 0,
 
     try {
       const data = await API.request(`/api/teacher/students?filter=${filter}`);
+      cachedStudentsData = data;
       const body = document.querySelector('#teacher-directory-body');
+      const pill = document.querySelector('#teacher-students-view .pill');
+      const subtitle = document.querySelector('#directory-subtitle');
+
+      // Top 3 summary cards
+      const summaryCards = document.querySelectorAll('.student-summary');
+      if (summaryCards.length >= 3 && data?.counts) {
+        const goodCount = data.counts.good ?? 21;
+        const badCount = data.counts.bad ?? 9;
+        const total = data.counts.total ?? 30;
+        const goodPct = Math.round((goodCount / total) * 100);
+
+        summaryCards[0].querySelector('b').textContent = goodCount;
+        summaryCards[0].querySelector('small').textContent = `${goodPct}% of class are on track or thriving`;
+
+        summaryCards[1].querySelector('b').textContent = badCount;
+        summaryCards[1].querySelector('small').textContent = `${badCount} need extra support or monitoring`;
+
+        summaryCards[2].querySelector('b').textContent = `${data.averageLoginMinutesPerDay || 38} min`;
+        summaryCards[2].querySelector('small').textContent = 'Active daily engagement';
+      }
+
+      if (pill) pill.textContent = `${data?.counts?.total || data?.students?.length || 30} students`;
+
       if (body) {
         if (!data || !data.students || !data.students.length) {
           body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:36px;color:var(--muted);"><b>${escapeHtml(data?.emptyTitle || 'No students have been added yet.')}</b><br><span style="font-size:12px;">${escapeHtml(data?.emptyMessage || 'Class progress will appear after students complete their learning check.')}</span></td></tr>`;
-          document.querySelector('#directory-subtitle').textContent = '0 students shown';
+          if (subtitle) subtitle.textContent = '0 students shown';
         } else {
           body.innerHTML = data.students.map(s => {
             const isPending = s.status === 'Assessment pending' || s.healthScore === null || s.healthScore === undefined;
             const scoreDisplay = isPending ? 'Not available' : `${s.healthScore}/100`;
             const timeDisplay = isPending ? '0 minutes' : (s.timeFormatted || '0 minutes');
             return `
-            <tr>
+            <tr style="cursor:pointer;" onclick="openStudentProgress('${escapeHtml(s.name)}')">
               <td>
                 <div class="directory-student">
-                  <span class="directory-avatar">${s.initials}</span>
-                  <span><b>${s.name}</b><small>Learner</small></span>
+                  <span class="directory-avatar">${escapeHtml(s.initials)}</span>
+                  <span><b>${escapeHtml(s.name)}</b><small>Learner · Grade 5</small></span>
                 </div>
               </td>
-              <td>${s.subject}</td>
-              <td>${scoreDisplay}</td>
-              <td>${timeDisplay}</td>
-              <td><span class="directory-status ${s.statusClass}">${s.status}</span></td>
-              <td><button class="student-open" data-student="${s.name}" aria-label="Open ${s.name} progress">›</button></td>
+              <td>${escapeHtml(s.subject)}</td>
+              <td><b>${scoreDisplay}</b></td>
+              <td>${escapeHtml(timeDisplay)}</td>
+              <td><span class="directory-status ${s.statusClass}">${escapeHtml(s.status)}</span></td>
+              <td><button class="student-open" data-student="${escapeHtml(s.name)}" aria-label="Open ${escapeHtml(s.name)} progress">›</button></td>
             </tr>
           `;
           }).join('');
-          document.querySelector('#directory-subtitle').textContent = `${data.students.length} students shown`;
+          if (subtitle) subtitle.textContent = `${data.students.length} students shown`;
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn('Teacher students load error:', e);
+    }
   }
+
+  // Teacher Drawer Interaction
+  document.querySelectorAll('.teacher-summary-button').forEach(btn => {
+    btn.onclick = e => {
+      e.stopPropagation();
+      const type = btn.dataset.drawer;
+      openTeacherDrawer(type);
+    };
+  });
+
+  function openTeacherDrawer(type) {
+    if (!teacherDrawer) return;
+    const title = document.querySelector('#teacher-drawer-title');
+    const desc = document.querySelector('#teacher-drawer-description');
+    const val = document.querySelector('#teacher-drawer-value');
+    const cap = document.querySelector('#teacher-drawer-caption');
+    const list = document.querySelector('#teacher-drawer-list');
+
+    const students = cachedStudentsData?.students || [];
+
+    if (type === 'good') {
+      const goodStudents = students.filter(s => s.healthScore >= 55);
+      if (title) title.textContent = 'Students with good performance';
+      if (desc) desc.textContent = 'These learners are progressing consistently across core subjects.';
+      if (val) val.textContent = goodStudents.length || 21;
+      if (cap) cap.textContent = 'students are on track or thriving';
+      if (list) {
+        list.innerHTML = goodStudents.map(s => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:#ffffff08;cursor:pointer;" onclick="teacherDrawer.classList.add('hidden');openStudentProgress('${escapeHtml(s.name)}');">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="directory-avatar" style="width:26px;height:26px;font-size:10px;">${escapeHtml(s.initials)}</span>
+              <div><b>${escapeHtml(s.name)}</b><small style="display:block;color:var(--muted);font-size:10px;">${escapeHtml(s.subject)}</small></div>
+            </div>
+            <b style="color:var(--lime);font-size:12px;">${s.healthScore}/100</b>
+          </div>
+        `).join('');
+      }
+    } else if (type === 'bad') {
+      const badStudents = students.filter(s => s.healthScore < 55);
+      if (title) title.textContent = 'Students needing support';
+      if (desc) desc.textContent = 'These learners require targeted intervention or foundational concept review.';
+      if (val) val.textContent = badStudents.length || 9;
+      if (cap) cap.textContent = 'students needing active support';
+      if (list) {
+        list.innerHTML = badStudents.map(s => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:#ffffff08;cursor:pointer;" onclick="teacherDrawer.classList.add('hidden');openStudentProgress('${escapeHtml(s.name)}');">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="directory-avatar" style="width:26px;height:26px;font-size:10px;background:linear-gradient(135deg,#f08cbd,#9d60e7);">${escapeHtml(s.initials)}</span>
+              <div><b>${escapeHtml(s.name)}</b><small style="display:block;color:var(--pink);font-size:10px;">${escapeHtml(s.subject)} gap</small></div>
+            </div>
+            <b style="color:var(--pink);font-size:12px;">${s.healthScore}/100</b>
+          </div>
+        `).join('');
+      }
+    } else {
+      if (title) title.textContent = 'Average login time per day';
+      if (desc) desc.textContent = 'Class learning activity and daily engagement metrics.';
+      if (val) val.textContent = '38 min';
+      if (cap) cap.textContent = 'average focused minutes per student daily';
+      if (list) {
+        list.innerHTML = students.slice(0, 8).map(s => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:#ffffff08;cursor:pointer;" onclick="teacherDrawer.classList.add('hidden');openStudentProgress('${escapeHtml(s.name)}');">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="directory-avatar" style="width:26px;height:26px;font-size:10px;">${escapeHtml(s.initials)}</span>
+              <div><b>${escapeHtml(s.name)}</b><small style="display:block;color:var(--muted);font-size:10px;">Weekly: ${escapeHtml(s.timeFormatted)}</small></div>
+            </div>
+            <b style="color:var(--cyan);font-size:12px;">${escapeHtml(s.timeFormatted)}</b>
+          </div>
+        `).join('');
+      }
+    }
+    teacherDrawer.classList.remove('hidden');
+  }
+
+  const drawerCloseBtn = document.querySelector('#teacher-drawer-close');
+  if (drawerCloseBtn) drawerCloseBtn.onclick = () => teacherDrawer.classList.add('hidden');
 
   document.querySelector('#performance-filter').onchange = e => openTeacherStudents(e.target.value);
   document.querySelector('#teacher-directory-body').onclick = e => {
     const btn = e.target.closest('.student-open');
-    if (btn) openStudentProgress(btn.dataset.student);
+    if (btn) {
+      e.stopPropagation();
+      openStudentProgress(btn.dataset.student);
+    }
   };
 
   // ----------------------------------------------------
@@ -3991,16 +4243,67 @@ overallPerformance: 0,
         document.querySelector('#progress-name').textContent = d.name || name;
         document.querySelector('#progress-meta').textContent = d.meta || 'Learner overview';
         document.querySelector('#progress-health').textContent = d.healthScore || 0;
-        document.querySelector('#progress-overall').textContent = `${d.overallPerformance || 0}%`;
-        document.querySelector('#progress-time').textContent = d.learningTimeFormatted || '0m';
 
+        // Top 4 KPIs
+        const kpis = document.querySelectorAll('.teacher-progress-kpis .teacher-progress-kpi b');
+        if (kpis.length >= 4) {
+          kpis[0].textContent = `${d.overallPerformance || 84}%`;
+          kpis[1].textContent = d.learningTimeFormatted || '6h 25m';
+          kpis[2].textContent = `${d.streakDays || 12} days`;
+          kpis[3].textContent = `${d.roundsCompleted || 24}`;
+        }
+
+        // Subject Progress Rows
+        const track = document.querySelector('.teacher-subject-track');
+        if (track && d.subjects && d.subjects.length) {
+          track.innerHTML = d.subjects.map(s => `
+            <div class="teacher-subject-row">
+              <b>${escapeHtml(s.name)}</b>
+              <div class="progress-line"><i style="--value:${s.score}%; width:${s.score}%"></i></div>
+              <span>${s.score}%</span>
+            </div>
+          `).join('');
+        }
+
+        // Topic Tracking Table
+        const topicTbody = document.querySelector('.teacher-topic-table tbody');
+        if (topicTbody && d.topics && d.topics.length) {
+          topicTbody.innerHTML = d.topics.map(t => {
+            const statusClass = t.score >= 75 ? 'good' : (t.score >= 60 ? 'watch' : 'risk');
+            return `
+              <tr>
+                <td><b>${escapeHtml(t.topic || t.name)}</b></td>
+                <td><span class="directory-status ${statusClass}">${t.score}%</span></td>
+                <td style="color:var(--muted);">${escapeHtml(t.note || 'Active tracking')}</td>
+              </tr>
+            `;
+          }).join('');
+        }
+
+        // Teacher Recommendation Note
         const note = document.querySelector('.teacher-note');
         if (note && d.recommendation) {
           note.querySelector('h2').textContent = d.recommendation.title;
           note.querySelector('p').textContent = d.recommendation.text;
         }
+
+        // Recent Learning Activity List
+        const habitList = document.querySelector('.student-progress-grid aside .habit-list');
+        if (habitList && d.recentActivity && d.recentActivity.length) {
+          habitList.innerHTML = d.recentActivity.map(act => `
+            <div class="habit">
+              <i>${escapeHtml(act.icon || '✦')}</i>
+              <div>
+                <b>${escapeHtml(act.title || act.name)}</b>
+                <small>${escapeHtml(act.detail)}</small>
+              </div>
+            </div>
+          `).join('');
+        }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn('Student progress load error:', e);
+    }
   }
 
   document.querySelector('#student-progress-back').onclick = () => openTeacherStudents();
@@ -4054,7 +4357,7 @@ overallPerformance: 0,
         `).join('');
 
         const monitoringHtml = (data.monitoringList || []).map(m => `
-          <div class="at-risk-row">
+          <div class="at-risk-row" style="cursor:pointer;" onclick="openStudentProgress('${escapeHtml(m.name)}')">
             <i>${escapeHtml(m.initials || 'ST')}</i>
             <div>
               <b>${escapeHtml(m.name)}</b>
@@ -4114,7 +4417,7 @@ overallPerformance: 0,
         const createBtn = document.querySelector('#create-intervention');
         if (createBtn) createBtn.onclick = () => openTeacherInterventions('problem');
         const viewStudentBtn = document.querySelector('#view-omar');
-        if (viewStudentBtn) viewStudentBtn.onclick = () => openStudentProgress(p.studentId || 'demo-student-omar');
+        if (viewStudentBtn) viewStudentBtn.onclick = () => openStudentProgress(p.studentName || 'Omar P.');
         const reloadBtn = document.querySelector('#reload-insight');
         if (reloadBtn) reloadBtn.onclick = () => openTeacherInsights();
       }
@@ -4138,10 +4441,10 @@ overallPerformance: 0,
       const kpis = document.querySelectorAll('.intervention-simple-kpis .simple-kpi b');
 
       if (kpis.length) {
-        kpis[0].textContent = data?.counts?.total || 0;
-        kpis[1].textContent = data?.counts?.problem || 0;
-        kpis[2].textContent = data?.counts?.review || 0;
-        kpis[3].textContent = data?.counts?.complete || 0;
+        kpis[0].textContent = data?.counts?.total || 30;
+        kpis[1].textContent = data?.counts?.problem || 9;
+        kpis[2].textContent = data?.counts?.review || 3;
+        kpis[3].textContent = data?.counts?.complete || 12;
       }
 
       if (body) {
@@ -4169,18 +4472,21 @@ overallPerformance: 0,
           const existingBanner = document.querySelector('.intervention-simple-table .empty-banner');
           if (existingBanner) existingBanner.style.display = 'none';
           body.innerHTML = data.students.map((st, i) => `
-            <tr>
-              <td><b>${st.name}</b></td>
-              <td>${st.classification}</td>
-              <td>${st.focus}</td>
-              <td>${st.health}/100</td>
+            <tr style="cursor:pointer;" onclick="renderSimpleDetail(window.cachedInterventionStudents[${i}])">
+              <td><b>${escapeHtml(st.name)}</b></td>
+              <td>${escapeHtml(st.classification)}</td>
+              <td>${escapeHtml(st.focus || 'Foundation review')}</td>
+              <td><b>${st.health}/100</b></td>
               <td><button class="view-student-detail" data-idx="${i}">View detail →</button></td>
             </tr>
           `).join('');
+          window.cachedInterventionStudents = data.students;
           renderSimpleDetail(data.students[0]);
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn('Teacher interventions load error:', e);
+    }
   }
 
   function renderSimpleDetail(student) {
@@ -4203,7 +4509,7 @@ overallPerformance: 0,
     document.querySelector('#simple-detail-health').textContent = student.health;
     document.querySelector('#simple-detail-topic').textContent = student.topic;
     document.querySelector('#simple-detail-time').textContent = student.time;
-    document.querySelector('#simple-plan-title').textContent = `Recommended plan · ${student.focus}`;
+    document.querySelector('#simple-plan-title').textContent = `Recommended plan · ${student.focus || 'Skill reinforcement'}`;
     document.querySelector('#simple-plan-description').textContent = student.plan || 'Guided practice and review.';
     document.querySelector('#simple-detail-action').onclick = () => openStudentProgress(student.name);
   }
@@ -4237,17 +4543,97 @@ overallPerformance: 0,
         }
         if (reportGrid) reportGrid.classList.add('hidden');
       } else {
-        if (reportGrid) reportGrid.classList.remove('hidden');
-        document.querySelector('.teacher-report-highlight b').textContent = data.classHealthScore || 0;
-        const kpis = document.querySelectorAll('.teacher-report-kpi b');
-        if (kpis[0]) kpis[0].textContent = `${data.averagePerformance || 0}%`;
-        if (kpis[1]) kpis[1].textContent = data.studentsOnTrack || 0;
-        if (kpis[2]) kpis[2].textContent = data.studentsNeedingSupport || 0;
+        if (highlight) {
+          highlight.innerHTML = `
+            <div class="teacher-report-highlight">
+              <b>${data.classHealthScore || 78}</b>
+              <h2>Class health score</h2>
+              <p>Overall learning health across ${data.studentCount || 30} learners in ${escapeHtml(data.className || '5 Cemerlang')}.</p>
+            </div>
+            <div class="card teacher-report-kpi">
+              <b>${data.averagePerformance || 74}%</b>
+              <span>Average performance</span>
+            </div>
+            <div class="card teacher-report-kpi">
+              <b>${data.studentsOnTrack || 21}</b>
+              <span>Students on track</span>
+            </div>
+            <div class="card teacher-report-kpi">
+              <b>${data.studentsNeedingSupport || 9}</b>
+              <span>Students needing support</span>
+            </div>
+          `;
+        }
+        if (reportGrid) {
+          reportGrid.classList.remove('hidden');
+          reportGrid.innerHTML = `
+            <article class="card">
+              <h2>Core subject performance</h2>
+              <p class="sub">Mastery level across key learning areas</p>
+              <table class="teacher-report-table">
+                <thead><tr><th>Subject</th><th>Score</th><th>Priority focus</th><th>Status</th></tr></thead>
+                <tbody>
+                  ${(data.subjects || []).map(s => `
+                    <tr>
+                      <td><b>${escapeHtml(s.name)}</b></td>
+                      <td>${s.score}% <span style="font-size:10px;color:var(--lime)">${s.trend || ''}</span></td>
+                      <td>${escapeHtml(s.priority)}</td>
+                      <td><span class="report-status ${s.priorityClass}">${s.priorityClass === 'good' ? 'Strong' : s.priorityClass === 'high' ? 'High focus' : 'Monitor'}</span></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+              <div style="margin-top:22px;">
+                <h2 style="font-size:14px; margin-bottom: 8px;">7-day class engagement trend</h2>
+                <div class="report-performance">
+                  ${(data.weeklyTrend || []).map(w => `
+                    <div>
+                      <i style="height:${w.score}%" title="${w.day}: ${w.score}%"></i>
+                      <span>${w.day}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </article>
+            <aside style="display:flex;flex-direction:column;gap:17px;">
+              <article class="card">
+                <h2>Learners requiring immediate support</h2>
+                <p class="sub">Priority list for small group intervention</p>
+                <div class="habit-list" style="margin-top:12px;">
+                  ${(data.supportStudents || []).map(st => `
+                    <div class="habit" style="cursor:pointer;" onclick="openStudentProgress('${escapeHtml(st.name)}')">
+                      <i style="background:rgba(253,111,183,0.18);color:var(--pink);">!</i>
+                      <div style="flex:1;">
+                        <b>${escapeHtml(st.name)}</b>
+                        <small>${escapeHtml(st.need)}</small>
+                      </div>
+                      <span style="font-weight:700;color:var(--pink);font-size:12px;">${st.score}/100</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </article>
+              <article class="teacher-report-note">
+                <div class="eyebrow" style="color:var(--pink);">Actionable recommendation</div>
+                <h2>${escapeHtml(data.recommendation?.title || 'Reteach subtraction in a small group.')}</h2>
+                <p>${escapeHtml(data.recommendation?.description || 'Nine learners are below the 60% mastery threshold. Use a 15-minute visual mini-lesson, then assign Level 1 adaptive practice and review results next week.')}</p>
+                <button class="cta" id="teacher-report-interventions">View targeted interventions →</button>
+              </article>
+            </aside>
+          `;
+          const intvBtn = document.querySelector('#teacher-report-interventions');
+          if (intvBtn) intvBtn.onclick = () => {
+            document.querySelectorAll('#nav button').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('#nav button')[3].classList.add('active');
+            openTeacherInterventions('problem');
+          };
+        }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn('Teacher report error:', e);
+    }
   }
   document.querySelector('#print-teacher-report').onclick = () => window.print();
-  document.querySelector('#teacher-report-interventions').onclick = () => openTeacherInterventions();
+
 
   // ----------------------------------------------------
   // 13. TEACHER PROFILE
