@@ -220,16 +220,6 @@
     "learningObjective": "Form and identify regular and irregular past tense verbs in short stories."
   },
   {
-    "id": "curr-bi-g5-01",
-    "grade": 5,
-    "subject": "English",
-    "topic": "Adjectives & Adverbs",
-    "subtopic": "Comparative and superlative forms",
-    "difficultyMin": "medium",
-    "difficultyMax": "hard",
-    "learningObjective": "Use comparative and superlative adjectives accurately in descriptive sentences."
-  },
-  {
     "id": "curr-bi-g6-01",
     "grade": 6,
     "subject": "English",
@@ -278,16 +268,6 @@
     "difficultyMin": "medium",
     "difficultyMax": "hard",
     "learningObjective": "Classify materials by states of matter and observe changes of state."
-  },
-  {
-    "id": "curr-sci-g5-01",
-    "grade": 5,
-    "subject": "Science",
-    "topic": "Energy and light",
-    "subtopic": "Sources and forms of energy",
-    "difficultyMin": "medium",
-    "difficultyMax": "hard",
-    "learningObjective": "Identify renewable and non-renewable energy sources and light reflection."
   },
   {
     "id": "curr-sci-g6-01",
@@ -428,5 +408,185 @@
     "difficultyMin": "easy",
     "difficultyMax": "hard",
     "learningObjective": "Menyelesaikan operasi asas darab melibatkan nombor bulat sehingga ratus ribu."
+  },
+  {
+    "id": "curr-scie-g5-14",
+    "grade": 5,
+    "subject": "Science",
+    "topic": "Hidupan & Alam Sekitar",
+    "subtopic": "Haiwan dan Ciri Khas",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Menjelaskan konsep sains Hidupan & Alam Sekitar (Haiwan dan Ciri Khas) berpandukan sukatan Sains Tahun 5 KSSR Semakan."
+  },
+  {
+    "id": "curr-scie-g5-15",
+    "grade": 5,
+    "subject": "Science",
+    "topic": "Hidupan & Alam Sekitar",
+    "subtopic": "Tumbuhan dan Penyesuaian",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Menjelaskan konsep sains Hidupan & Alam Sekitar (Tumbuhan dan Penyesuaian) berpandukan sukatan Sains Tahun 5 KSSR Semakan."
+  },
+  {
+    "id": "curr-scie-g5-16",
+    "grade": 5,
+    "subject": "Science",
+    "topic": "Hidupan & Alam Sekitar",
+    "subtopic": "Interaksi Hidupan dan Alam Sekitar",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Menjelaskan konsep sains Hidupan & Alam Sekitar (Interaksi Hidupan dan Alam Sekitar) berpandukan sukatan Sains Tahun 5 KSSR Semakan."
+  },
+  {
+    "id": "curr-scie-g5-17",
+    "grade": 5,
+    "subject": "Science",
+    "topic": "Bumi dan Angkasa",
+    "subtopic": "Sistem Suria",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Menjelaskan konsep sains Bumi dan Angkasa (Sistem Suria) berpandukan sukatan Sains Tahun 5 KSSR Semakan."
+  },
+  {
+    "id": "curr-scie-g5-18",
+    "grade": 5,
+    "subject": "Science",
+    "topic": "Bumi dan Angkasa",
+    "subtopic": "Putaran dan Peredaran Bumi",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Menjelaskan konsep sains Bumi dan Angkasa (Putaran dan Peredaran Bumi) berpandukan sukatan Sains Tahun 5 KSSR Semakan."
+  },
+  {
+    "id": "curr-scie-g5-19",
+    "grade": 5,
+    "subject": "Science",
+    "topic": "Bumi dan Angkasa",
+    "subtopic": "Bulan dan Fasa Bulan",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Menjelaskan konsep sains Bumi dan Angkasa (Bulan dan Fasa Bulan) berpandukan sukatan Sains Tahun 5 KSSR Semakan."
+  },
+  {
+    "id": "curr-scie-g5-20",
+    "grade": 5,
+    "subject": "Science",
+    "topic": "Tenaga dan Bahan",
+    "subtopic": "Bentuk Tenaga",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Menjelaskan konsep sains Tenaga dan Bahan (Bentuk Tenaga) berpandukan sukatan Sains Tahun 5 KSSR Semakan."
+  },
+  {
+    "id": "curr-scie-g5-21",
+    "grade": 5,
+    "subject": "Science",
+    "topic": "Tenaga dan Bahan",
+    "subtopic": "Sumber Tenaga",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Menjelaskan konsep sains Tenaga dan Bahan (Sumber Tenaga) berpandukan sukatan Sains Tahun 5 KSSR Semakan."
+  },
+  {
+    "id": "curr-scie-g5-22",
+    "grade": 5,
+    "subject": "Science",
+    "topic": "Tenaga dan Bahan",
+    "subtopic": "Sifat dan Kegunaan Bahan",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Menjelaskan konsep sains Tenaga dan Bahan (Sifat dan Kegunaan Bahan) berpandukan sukatan Sains Tahun 5 KSSR Semakan."
+  },
+  {
+    "id": "curr-engl-g5-23",
+    "grade": 5,
+    "subject": "English",
+    "topic": "Grammar",
+    "subtopic": "Subject-Verb Agreement",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Master Grade 5 CEFR-aligned skills for Grammar (Subject-Verb Agreement)."
+  },
+  {
+    "id": "curr-engl-g5-24",
+    "grade": 5,
+    "subject": "English",
+    "topic": "Grammar",
+    "subtopic": "Verb Tenses",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Master Grade 5 CEFR-aligned skills for Grammar (Verb Tenses)."
+  },
+  {
+    "id": "curr-engl-g5-25",
+    "grade": 5,
+    "subject": "English",
+    "topic": "Grammar",
+    "subtopic": "Articles and Determiners",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Master Grade 5 CEFR-aligned skills for Grammar (Articles and Determiners)."
+  },
+  {
+    "id": "curr-engl-g5-26",
+    "grade": 5,
+    "subject": "English",
+    "topic": "Reading",
+    "subtopic": "Main Idea and Supporting Details",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Master Grade 5 CEFR-aligned skills for Reading (Main Idea and Supporting Details)."
+  },
+  {
+    "id": "curr-engl-g5-27",
+    "grade": 5,
+    "subject": "English",
+    "topic": "Reading",
+    "subtopic": "Vocabulary in Context",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Master Grade 5 CEFR-aligned skills for Reading (Vocabulary in Context)."
+  },
+  {
+    "id": "curr-engl-g5-28",
+    "grade": 5,
+    "subject": "English",
+    "topic": "Reading",
+    "subtopic": "Inference and Prediction",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Master Grade 5 CEFR-aligned skills for Reading (Inference and Prediction)."
+  },
+  {
+    "id": "curr-engl-g5-29",
+    "grade": 5,
+    "subject": "English",
+    "topic": "Writing",
+    "subtopic": "Sentence Construction",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Master Grade 5 CEFR-aligned skills for Writing (Sentence Construction)."
+  },
+  {
+    "id": "curr-engl-g5-30",
+    "grade": 5,
+    "subject": "English",
+    "topic": "Writing",
+    "subtopic": "Paragraph Organisation",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Master Grade 5 CEFR-aligned skills for Writing (Paragraph Organisation)."
+  },
+  {
+    "id": "curr-engl-g5-31",
+    "grade": 5,
+    "subject": "English",
+    "topic": "Writing",
+    "subtopic": "Functional Writing",
+    "difficultyMin": "easy",
+    "difficultyMax": "hard",
+    "learningObjective": "Master Grade 5 CEFR-aligned skills for Writing (Functional Writing)."
   }
 ]

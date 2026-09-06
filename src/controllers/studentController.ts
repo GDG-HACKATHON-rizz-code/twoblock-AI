@@ -127,10 +127,15 @@ export async function getPracticeQuestion(req: Request, res: Response, next: Nex
   try {
     const topic = (req.query.topic as string) || 'addition';
     const level = parseInt(req.query.level as string) || 1;
-    const grade = parseInt(req.query.grade as string) || 2;
+    const grade = parseInt(req.query.grade as string) || 5;
     const subject = (req.query.subject as string) || 'Mathematics';
 
-    const question = await GeminiPracticeService.generateAdaptiveQuestion(topic, grade, level, subject);
+    const question = await GeminiPracticeService.generateSyllabusQuestion({
+      subject,
+      studentGrade: grade,
+      topicName: topic,
+      difficulty: level === 1 ? 'easy' : level === 2 ? 'medium' : 'hard'
+    });
     sendSuccess(res, question);
   } catch (err) {
     next(err);
@@ -484,31 +489,20 @@ export async function getDiagnosticStatus(req: Request, res: Response, next: Nex
 export async function generateAdaptiveQuestion(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const { studentGrade, subject, topic, difficulty, previousAnswers } = req.body;
-    const grade = Number(studentGrade) || req.user?.grade || 3;
+    const grade = Number(studentGrade) || req.user?.grade || 5;
     const subj = subject || 'Mathematics';
     const top = topic || 'Addition';
     const diff = (difficulty === 'easy' || difficulty === 'medium' || difficulty === 'hard') ? difficulty : 'medium';
 
-    const question = await GeminiPracticeService.generateAdaptiveQuestion(
-      top,
-      grade,
-      diff === 'easy' ? 1 : diff === 'medium' ? 2 : 3,
-      subj,
-      diff,
-      previousAnswers
-    );
-
-    sendSuccess(res, {
-      id: question.id,
-      question: question.equation,
-      options: question.options,
-      correctAnswer: String(question.answer),
-      subject: question.subject,
-      topic: question.topic,
-      gradeLevel: grade,
+    const question = await GeminiPracticeService.generateSyllabusQuestion({
+      subject: subj,
+      studentGrade: grade,
+      topicName: top,
       difficulty: diff,
-      explanation: question.explanation
+      previousAnswers
     });
+
+    sendSuccess(res, question);
   } catch (err) {
     next(err);
   }

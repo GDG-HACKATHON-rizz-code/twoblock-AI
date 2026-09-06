@@ -133,7 +133,11 @@ function getLearningObjective(subject: string, topic: string, subtopic: string):
   }
 
   if (subject === 'Science') {
-    return `Menjelaskan konsep ${topic} (${subtopic}) berpandukan sukatan Sains Tahun 5.`;
+    return `Menjelaskan konsep sains ${topic} (${subtopic}) berpandukan sukatan Sains Tahun 5 KSSR Semakan.`;
+  }
+
+  if (subject === 'English') {
+    return `Master Grade 5 CEFR-aligned skills for ${topic} (${subtopic}).`;
   }
 
   return `Master key Grade 5 learning objectives for ${topic}.`;
@@ -165,7 +169,7 @@ async function uploadFileToStorage(localPath: string, storagePath: string) {
 }
 
 export async function importAllCurriculum() {
-  console.log('🚀 Starting Curriculum Import for Grade 5...');
+  console.log('🚀 Starting Comprehensive Curriculum Import for Grade 5...');
   const rawBase = path.resolve(process.cwd(), 'data', 'curriculum', 'raw');
 
   // 1. Upload source archives to Supabase Storage
@@ -179,18 +183,21 @@ export async function importAllCurriculum() {
   if (fs.existsSync(sciDocx)) {
     await uploadFileToStorage(sciDocx, 'science/grade-5/source/Topic Science G5.docx');
   }
+  const engDocx = path.join(rawBase, 'science', 'Grammar G5.docx');
+  if (fs.existsSync(engDocx)) {
+    await uploadFileToStorage(engDocx, 'english/grade-5/source/Grammar G5.docx');
+  }
+
+  const allStandardQuestions: StandardQuestion[] = [];
+  const allStandardTopics: StandardTopic[] = [];
+  const seenQuestions = new Set<string>();
 
   // 2. Parse Bahasa Melayu JSON files
   console.log('\n📖 Step 2: Parsing Bahasa Melayu Grade 5 datasets...');
-  const allStandardQuestions: StandardQuestion[] = [];
-  const allStandardTopics: StandardTopic[] = [];
-
   const bmFiles = [
     { file: path.join(rawBase, 'bahasa-melayu', 'Kata_Adjektif.json'), defaultTopic: 'Kata Adjektif' },
     { file: path.join(rawBase, 'bahasa-melayu', 'Kata_Nama.json'), defaultTopic: 'Kata Nama' },
   ];
-
-  const seenQuestions = new Set<string>();
 
   for (const item of bmFiles) {
     if (fs.existsSync(item.file)) {
@@ -273,8 +280,89 @@ export async function importAllCurriculum() {
     }
   }
 
-  // 4. Extract distinct syllabus topics & learning objectives
-  console.log('\n🎯 Step 4: Generating syllabus topics catalog...');
+  // 4. Parse Science JSON (from extracted docx)
+  console.log('\n⚗ Step 4: Parsing Science Grade 5 datasets...');
+  const scienceExtractedPath = path.join(rawBase, 'science', 'science_g5_extracted.json');
+  if (fs.existsSync(scienceExtractedPath)) {
+    const list: RawQuestion[] = JSON.parse(fs.readFileSync(scienceExtractedPath, 'utf-8'));
+    console.log(`  Loaded ${list.length} raw records from science_g5_extracted.json`);
+    for (const q of list) {
+      const text = (q.question_text || '').trim();
+      if (!text || seenQuestions.has(text)) continue;
+      seenQuestions.add(text);
+
+      const topic = (q.topic || 'Sains Hayat').trim();
+      const subtopic = (q.subtopic || 'Umum').trim();
+      const { options, answer } = normalizeOptions(q);
+      const diff = Number(q.difficulty_level) || 1;
+      const diffLabel: 'easy' | 'medium' | 'hard' = diff === 1 ? 'easy' : diff === 2 ? 'medium' : 'hard';
+
+      allStandardQuestions.push({
+        id: `sci-g5-${allStandardQuestions.length + 1}`,
+        subject: 'Science',
+        gradeLevel: 5,
+        topic,
+        subtopic,
+        questionText: text,
+        questionType: 'mcq',
+        options,
+        correctAnswer: answer,
+        explanation: q.explanation || `Penerangan konsep sains bagi ${topic} (${subtopic}).`,
+        difficulty: diff,
+        difficultyLabel: diffLabel,
+        language: 'ms',
+        isDiagnostic: Boolean(q.is_diagnostic),
+        sourceReference: `science/grade-5/Topic Science G5.docx`
+      });
+    }
+  }
+
+  // 5. Parse English JSON files
+  console.log('\n📚 Step 5: Parsing English Grade 5 datasets...');
+  const englishFiles = [
+    { file: path.join(rawBase, 'science', 'grammar_g5_extracted.json'), defaultTopic: 'Grammar' },
+    { file: path.join(rawBase, 'science', 'Reading G5.json'), defaultTopic: 'Reading' },
+    { file: path.join(rawBase, 'science', 'WRITTING G5.json'), defaultTopic: 'Writing' }
+  ];
+
+  for (const item of englishFiles) {
+    if (fs.existsSync(item.file)) {
+      const list: RawQuestion[] = JSON.parse(fs.readFileSync(item.file, 'utf-8'));
+      console.log(`  Loaded ${list.length} raw records from ${path.basename(item.file)}`);
+      for (const q of list) {
+        const text = (q.question_text || '').trim();
+        if (!text || seenQuestions.has(text)) continue;
+        seenQuestions.add(text);
+
+        const topic = (q.topic || item.defaultTopic).trim();
+        const subtopic = (q.subtopic || 'Comprehension').trim();
+        const { options, answer } = normalizeOptions(q);
+        const diff = Number(q.difficulty_level) || 1;
+        const diffLabel: 'easy' | 'medium' | 'hard' = diff === 1 ? 'easy' : diff === 2 ? 'medium' : 'hard';
+
+        allStandardQuestions.push({
+          id: `eng-g5-${allStandardQuestions.length + 1}`,
+          subject: 'English',
+          gradeLevel: 5,
+          topic,
+          subtopic,
+          questionText: text,
+          questionType: 'mcq',
+          options,
+          correctAnswer: answer,
+          explanation: q.explanation || `Explanation for ${topic} (${subtopic}).`,
+          difficulty: diff,
+          difficultyLabel: diffLabel,
+          language: 'en',
+          isDiagnostic: Boolean(q.is_diagnostic),
+          sourceReference: `english/grade-5/${path.basename(item.file)}`
+        });
+      }
+    }
+  }
+
+  // 6. Extract distinct syllabus topics & learning objectives
+  console.log('\n🎯 Step 6: Generating syllabus topics catalog...');
   const topicMap = new Map<string, { subject: string; topic: string; subtopics: Set<string> }>();
 
   for (const q of allStandardQuestions) {
@@ -301,11 +389,11 @@ export async function importAllCurriculum() {
     }
   }
 
-  // 5. Save local data stores
-  console.log('\n💾 Step 5: Persisting structured local datasets...');
+  // 7. Save local data stores
+  console.log('\n💾 Step 7: Persisting structured local datasets...');
   const datasetPath = path.resolve(process.cwd(), 'data', 'curriculum_dataset.json');
   fs.writeFileSync(datasetPath, JSON.stringify(allStandardQuestions, null, 2), 'utf-8');
-  console.log(`  Saved ${allStandardQuestions.length} questions to data/curriculum_dataset.json`);
+  console.log(`  Saved ${allStandardQuestions.length} total questions to data/curriculum_dataset.json`);
 
   // Merge with existing topics
   const topicsPath = path.resolve(process.cwd(), 'data', 'curriculum_topics.json');
@@ -315,20 +403,18 @@ export async function importAllCurriculum() {
       existingTopics = JSON.parse(fs.readFileSync(topicsPath, 'utf-8'));
     } catch {}
   }
-  // Remove existing Grade 5 topics for Math and BM to refresh cleanly
-  const keptTopics = existingTopics.filter(t => !(t.grade === 5 && (t.subject === 'Mathematics' || t.subject === 'Bahasa Melayu')));
+  // Remove Grade 5 topics to refresh cleanly
+  const keptTopics = existingTopics.filter(t => t.grade !== 5);
   const mergedTopics = [...keptTopics, ...allStandardTopics];
   fs.writeFileSync(topicsPath, JSON.stringify(mergedTopics, null, 2), 'utf-8');
   console.log(`  Updated data/curriculum_topics.json (Total topics: ${mergedTopics.length})`);
 
-  // 6. Sync to Supabase Database (topics, subtopics, questions)
-  console.log('\n⚡ Step 6: Syncing topics and questions to Supabase Database...');
+  // 8. Sync to Supabase Database (topics, subtopics, questions)
+  console.log('\n⚡ Step 8: Syncing topics and questions to Supabase Database...');
 
-  // Map to Supabase topic and subtopic records
-  const dbTopicCache = new Map<string, string>(); // name -> id
-  const dbSubtopicCache = new Map<string, string>(); // name -> id
+  const dbTopicCache = new Map<string, string>();
+  const dbSubtopicCache = new Map<string, string>();
 
-  // Fetch existing topics in DB
   const { data: dbTopics } = await supabase.from('topics').select('id, subject_id, name');
   if (dbTopics) {
     for (const t of dbTopics) {
@@ -343,7 +429,6 @@ export async function importAllCurriculum() {
     }
   }
 
-  // Insert missing topics and subtopics
   for (const st of allStandardTopics) {
     const subjectId = SUBJECT_IDS[st.subject];
     if (!subjectId) continue;
@@ -352,7 +437,7 @@ export async function importAllCurriculum() {
     let topicId = dbTopicCache.get(topicKey);
 
     if (!topicId) {
-      const { data: insertedTopic, error } = await supabase.from('topics').insert({
+      const { data: insertedTopic } = await supabase.from('topics').insert({
         subject_id: subjectId,
         name: st.topic,
         display_order: 1
@@ -381,7 +466,7 @@ export async function importAllCurriculum() {
     }
   }
 
-  // Batch insert questions into Supabase (up to 100 at a time)
+  // Batch insert questions into Supabase (up to 50 at a time)
   console.log(`  Syncing ${allStandardQuestions.length} questions into Supabase questions table...`);
   const batchSize = 50;
   let insertedCount = 0;
@@ -412,15 +497,13 @@ export async function importAllCurriculum() {
     });
 
     const { error: batchErr } = await supabase.from('questions').insert(rows);
-    if (batchErr) {
-      console.warn(`  Batch ${i}-${i + batch.length} insert warning:`, batchErr.message);
-    } else {
+    if (!batchErr) {
       insertedCount += rows.length;
     }
   }
 
-  console.log(`  ✅ Successfully synced ${insertedCount}/${allStandardQuestions.length} questions to Supabase Database!`);
-  console.log('\n🎉 Curriculum Ingestion Complete!');
+  console.log(`  ✅ Synced ${insertedCount}/${allStandardQuestions.length} questions to Supabase Database!`);
+  console.log('\n🎉 Comprehensive Curriculum Ingestion Complete!');
   return {
     questionsCount: allStandardQuestions.length,
     topicsCount: allStandardTopics.length,
@@ -428,7 +511,6 @@ export async function importAllCurriculum() {
   };
 }
 
-// Run if called directly
 if (process.argv[1] && process.argv[1].includes('importCurriculumDataset')) {
   importAllCurriculum()
     .then(res => {

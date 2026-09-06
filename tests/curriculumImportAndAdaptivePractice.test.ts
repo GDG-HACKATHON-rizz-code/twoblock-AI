@@ -13,9 +13,9 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: { persistSession: false, autoRefreshToken: false }
 });
 
-describe('Grade 5 Bahasa Melayu & Mathematics Curriculum & Adaptive Practice', () => {
+describe('Grade 5 BM, Mathematics, Science & English Curriculum & Adaptive Practice', () => {
 
-  it('1. Supabase Storage: verified dataset archives exist in private curriculum-resources bucket', async () => {
+  it('1. Supabase Storage: verified dataset archives exist in private curriculum-resources bucket for all 4 subjects', async () => {
     const { data: bmFiles, error: bmErr } = await supabase.storage
       .from('curriculum-resources')
       .list('bahasa-melayu/grade-5/source');
@@ -29,12 +29,26 @@ describe('Grade 5 Bahasa Melayu & Mathematics Curriculum & Adaptive Practice', (
 
     assert.strictEqual(mathErr, null, 'Error listing Math storage files');
     assert(mathFiles && mathFiles.some(f => f.name === 'dataset.zip'), 'Math dataset.zip must exist in storage');
+
+    const { data: sciFiles, error: sciErr } = await supabase.storage
+      .from('curriculum-resources')
+      .list('science/grade-5/source');
+
+    assert.strictEqual(sciErr, null, 'Error listing Science storage files');
+    assert(sciFiles && sciFiles.some(f => f.name === 'Topic Science G5.docx'), 'Science docx must exist in storage');
+
+    const { data: engFiles, error: engErr } = await supabase.storage
+      .from('curriculum-resources')
+      .list('english/grade-5/source');
+
+    assert.strictEqual(engErr, null, 'Error listing English storage files');
+    assert(engFiles && engFiles.some(f => f.name === 'Grammar G5.docx'), 'English docx must exist in storage');
   });
 
-  it('2. Supabase Database: verified syllabus questions exist in DB', async () => {
+  it('2. Supabase Database: verified syllabus questions exist in DB (>1,000 questions)', async () => {
     const { count, error } = await supabase.from('questions').select('*', { count: 'exact', head: true });
     assert.strictEqual(error, null, 'Error querying questions count');
-    assert(count && count >= 200, `Expected at least 200 questions in DB, got ${count}`);
+    assert(count && count >= 1000, `Expected at least 1000 questions in DB, got ${count}`);
   });
 
   it('3. Practice API: generates valid syllabus question for Bahasa Melayu Grade 5', async () => {
@@ -142,4 +156,78 @@ describe('Grade 5 Bahasa Melayu & Mathematics Curriculum & Adaptive Practice', (
     assert(typeof data.data.subjectScore === 'number');
     assert(typeof data.data.newTopicScore === 'number');
   });
+
+  it('7. Science Question: never generates math equation, returns multiple_choice with 4 options', async () => {
+    const res = await fetch(`${BASE_URL}/api/student/practice/generate-syllabus-question`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        subject: 'Science',
+        studentGrade: 5,
+        topicName: 'Tumbuhan dan Penyesuaian',
+        difficulty: 'medium'
+      })
+    });
+
+    assert.strictEqual(res.status, 200);
+    const data = await res.json();
+    assert(data.success);
+    const q = data.data;
+
+    assert.strictEqual(q.subject, 'Science', 'Question subject must be Science');
+    assert.strictEqual(q.questionType, 'multiple_choice', 'Science question must be multiple_choice');
+    assert(Array.isArray(q.options), 'Options must be an array');
+    assert.strictEqual(q.options.length, 4, 'Science question must have exactly 4 options');
+    assert(!q.question.includes('= ?'), 'Science question must NOT be a math equation');
+    assert(q.options.includes(q.correctAnswer || q.answer), 'Correct answer must be among options');
+  });
+
+  it('8. English Question: never generates math equation, returns multiple_choice with 4 options', async () => {
+    const res = await fetch(`${BASE_URL}/api/student/practice/generate-syllabus-question`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        subject: 'English',
+        studentGrade: 5,
+        topicName: 'Grammar',
+        difficulty: 'easy'
+      })
+    });
+
+    assert.strictEqual(res.status, 200);
+    const data = await res.json();
+    assert(data.success);
+    const q = data.data;
+
+    assert.strictEqual(q.subject, 'English', 'Question subject must be English');
+    assert.strictEqual(q.questionType, 'multiple_choice', 'English question must be multiple_choice');
+    assert(Array.isArray(q.options), 'Options must be an array');
+    assert.strictEqual(q.options.length, 4, 'English question must have exactly 4 options');
+    assert(!q.question.includes('= ?'), 'English question must NOT be a math equation');
+  });
+
+  it('9. Mathematics Numeric Question: returns questionType numeric with arithmetic equation', async () => {
+    const res = await fetch(`${BASE_URL}/api/student/practice/generate-syllabus-question`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        subject: 'Mathematics',
+        studentGrade: 5,
+        topicName: 'addition',
+        difficulty: 'easy'
+      })
+    });
+
+    assert.strictEqual(res.status, 200);
+    const data = await res.json();
+    assert(data.success);
+    const q = data.data;
+
+    assert.strictEqual(q.subject, 'Mathematics', 'Question subject must be Mathematics');
+    assert.strictEqual(q.questionType, 'numeric', 'Arithmetic math must be numeric questionType');
+    assert(q.question.includes('+') || q.question.includes('='), 'Question must be an arithmetic equation');
+    assert.strictEqual(q.options.length, 0, 'Numeric question must have 0 options for input rendering');
+    assert(Boolean(q.correctAnswer || q.answer), 'Must have a correct answer');
+  });
 });
+
