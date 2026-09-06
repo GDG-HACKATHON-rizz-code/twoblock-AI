@@ -4337,88 +4337,180 @@ overallPerformance: 0,
       }
 
       if (data.priorityIntervention) {
-        const p = data.priorityIntervention;
-        const whyPointsHtml = (p.whyPoints || []).map(w => `
-          <div class="why-point">
-            <i>${escapeHtml(w.icon || '✦')}</i>
-            <div>
-              <b>${escapeHtml(w.title)}</b>
-              <p>${escapeHtml(w.detail)}</p>
-            </div>
-          </div>
-        `).join('');
+        const rawPriority = data.priorityIntervention;
+        const rawMonitors = data.monitoringList || [];
 
-        const planStepsHtml = (p.planSteps || []).map(s => `
-          <div>
-            <b>${escapeHtml(s.duration)}</b>
-            <span>${escapeHtml(s.label)}</span>
-          </div>
-        `).join('');
+        // Build candidate items for all monitored learners so tapping switch/next updates the card smoothly
+        const candidates = [
+          {
+            studentName: rawPriority.studentName || 'Omar P.',
+            studentId: rawPriority.studentId || 'demo-student-omar',
+            initials: 'OP',
+            focus: rawPriority.focus || 'subtraction',
+            health: rawPriority.health || 47,
+            topic: rawPriority.topic || '54%',
+            time: rawPriority.time || '38 min',
+            reason: rawPriority.reason || `${rawPriority.studentName || 'Omar'}’s Mathematics progress is at risk. A short guided session is recommended before the next class activity.`,
+            evidence: rawPriority.evidence || { healthScore: rawPriority.health, subtractionScore: rawPriority.topic, mathsTime: rawPriority.time },
+            whyPoints: rawPriority.whyPoints || [
+              { icon: '↓', title: 'Performance is below threshold.', detail: 'Health score is below the class target threshold of 50.' },
+              { icon: '◷', title: 'Learning activity has declined.', detail: 'Completed fewer learning minutes than average this week.' },
+              { icon: '◈', title: 'The gap affects future learning.', detail: 'Core concepts require focused remediation.' }
+            ],
+            planSteps: rawPriority.planSteps || [
+              { duration: '5 min', label: 'Visual warm-up' },
+              { duration: '7 min', label: 'Guided questions' },
+              { duration: '3 min', label: 'Quick review' }
+            ]
+          },
+          ...rawMonitors.map((m, idx) => {
+            const subject = m.focus ? m.focus.split('·')[0].trim() : 'Mathematics';
+            const focusDetail = m.focus ? m.focus.split('·')[1] || m.focus : 'targeted concept';
+            return {
+              studentName: m.name,
+              studentId: `demo-student-${m.name.toLowerCase().split(' ')[0]}`,
+              initials: m.initials || m.name.substring(0,2).toUpperCase(),
+              focus: focusDetail.trim(),
+              health: m.health,
+              topic: `${m.health + 5}%`,
+              time: `${35 + idx * 4} min`,
+              reason: `${m.name} is requiring close monitoring in ${subject}. Early targeted intervention will prevent learning gaps.`,
+              evidence: {
+                healthScore: m.health,
+                subtractionScore: `${m.health + 5}%`,
+                mathsTime: `${35 + idx * 4} min`
+              },
+              whyPoints: [
+                { icon: '↓', title: `${m.name}'s performance requires attention.`, detail: `Current health score of ${m.health} shows persistent friction in ${focusDetail.trim()}.` },
+                { icon: '◷', title: 'Recent learning pace slows down.', detail: `Completed ${35 + idx * 4} minutes of focused practice this week.` },
+                { icon: '◈', title: 'Immediate support recommended.', detail: `Rebuilding mastery in ${focusDetail.trim()} will boost overall confidence.` }
+              ],
+              planSteps: [
+                { duration: '5 min', label: 'Guided concept review' },
+                { duration: '7 min', label: 'Interactive practice' },
+                { duration: '3 min', label: 'Self-assessment check' }
+              ]
+            };
+          })
+        ];
 
-        const monitoringHtml = (data.monitoringList || []).map(m => `
-          <div class="at-risk-row" style="cursor:pointer;" onclick="openStudentProgress('${escapeHtml(m.name)}')">
-            <i>${escapeHtml(m.initials || 'ST')}</i>
-            <div>
-              <b>${escapeHtml(m.name)}</b>
-              <small>${escapeHtml(m.focus)}</small>
-            </div>
-            <span>${escapeHtml(String(m.health))}</span>
-          </div>
-        `).join('');
+        let currentIndex = 0;
 
-        if (grid) {
-          grid.innerHTML = `
-            <article class="intervention-card">
-              <div class="eyebrow">Priority intervention · Mathematics</div>
-              <h2>Support ${escapeHtml(p.studentName)} with ${escapeHtml(p.focus)}.</h2>
-              <p>${escapeHtml(p.reason)}</p>
-              <div class="intervention-evidence">
-                <div><b>${escapeHtml(String(p.evidence?.healthScore || p.health))}</b><span>Student health score</span></div>
-                <div><b>${escapeHtml(p.evidence?.subtractionScore || p.topic)}</b><span>Subtraction score</span></div>
-                <div><b>${escapeHtml(p.evidence?.mathsTime || p.time)}</b><span>Maths time this week</span></div>
+        const renderCandidate = (index) => {
+          currentIndex = index % candidates.length;
+          const p = candidates[currentIndex];
+
+          const whyPointsHtml = (p.whyPoints || []).map(w => `
+            <div class="why-point">
+              <i>${escapeHtml(w.icon || '✦')}</i>
+              <div>
+                <b>${escapeHtml(w.title)}</b>
+                <p>${escapeHtml(w.detail)}</p>
               </div>
-              <div class="intervention-actions">
-                <button class="cta" id="create-intervention">Create support plan →</button>
-                <button class="outline-action" id="reload-insight">↻ Reload suggestion</button>
-                <button class="outline-action" id="view-omar">View student progress</button>
+            </div>
+          `).join('');
+
+          const planStepsHtml = (p.planSteps || []).map(s => `
+            <div>
+              <b>${escapeHtml(s.duration)}</b>
+              <span>${escapeHtml(s.label)}</span>
+            </div>
+          `).join('');
+
+          // Show all candidates except currently displayed student in "Other learners to monitor"
+          const otherLearners = candidates.filter((_, i) => i !== currentIndex);
+          const monitoringHtml = otherLearners.map((m) => {
+            const candidateOrigIndex = candidates.findIndex(c => c.studentName === m.studentName);
+            return `
+              <div class="at-risk-row candidate-row" style="cursor:pointer;" data-candidate-index="${candidateOrigIndex}">
+                <i>${escapeHtml(m.initials || 'ST')}</i>
+                <div>
+                  <b>${escapeHtml(m.studentName)}</b>
+                  <small>${escapeHtml(m.focus)}</small>
+                </div>
+                <span>${escapeHtml(String(m.health))}</span>
               </div>
-            </article>
-            <article class="card teacher-why">
-              <h2>Why this needs attention</h2>
-              ${whyPointsHtml}
-            </article>
+            `;
+          }).join('');
+
+          if (grid) {
+            grid.innerHTML = `
+              <article class="intervention-card">
+                <div class="eyebrow">Priority intervention · Mathematics</div>
+                <h2>Support ${escapeHtml(p.studentName)} with ${escapeHtml(p.focus)}.</h2>
+                <p>${escapeHtml(p.reason)}</p>
+                <div class="intervention-evidence">
+                  <div><b>${escapeHtml(String(p.evidence?.healthScore || p.health))}</b><span>Student health score</span></div>
+                  <div><b>${escapeHtml(p.evidence?.subtractionScore || p.topic)}</b><span>Topic score</span></div>
+                  <div><b>${escapeHtml(p.evidence?.mathsTime || p.time)}</b><span>Maths time this week</span></div>
+                </div>
+                <div class="intervention-actions">
+                  <button class="cta" id="create-intervention">Create support plan →</button>
+                  <button class="outline-action" id="reload-insight">↻ Reload suggestion</button>
+                  <button class="outline-action" id="view-omar">View student progress</button>
+                </div>
+              </article>
+              <article class="card teacher-why">
+                <h2>Why this needs attention</h2>
+                ${whyPointsHtml}
+              </article>
+            `;
+          }
+
+          let planCard = teacherInsightsView.querySelector('.group-plan');
+          if (!planCard) {
+            planCard = document.createElement('article');
+            planCard.className = 'card group-plan';
+            teacherInsightsView.appendChild(planCard);
+          }
+          planCard.innerHTML = `
+            <h2>Suggested 15-minute support plan</h2>
+            <p>Use a brief guided activity during small-group time. Start with visual exercises, then give ${escapeHtml(p.studentName)} a targeted review round with teacher feedback.</p>
+            <div class="plan-steps">${planStepsHtml}</div>
           `;
-        }
 
-        let planCard = teacherInsightsView.querySelector('.group-plan');
-        if (!planCard) {
-          planCard = document.createElement('article');
-          planCard.className = 'card group-plan';
-          teacherInsightsView.appendChild(planCard);
-        }
-        planCard.innerHTML = `
-          <h2>Suggested 15-minute support plan</h2>
-          <p>Use a brief guided activity during small-group time. Start with visual “take away” examples, then give ${escapeHtml(p.studentName)} a Level 1 subtraction round with teacher feedback.</p>
-          <div class="plan-steps">${planStepsHtml}</div>
-        `;
+          let atRiskCard = teacherInsightsView.querySelector('.at-risk-list');
+          if (!atRiskCard) {
+            atRiskCard = document.createElement('article');
+            atRiskCard.className = 'card at-risk-list';
+            teacherInsightsView.appendChild(atRiskCard);
+          }
+          atRiskCard.innerHTML = `
+            <h2>Other learners to monitor</h2>
+            ${monitoringHtml}
+          `;
 
-        let atRiskCard = teacherInsightsView.querySelector('.at-risk-list');
-        if (!atRiskCard) {
-          atRiskCard = document.createElement('article');
-          atRiskCard.className = 'card at-risk-list';
-          teacherInsightsView.appendChild(atRiskCard);
-        }
-        atRiskCard.innerHTML = `
-          <h2>Other learners to monitor</h2>
-          ${monitoringHtml}
-        `;
+          // Bind event listeners for actions
+          const createBtn = document.querySelector('#create-intervention');
+          if (createBtn) {
+            createBtn.onclick = () => {
+              toast('Done send to student');
+              renderCandidate((currentIndex + 1) % candidates.length);
+            };
+          }
 
-        const createBtn = document.querySelector('#create-intervention');
-        if (createBtn) createBtn.onclick = () => toast('Done send to student');
-        const viewStudentBtn = document.querySelector('#view-omar');
-        if (viewStudentBtn) viewStudentBtn.onclick = () => openStudentProgress(p.studentName || 'Omar P.');
-        const reloadBtn = document.querySelector('#reload-insight');
-        if (reloadBtn) reloadBtn.onclick = () => openTeacherInsights();
+          const reloadBtn = document.querySelector('#reload-insight');
+          if (reloadBtn) {
+            reloadBtn.onclick = () => {
+              renderCandidate((currentIndex + 1) % candidates.length);
+            };
+          }
+
+          const viewStudentBtn = document.querySelector('#view-omar');
+          if (viewStudentBtn) {
+            viewStudentBtn.onclick = () => openStudentProgress(p.studentName);
+          }
+
+          // Allow tapping any candidate row to make them the featured student
+          atRiskCard.querySelectorAll('.candidate-row').forEach(row => {
+            row.onclick = () => {
+              const targetIdx = parseInt(row.getAttribute('data-candidate-index') || '0', 10);
+              renderCandidate(targetIdx);
+            };
+          });
+        };
+
+        renderCandidate(0);
       }
     } catch (e) {
       console.warn('Teacher insights load error:', e);
