@@ -1,3 +1,6 @@
-const app = require('../dist/app.js').default;
+const appModule = require('../dist/app.js');
+const app = appModule.default || appModule.app || appModule;
 
-module.exports = app;
+module.exports = (req, res) => {
+  return app(req, res);
+};
