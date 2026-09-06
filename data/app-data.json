@@ -1,47 +1,6 @@
 {
   "users": [],
   "studentProfiles": {
-    "student-mismatch-99": {
-      "userId": "student-mismatch-99",
-      "name": "Unmatched Student",
-      "initials": "US",
-      "grade": "Grade 3",
-      "school": "Sekolah Kebangsaan Subang Jaya",
-      "district": "Subang",
-      "dateOfBirth": "2014-05-12",
-      "learningLanguages": [
-        "English"
-      ],
-      "preferredLanguage": "English",
-      "favouriteSubject": "Science",
-      "preferredStudyTime": "Evening",
-      "classId": null,
-      "className": null,
-      "classCode": "UNKNOWN_CODE_999",
-      "diagnostic_completed": false,
-      "onboarding_completed": false
-    },
-    "student-real-001": {
-      "userId": "student-real-001",
-      "name": "Farah Nadia",
-      "initials": "FN",
-      "grade": "Year 10",
-      "school": "Sekolah Menengah Maju Jaya",
-      "district": "Kuala Lumpur",
-      "dateOfBirth": "2010-03-15",
-      "learningLanguages": [
-        "English"
-      ],
-      "preferredLanguage": "English",
-      "favouriteSubject": "Mathematics",
-      "preferredStudyTime": "Evening",
-      "classId": "year10-amanah",
-      "className": "Year 10 Amanah (AMANAH10)",
-      "classCode": "AMANAH10",
-      "diagnostic_completed": true,
-      "onboarding_completed": true,
-      "estimatedGradeLevel": 2.8
-    },
     "45dd6d96-1530-44c3-a772-5c9057f79561": {
       "userId": "45dd6d96-1530-44c3-a772-5c9057f79561",
       "name": "Adam Haziq",
@@ -87,46 +46,100 @@
       "quick_test_completed": true,
       "classId": "c93a7680-a4be-41e8-8273-0e1850050bcf",
       "className": "Year 10 Amanah (AMANAH10)"
+    },
+    "student-real-1788664114904": {
+      "userId": "student-real-1788664114904",
+      "name": "Amira M.",
+      "initials": "AM",
+      "grade": "Grade 2",
+      "school": "",
+      "district": "Kuala Lumpur",
+      "dateOfBirth": "",
+      "learningLanguages": [
+        "English"
+      ],
+      "preferredLanguage": "English",
+      "favouriteSubject": "Mathematics",
+      "preferredStudyTime": "7:00 PM",
+      "classId": null,
+      "className": null,
+      "classCode": null,
+      "diagnostic_completed": false,
+      "onboarding_completed": false
+    },
+    "student-real-1788664233711": {
+      "userId": "student-real-1788664233711",
+      "name": "Amira M.",
+      "initials": "AM",
+      "grade": "Grade 2",
+      "school": "",
+      "district": "Kuala Lumpur",
+      "dateOfBirth": "",
+      "learningLanguages": [
+        "English"
+      ],
+      "preferredLanguage": "English",
+      "favouriteSubject": "Mathematics",
+      "preferredStudyTime": "7:00 PM",
+      "classId": null,
+      "className": null,
+      "classCode": null,
+      "diagnostic_completed": false,
+      "onboarding_completed": false
+    },
+    "student-real-1788664282529": {
+      "userId": "student-real-1788664282529",
+      "name": "Amira M.",
+      "initials": "AM",
+      "grade": "Grade 2",
+      "school": "",
+      "district": "Kuala Lumpur",
+      "dateOfBirth": "",
+      "learningLanguages": [
+        "English"
+      ],
+      "preferredLanguage": "English",
+      "favouriteSubject": "Mathematics",
+      "preferredStudyTime": "7:00 PM",
+      "classId": null,
+      "className": null,
+      "classCode": null,
+      "diagnostic_completed": false,
+      "onboarding_completed": false
+    },
+    "student-real-1788665395258": {
+      "userId": "student-real-1788665395258",
+      "name": "Amira M.",
+      "initials": "AM",
+      "grade": "Grade 2",
+      "school": "",
+      "district": "Kuala Lumpur",
+      "dateOfBirth": "",
+      "learningLanguages": [
+        "English"
+      ],
+      "preferredLanguage": "English",
+      "favouriteSubject": "Mathematics",
+      "preferredStudyTime": "7:00 PM",
+      "classId": null,
+      "className": null,
+      "classCode": null,
+      "diagnostic_completed": false,
+      "onboarding_completed": false
     }
   },
   "teacherProfiles": {
     "current-teacher": {
-      "userId": "cb21ed2e-dd2d-420e-9679-89156d6b62a5",
       "name": "Liyana K.",
       "initials": "LK",
-      "teacherId": "TCH-10482",
+      "teacherId": "",
       "school": "Sekolah Menengah Maju Jaya",
-      "district": "Kuala Lumpur",
+      "district": "",
       "primarySubject": "Mathematics",
       "teachingLevel": "Year 10"
     }
   },
-  "classes": [
-    {
-      "id": "year10-amanah",
-      "teacherId": "cb21ed2e-dd2d-420e-9679-89156d6b62a5",
-      "name": "Year 10 Amanah (AMANAH10)",
-      "yearLevel": "Year 10",
-      "subject": "Mathematics",
-      "studentCount": 1
-    },
-    {
-      "id": "year10-bestari",
-      "teacherId": "cb21ed2e-dd2d-420e-9679-89156d6b62a5",
-      "name": "Year 10 Bestari (BESTARI10)",
-      "yearLevel": "Year 10",
-      "subject": "Mathematics",
-      "studentCount": 0
-    },
-    {
-      "id": "year10-cemerlang",
-      "teacherId": "cb21ed2e-dd2d-420e-9679-89156d6b62a5",
-      "name": "Year 10 Cemerlang (CEMERLANG10)",
-      "yearLevel": "Year 10",
-      "subject": "Mathematics",
-      "studentCount": 0
-    }
-  ],
+  "classes": [],
   "subjects": [
     {
       "id": "mathematics",
@@ -320,7 +333,7 @@
       "learningMinutes": 48,
       "recommendation": "Targeted 15-minute guided support plan in Fractions to build core equivalent fractions confidence.",
       "plan": "15-minute visual fractions mini-lesson with adaptive step-by-step hints.",
-      "createdAt": "2026-09-06T02:49:00.014Z"
+      "createdAt": "2026-09-06T03:36:11.369Z"
     }
   ],
   "practiceAttempts": [
@@ -331,7 +344,7 @@
       "topic": "Fractions",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T10:49:00.013Z"
+      "createdAt": "2026-09-05T11:36:11.369Z"
     },
     {
       "id": "practice-attempt-2",
@@ -340,7 +353,7 @@
       "topic": "Living Things",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T11:49:00.014Z"
+      "createdAt": "2026-09-05T12:36:11.369Z"
     },
     {
       "id": "practice-attempt-3",
@@ -349,7 +362,7 @@
       "topic": "Fractions",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T12:49:00.014Z"
+      "createdAt": "2026-09-05T13:36:11.369Z"
     },
     {
       "id": "practice-attempt-4",
@@ -358,7 +371,7 @@
       "topic": "Living Things",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T13:49:00.014Z"
+      "createdAt": "2026-09-05T14:36:11.369Z"
     },
     {
       "id": "practice-attempt-5",
@@ -367,7 +380,7 @@
       "topic": "Fractions",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T14:49:00.014Z"
+      "createdAt": "2026-09-05T15:36:11.369Z"
     },
     {
       "id": "practice-attempt-6",
@@ -376,7 +389,7 @@
       "topic": "Living Things",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T15:49:00.014Z"
+      "createdAt": "2026-09-05T16:36:11.369Z"
     },
     {
       "id": "practice-attempt-7",
@@ -385,7 +398,7 @@
       "topic": "Fractions",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T16:49:00.014Z"
+      "createdAt": "2026-09-05T17:36:11.369Z"
     },
     {
       "id": "practice-attempt-8",
@@ -394,7 +407,7 @@
       "topic": "Living Things",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T17:49:00.014Z"
+      "createdAt": "2026-09-05T18:36:11.369Z"
     },
     {
       "id": "practice-attempt-9",
@@ -403,7 +416,7 @@
       "topic": "Fractions",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T18:49:00.014Z"
+      "createdAt": "2026-09-05T19:36:11.369Z"
     },
     {
       "id": "practice-attempt-10",
@@ -412,7 +425,7 @@
       "topic": "Living Things",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T19:49:00.014Z"
+      "createdAt": "2026-09-05T20:36:11.369Z"
     },
     {
       "id": "practice-attempt-11",
@@ -421,7 +434,7 @@
       "topic": "Fractions",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T20:49:00.014Z"
+      "createdAt": "2026-09-05T21:36:11.369Z"
     },
     {
       "id": "practice-attempt-12",
@@ -430,7 +443,7 @@
       "topic": "Living Things",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T21:49:00.014Z"
+      "createdAt": "2026-09-05T22:36:11.369Z"
     },
     {
       "id": "practice-attempt-13",
@@ -439,7 +452,7 @@
       "topic": "Fractions",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T22:49:00.014Z"
+      "createdAt": "2026-09-05T23:36:11.369Z"
     },
     {
       "id": "practice-attempt-14",
@@ -448,7 +461,7 @@
       "topic": "Living Things",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T23:49:00.014Z"
+      "createdAt": "2026-09-06T00:36:11.369Z"
     },
     {
       "id": "practice-attempt-15",
@@ -457,7 +470,7 @@
       "topic": "Fractions",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-06T00:49:00.014Z"
+      "createdAt": "2026-09-06T01:36:11.369Z"
     },
     {
       "id": "practice-attempt-16",
@@ -466,7 +479,7 @@
       "topic": "Living Things",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-06T01:49:00.014Z"
+      "createdAt": "2026-09-06T02:36:11.369Z"
     }
   ],
   "dashboard": {
@@ -515,16 +528,7 @@
       "durationMinutes": 15
     }
   },
-  "classDashboard": {
-    "classId": "year10-amanah",
-    "studentCount": 0,
-    "classHealthScore": 0,
-    "onTrackCount": 0,
-    "needsSupportCount": 0,
-    "averageLoginMinutesPerDay": 0,
-    "weeklyPerformance": [],
-    "subjectPerformance": []
-  },
+  "classDashboard": {},
   "recommendations": [
     {
       "id": "rec-fractions-001",
@@ -602,7 +606,9 @@
       "date": "Active"
     }
   ],
-  "assignedInterventionStudents": [],
+  "assignedInterventionStudents": [
+    "Omar P."
+  ],
   "diagnosticAttempts": [
     {
       "id": "diag-attempt-1",
@@ -610,7 +616,7 @@
       "questionId": "diag-q-1",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-2",
@@ -618,7 +624,7 @@
       "questionId": "diag-q-2",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-3",
@@ -626,7 +632,7 @@
       "questionId": "diag-q-3",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-4",
@@ -634,7 +640,7 @@
       "questionId": "diag-q-4",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-5",
@@ -642,7 +648,7 @@
       "questionId": "diag-q-5",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-6",
@@ -650,7 +656,7 @@
       "questionId": "diag-q-6",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-7",
@@ -658,7 +664,7 @@
       "questionId": "diag-q-7",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-8",
@@ -666,7 +672,7 @@
       "questionId": "diag-q-8",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-9",
@@ -674,7 +680,7 @@
       "questionId": "diag-q-9",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-10",
@@ -682,7 +688,7 @@
       "questionId": "diag-q-10",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-11",
@@ -690,7 +696,7 @@
       "questionId": "diag-q-11",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-12",
@@ -698,7 +704,7 @@
       "questionId": "diag-q-12",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-13",
@@ -706,7 +712,7 @@
       "questionId": "diag-q-13",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-14",
@@ -714,7 +720,7 @@
       "questionId": "diag-q-14",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-15",
@@ -722,7 +728,7 @@
       "questionId": "diag-q-15",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-16",
@@ -730,7 +736,7 @@
       "questionId": "diag-q-16",
       "selectedAnswer": "A",
       "isCorrect": false,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-17",
@@ -738,7 +744,7 @@
       "questionId": "diag-q-17",
       "selectedAnswer": "A",
       "isCorrect": false,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-18",
@@ -746,7 +752,7 @@
       "questionId": "diag-q-18",
       "selectedAnswer": "A",
       "isCorrect": false,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-19",
@@ -754,7 +760,7 @@
       "questionId": "diag-q-19",
       "selectedAnswer": "A",
       "isCorrect": false,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     },
     {
       "id": "diag-attempt-20",
@@ -762,7 +768,7 @@
       "questionId": "diag-q-20",
       "selectedAnswer": "A",
       "isCorrect": false,
-      "createdAt": "2026-09-03T02:49:00.014Z"
+      "createdAt": "2026-09-03T03:36:11.369Z"
     }
   ]
 }

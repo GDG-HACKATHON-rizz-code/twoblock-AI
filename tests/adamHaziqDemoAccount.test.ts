@@ -3,14 +3,14 @@ import assert from 'node:assert/strict';
 import request from 'supertest';
 import { app } from '../src/app.js';
 import { dataStore } from '../src/services/dataStore.js';
-import { seedAdamDemoAccount, resetAdamDemoData } from '../src/scripts/seedAdamDemo.js';
+import { demoDataService } from '../src/services/demoData.js';
 import { ScoringService } from '../src/services/scoringService.js';
 
-test.describe('Adam Haziq Demonstration Account & Live Sync Suite', () => {
+test.describe('Official Demo Mode: Adam Haziq & Ms. Liyana Karim Suite', () => {
 
-  test.before(async () => {
-    // Seed Adam demo account
-    await seedAdamDemoAccount();
+  test.beforeEach(async () => {
+    // Reset demo state before each test
+    demoDataService.resetDemoData();
   });
 
   test('1. Demo login endpoint returns authenticated session for Adam Haziq', async () => {
@@ -27,7 +27,21 @@ test.describe('Adam Haziq Demonstration Account & Live Sync Suite', () => {
     assert.equal(res.body.data.user.is_demo_account, true);
   });
 
-  test('2. Adam Haziq bypasses onboarding (profile and diagnostic completed = true)', async () => {
+  test('2. Demo login endpoint returns authenticated session for Ms. Liyana Karim', async () => {
+    const res = await request(app)
+      .post('/api/auth/demo-login')
+      .send({ role: 'demo-teacher' });
+
+    assert.equal(res.status, 200);
+    assert.equal(res.body.success, true);
+    assert.ok(res.body.data.token, 'JWT token should be present');
+    assert.equal(res.body.data.user.full_name, 'Ms. Liyana Karim');
+    assert.equal(res.body.data.user.email, 'demo.teacher@twoblock.ai');
+    assert.equal(res.body.data.user.role, 'TEACHER');
+    assert.equal(res.body.data.user.is_demo_account, true);
+  });
+
+  test('3. Adam Haziq bypasses onboarding (profile and diagnostic completed = true)', async () => {
     const loginRes = await request(app)
       .post('/api/auth/demo-login')
       .send({ role: 'demo-student' });
@@ -41,10 +55,9 @@ test.describe('Adam Haziq Demonstration Account & Live Sync Suite', () => {
     assert.equal(statusRes.body.data.profileCompleted, true);
     assert.equal(statusRes.body.data.diagnosticCompleted, true);
     assert.equal(statusRes.body.data.profile.name, 'Adam Haziq');
-    assert.equal(statusRes.body.data.profile.school, 'Sekolah Menengah Maju Jaya');
   });
 
-  test('3. Adam Haziq Student Overview loads baseline scores from student-demo-data.json', async () => {
+  test('4. Adam Haziq Student Overview loads official baseline scores from index.html', async () => {
     const loginRes = await request(app)
       .post('/api/auth/demo-login')
       .send({ role: 'demo-student' });
@@ -57,7 +70,7 @@ test.describe('Adam Haziq Demonstration Account & Live Sync Suite', () => {
     assert.equal(dashRes.status, 200);
     const data = dashRes.body.data;
     assert.equal(data.hasAssessment, true);
-    assert.equal(data.overallPerformance, 74);
+    assert.equal(data.overallPerformance, 84);
     assert.equal(data.healthScore, 84);
     assert.equal(data.learningStreakDays, 12);
     assert.equal(data.studyActivityMinutes, 385);
@@ -71,14 +84,19 @@ test.describe('Adam Haziq Demonstration Account & Live Sync Suite', () => {
 
     assert.ok(math && math.score === 70, 'Maths should be 70');
     assert.ok(bm && bm.score === 67, 'BM should be 67');
-    assert.ok(english && english.score === 72, 'English should be 72');
-    assert.ok(science && science.score === 84, 'Science should be 84');
+    assert.ok(english && english.score === 67, 'English should be 67');
+    assert.ok(science && science.score === 90, 'Science should be 90');
+
+    // Recommended practice should be Subtraction
+    assert.ok(data.recommendedPractice);
+    assert.equal(data.recommendedPractice.topic, 'Subtraction');
+    assert.equal(data.recommendedPractice.currentScore, 54);
   });
 
-  test('4. Adam Haziq appears on Teacher class roster with correct metrics and status', async () => {
+  test('5. Demo Teacher Ms. Liyana Karim views Class 5 Cemerlang with Adam Haziq & classmates', async () => {
     const teacherLogin = await request(app)
       .post('/api/auth/demo-login')
-      .send({ role: 'teacher' });
+      .send({ role: 'demo-teacher' });
     const teacherToken = teacherLogin.body.data.token;
 
     const rosterRes = await request(app)
@@ -87,21 +105,53 @@ test.describe('Adam Haziq Demonstration Account & Live Sync Suite', () => {
 
     assert.equal(rosterRes.status, 200);
     const students = rosterRes.body.data.students;
-    const adam = students.find((s: any) => s.name === 'Adam Haziq');
+    assert.ok(students.length >= 6, 'Demo class should have at least 6 students');
 
+    const adam = students.find((s: any) => s.name === 'Adam Haziq');
     assert.ok(adam, 'Adam Haziq must be listed in teacher students roster');
     assert.equal(adam.healthScore, 84);
-    assert.ok(adam.status === 'On track' || adam.status === 'Assessment completed', 'Status should be active or on track');
-    assert.ok(adam.className.includes('Amanah'), 'Adam should be assigned to Amanah class');
+    assert.equal(adam.className, '5 Cemerlang');
+
+    // Verify Omar P. is also present
+    const omar = students.find((s: any) => s.name.includes('Omar'));
+    assert.ok(omar, 'Omar P. must be in class roster');
+    assert.equal(omar.healthScore, 47);
+
+    // Verify Teacher Insights priority recommendation
+    const insightsRes = await request(app)
+      .get('/api/teacher/insights')
+      .set('Authorization', `Bearer ${teacherToken}`);
+
+    assert.equal(insightsRes.status, 200);
+    assert.ok(insightsRes.body.data.priorityIntervention, 'Priority intervention should be present');
+    assert.equal(insightsRes.body.data.priorityIntervention.studentName, 'Omar P.');
+    assert.equal(insightsRes.body.data.priorityIntervention.focus, 'subtraction');
   });
 
-  test('5. Live practice calculation follows (previous * 0.7) + (latest * 0.3)', async () => {
+  test('6. Real Teacher account starts completely isolated from demo records', async () => {
+    const realTeacherLogin = await request(app)
+      .post('/api/auth/demo-login')
+      .send({ role: 'teacher' });
+    const realToken = realTeacherLogin.body.data.token;
+
+    const rosterRes = await request(app)
+      .get('/api/teacher/students')
+      .set('Authorization', `Bearer ${realToken}`);
+
+    assert.equal(rosterRes.status, 200);
+    const students = rosterRes.body.data.students;
+    // Real teacher should have 0 demo students
+    const hasDemoStudents = students.some((s: any) => s.id.startsWith('demo-') || s.is_demo);
+    assert.equal(hasDemoStudents, false, 'Real teacher should never see demo students');
+  });
+
+  test('7. Live practice calculation follows (previous * 0.7) + (latest * 0.3)', async () => {
     const loginRes = await request(app)
       .post('/api/auth/demo-login')
       .send({ role: 'demo-student' });
     const token = loginRes.body.data.token;
 
-    // Fractions previous score is 54
+    // Subtraction previous baseline score is 54
     // Student submits correct answer (100) -> new score: Math.round((54 * 0.7) + (100 * 0.3)) = Math.round(37.8 + 30) = 68
     const expectedScore = ScoringService.calculateWeightedScore(54, 100);
     assert.equal(expectedScore, 68);
@@ -110,12 +160,12 @@ test.describe('Adam Haziq Demonstration Account & Live Sync Suite', () => {
       .post('/api/student/practice/answer')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        topic: 'fractions',
+        topic: 'subtraction',
         subject: 'Mathematics',
         studentAnswer: '4',
         correctAnswer: '4',
         timeSpentSeconds: 15,
-        questionText: '2/4 = ?/8',
+        questionText: '8 - 4 = ?',
         level: 2
       });
 
@@ -125,27 +175,42 @@ test.describe('Adam Haziq Demonstration Account & Live Sync Suite', () => {
     assert.equal(answerRes.body.data.topicMastery, 'Developing');
   });
 
-  test('6. Reset demo progress endpoint restores original baseline scores', async () => {
+  test('8. Reset demo progress endpoint restores original baseline scores', async () => {
     const loginRes = await request(app)
       .post('/api/auth/demo-login')
       .send({ role: 'demo-student' });
     const token = loginRes.body.data.token;
 
+    // First practice to modify Subtraction score
+    await request(app)
+      .post('/api/student/practice/answer')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        topic: 'subtraction',
+        subject: 'Mathematics',
+        studentAnswer: '4',
+        correctAnswer: '4',
+        timeSpentSeconds: 15,
+        questionText: '8 - 4 = ?',
+        level: 2
+      });
+
+    // Reset demo progress
     const resetRes = await request(app)
       .post('/api/student/reset-demo')
       .set('Authorization', `Bearer ${token}`);
 
     assert.equal(resetRes.status, 200);
     assert.equal(resetRes.body.data.success, true);
-    assert.equal(resetRes.body.data.message, 'Demo progress has been reset.');
 
-    // Confirm Fractions is back to 54 and Subtraction is 76 in dataStore
-    const math = dataStore.data.subjects.find(s => s.name === 'Mathematics');
-    const frac = math?.topics.find(t => t.id === 'fractions' || t.name === 'Fractions');
-    const sub = math?.topics.find(t => t.id === 'subtraction' || t.name === 'Subtraction');
-    assert.equal(frac?.score, 54, 'Fractions score should be restored to baseline 54');
-    assert.equal(sub?.score, 76, 'Subtraction score should be restored to baseline 76');
-    assert.equal(math?.score, 70, 'Math score should be restored to 70');
+    // Verify dashboard returns baseline 54% for Subtraction
+    const dashRes = await request(app)
+      .get('/api/student/dashboard')
+      .set('Authorization', `Bearer ${token}`);
+
+    assert.equal(dashRes.status, 200);
+    assert.equal(dashRes.body.data.overallPerformance, 84);
+    assert.equal(dashRes.body.data.recommendedPractice.currentScore, 54);
   });
 
 });

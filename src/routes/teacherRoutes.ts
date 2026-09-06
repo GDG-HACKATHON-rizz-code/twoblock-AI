@@ -11,7 +11,10 @@ import {
   updateProfile
 } from '../controllers/teacherController.js';
 
+import { optionalAuthenticate } from '../middlewares/auth.js';
+
 const router = Router();
+router.use(optionalAuthenticate);
 
 router.get('/dashboard', getDashboard);
 router.get('/students', getStudents);

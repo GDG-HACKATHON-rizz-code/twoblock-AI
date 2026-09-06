@@ -177,33 +177,50 @@ export class AuthService {
     };
   }
 
-  async demoLogin(role: 'student' | 'teacher' | 'demo-student') {
-    const isDemo = role === 'demo-student';
-    const isStudent = isDemo || role.toLowerCase() === 'student';
-    
+  async demoLogin(role: 'student' | 'teacher' | 'demo-student' | 'demo-teacher') {
+    const isDemoStudent = role === 'demo-student';
+    const isDemoTeacher = role === 'demo-teacher';
+    const isDemo = isDemoStudent || isDemoTeacher;
+    const isStudent = isDemoStudent || role === 'student';
+
     let targetUser: any;
-    if (isDemo) {
-      const adamProfile = Object.values(dataStore.data.studentProfiles).find(p => p.is_demo_account || p.name === 'Adam Haziq');
-      const adamId = adamProfile?.userId || '45dd6d96-1530-44c3-a772-5c9057f79561';
-      targetUser = dataStore.data.users.find(u => u.email === 'adam.haziq@twoblock.ai') || {
-        id: adamId,
+    if (isDemoStudent) {
+      targetUser = {
+        id: 'demo-student-adam',
         name: 'Adam Haziq',
         email: 'adam.haziq@twoblock.ai',
         role: 'student',
         is_demo_account: true
       };
-      targetUser.id = adamId;
-      targetUser.is_demo_account = true;
+    } else if (isDemoTeacher) {
+      targetUser = {
+        id: 'demo-teacher-liyana',
+        name: 'Ms. Liyana Karim',
+        email: 'demo.teacher@twoblock.ai',
+        role: 'teacher',
+        is_demo_account: true
+      };
+    } else if (isStudent) {
+      // Real student account (starts empty)
+      targetUser = {
+        id: 'student-real-' + Date.now(),
+        name: 'Student',
+        email: 'student@twoblock.ai',
+        role: 'student',
+        is_demo_account: false
+      };
     } else {
-      targetUser = dataStore.data.users.find(u => u.role === (isStudent ? 'student' : 'teacher')) || {
-        id: isStudent ? 'student-default' : 'teacher-default',
-        name: isStudent ? 'Student' : 'Teacher',
-        email: isStudent ? 'student@twoblock.ai' : 'teacher@twoblock.ai',
-        role: isStudent ? 'student' : 'teacher'
+      // Real teacher account (starts empty)
+      targetUser = {
+        id: 'teacher-real-default',
+        name: 'Teacher',
+        email: 'teacher@twoblock.ai',
+        role: 'teacher',
+        is_demo_account: false
       };
     }
 
-    const userRole = (isStudent ? UserRole.STUDENT : UserRole.TEACHER);
+    const userRole = isStudent ? UserRole.STUDENT : UserRole.TEACHER;
     const token = signToken({
       id: targetUser.id,
       email: targetUser.email,

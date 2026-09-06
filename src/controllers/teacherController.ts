@@ -3,10 +3,29 @@ import { dataStore } from '../services/dataStore.js';
 import { AnalyticsService } from '../services/analyticsService.js';
 import { RecommendationEngine } from '../services/recommendationEngine.js';
 import { sendSuccess } from '../utils/response.js';
+import { demoDataService } from '../services/demoData.js';
+
+export function isDemoTeacherRequest(req: Request): boolean {
+  return !!(
+    req?.user?.is_demo_account ||
+    req?.user?.id === 'demo-teacher-liyana' ||
+    req?.user?.email === 'demo.teacher@twoblock.ai' ||
+    req?.user?.email === 'liyana.demo@twoblock.ai' ||
+    req?.headers?.['x-demo-mode'] === 'true' ||
+    req?.query?.demo === 'true'
+  );
+}
 
 export async function getDashboard(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    if (dataStore.data.students.length === 0) {
+    if (isDemoTeacherRequest(req)) {
+      sendSuccess(res, demoDataService.getTeacherDashboard());
+      return;
+    }
+
+    const realStudents = dataStore.data.students.filter(s => !s.id.startsWith('demo-') && s.id !== 'demo-student-adam' && !(s as any).is_demo);
+
+    if (realStudents.length === 0) {
       sendSuccess(res, {
         classHealthScore: 0,
         onTrackCount: 0,
@@ -71,10 +90,17 @@ export async function getStudents(req: Request, res: Response, next: NextFunctio
   try {
     const filter = (req.query.filter as string) || 'all';
 
-    if (dataStore.data.students.length === 0) {
+    if (isDemoTeacherRequest(req)) {
+      sendSuccess(res, demoDataService.getTeacherStudents(filter as any));
+      return;
+    }
+
+    const realStudents = dataStore.data.students.filter(s => !s.id.startsWith('demo-') && s.id !== 'demo-student-adam' && !(s as any).is_demo);
+
+    if (realStudents.length === 0) {
       sendSuccess(res, {
         students: [],
-        counts: { good: 0, bad: 0, total: 0 },
+        counts: { good: 0, mid: 0, bad: 0, total: 0 },
         filter,
         emptyTitle: 'No students have been added yet.',
         emptyMessage: 'Class progress will appear after students complete their learning check.'
@@ -82,7 +108,7 @@ export async function getStudents(req: Request, res: Response, next: NextFunctio
       return;
     }
 
-    let list = dataStore.data.students;
+    let list = realStudents;
     if (filter === 'bad') {
       list = list.filter(s => typeof s.healthScore === 'number' && s.healthScore !== null && s.healthScore < 55);
     } else if (filter === 'mid') {
@@ -111,16 +137,17 @@ export async function getStudents(req: Request, res: Response, next: NextFunctio
         statusClass,
         trend: s.trend,
         trendSymbol: s.trend === 'up' ? '↗' : s.trend === 'steady' ? '→' : '↘',
-        classId: (s as any).classId || 'year10-amanah',
-        className: (s as any).className || 'Year 10 Amanah (AMANAH10)'
+        classId: (s as any).classId || 'class-default',
+        className: (s as any).className || 'Default Class'
       };
     });
 
-    const assessed = dataStore.data.students.filter(s => typeof s.healthScore === 'number' && s.healthScore !== null);
+    const assessed = realStudents.filter(s => typeof s.healthScore === 'number' && s.healthScore !== null);
     const counts = {
       good: assessed.filter(s => (s.healthScore as number) >= 75).length,
+      mid: assessed.filter(s => (s.healthScore as number) >= 55 && (s.healthScore as number) < 75).length,
       bad: assessed.filter(s => (s.healthScore as number) < 55).length,
-      total: dataStore.data.students.length
+      total: realStudents.length
     };
 
     sendSuccess(res, { students, counts, filter });
@@ -132,7 +159,14 @@ export async function getStudents(req: Request, res: Response, next: NextFunctio
 export async function getStudentDetail(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const query = req.params.nameOrId;
-    const student = dataStore.data.students.find(
+
+    if (isDemoTeacherRequest(req) || query === 'demo-student-adam' || query.toLowerCase() === 'adam haziq') {
+      sendSuccess(res, demoDataService.getStudentDetail(query));
+      return;
+    }
+
+    const realStudents = dataStore.data.students.filter(s => !s.id.startsWith('demo-') && s.id !== 'demo-student-adam' && !(s as any).is_demo);
+    const student = realStudents.find(
       s => s.id === query || s.name.toLowerCase() === decodeURIComponent(query).toLowerCase()
     );
 
@@ -150,32 +184,28 @@ export async function getStudentDetail(req: Request, res: Response, next: NextFu
       id: student.id,
       name: student.name,
       initials: student.initials,
-      meta: `${student.className || 'Year 10'} · ${student.primarySubject} · ${isPending ? 'Assessment pending' : 'Active learner'}`,
+      meta: `${student.className || 'Class'} · ${student.primarySubject} · ${isPending ? 'Assessment pending' : 'Active learner'}`,
       healthScore: isPending ? null : student.healthScore,
       healthScoreDisplay: isPending ? 'Not available' : `${student.healthScore}`,
       healthStatus: isPending ? 'Assessment pending' : AnalyticsService.getStudentCategory(student.healthScore as number),
       overallPerformance: isPending ? 0 : (dataStore.data.dashboard.overallPerformance ?? Math.max(50, (student.healthScore as number) - 7)),
       learningTimeFormatted: timeFormatted,
-      streakDays: isPending ? 0 : (dataStore.data.dashboard.learningStreakDays || 12),
-      roundsCompleted: isPending ? 0 : (dataStore.data.practiceAttempts?.length || 16),
+      streakDays: isPending ? 0 : 1,
+      roundsCompleted: isPending ? 0 : 1,
       subjects: isPending ? [] : (dataStore.data.subjects.length > 0 ? dataStore.data.subjects.map(s => ({ name: s.name, score: s.score })) : [
-        { name: 'Mathematics', score: student.healthScore || 0 }
+        { name: student.primarySubject || 'Mathematics', score: student.healthScore || 0 }
       ]),
       topics: isPending ? [] : (dataStore.data.subjects.flatMap(s => s.topics).slice(0, 5).map(t => ({ topic: t.name, score: t.score, note: t.status }))),
       recommendation: isPending ? {
         title: `Waiting for ${student.name} to complete Quick Learning Check`,
         text: 'Personalised recommendations and performance trends will appear once the diagnostic assessment is completed.'
       } : {
-        title: 'Build confidence in Fractions.',
-        text: 'Adam needs more practice with equivalent fractions and fractions addition.'
+        title: `Support ${student.name}`,
+        text: 'Continue monitoring student progress through adaptive practice rounds.'
       },
-      recentActivity: isPending ? [] : (dataStore.data.recentActivity && dataStore.data.recentActivity.length ? dataStore.data.recentActivity.map((a: any) => ({
-        icon: a.type === 'practice' ? '∑' : a.type === 'lesson' ? '⚗' : '✦',
-        title: a.subject ? `${a.subject}: ${a.topic || a.name}` : (a.name || 'Activity completed'),
-        detail: a.detail || a.date || 'Recent'
-      })) : [
+      recentActivity: isPending ? [] : [
         { icon: '✦', title: 'Quick Learning Check completed', detail: '20 calibrated questions · today' }
-      ])
+      ]
     };
 
     sendSuccess(res, detail);
@@ -186,7 +216,14 @@ export async function getStudentDetail(req: Request, res: Response, next: NextFu
 
 export async function getInsights(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    if (dataStore.data.students.length === 0) {
+    if (isDemoTeacherRequest(req)) {
+      sendSuccess(res, demoDataService.getTeacherInsights());
+      return;
+    }
+
+    const realStudents = dataStore.data.students.filter(s => !s.id.startsWith('demo-') && s.id !== 'demo-student-adam' && !(s as any).is_demo);
+
+    if (realStudents.length === 0) {
       sendSuccess(res, {
         recommendations: [],
         emptyTitle: 'No interventions are available yet.',
@@ -241,9 +278,15 @@ export async function createIntervention(req: Request, res: Response, next: Next
 export async function getInterventions(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const category = (req.query.category as string) || 'problem';
-    const allInterventions = dataStore.data.interventions || [];
 
-    if (allInterventions.length === 0) {
+    if (isDemoTeacherRequest(req)) {
+      sendSuccess(res, demoDataService.getTeacherInterventions(category as any));
+      return;
+    }
+
+    const realInterventions = (dataStore.data.interventions || []).filter(i => !(i as any).is_demo && !i.studentId?.startsWith('demo-'));
+
+    if (realInterventions.length === 0) {
       sendSuccess(res, {
         category,
         counts: { total: 0, problem: 0, review: 0, complete: 0 },
@@ -255,12 +298,12 @@ export async function getInterventions(req: Request, res: Response, next: NextFu
       return;
     }
 
-    const filtered = allInterventions.filter(i => category === 'all' || i.status === category);
+    const filtered = realInterventions.filter(i => category === 'all' || i.status === category);
     const counts = {
-      total: allInterventions.length,
-      problem: allInterventions.filter(i => i.status === 'problem').length,
-      review: allInterventions.filter(i => i.status === 'review').length,
-      complete: allInterventions.filter(i => i.status === 'complete').length
+      total: realInterventions.length,
+      problem: realInterventions.filter(i => i.status === 'problem').length,
+      review: realInterventions.filter(i => i.status === 'review').length,
+      complete: realInterventions.filter(i => i.status === 'complete').length
     };
 
     const students = filtered.map(i => ({
@@ -288,7 +331,14 @@ export async function getInterventions(req: Request, res: Response, next: NextFu
 
 export async function getReport(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    if (dataStore.data.students.length === 0) {
+    if (isDemoTeacherRequest(req)) {
+      sendSuccess(res, demoDataService.getTeacherReport());
+      return;
+    }
+
+    const realStudents = dataStore.data.students.filter(s => !s.id.startsWith('demo-') && s.id !== 'demo-student-adam' && !(s as any).is_demo);
+
+    if (realStudents.length === 0) {
       sendSuccess(res, {
         period: 'Current Term · 0 students',
         classHealthScore: 0,
@@ -305,13 +355,13 @@ export async function getReport(req: Request, res: Response, next: NextFunction)
     }
 
     const classMetrics = AnalyticsService.calculateClassHealthScore();
-    const assessedStudents = dataStore.data.students.filter(s => typeof s.healthScore === 'number' && s.healthScore !== null);
+    const assessedStudents = realStudents.filter(s => typeof s.healthScore === 'number' && s.healthScore !== null);
     const avgPerf = assessedStudents.length > 0
       ? Math.round(assessedStudents.reduce((acc, s) => acc + (s.healthScore as number), 0) / assessedStudents.length)
       : 0;
 
     const report = {
-      period: `Current Term · ${dataStore.data.students.length} students`,
+      period: `Current Term · ${realStudents.length} students`,
       classHealthScore: classMetrics.classHealthScore,
       averagePerformance: avgPerf,
       studentsOnTrack: classMetrics.onTrackCount,
@@ -332,6 +382,14 @@ export async function getReport(req: Request, res: Response, next: NextFunction)
 
 export async function getProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
+    if (isDemoTeacherRequest(req)) {
+      sendSuccess(res, {
+        profile: demoDataService.getTeacherProfile(),
+        classes: [demoDataService.getDemoClass()]
+      });
+      return;
+    }
+
     const profile = dataStore.data.teacherProfiles['current-teacher'] || {
       name: '',
       initials: '',
@@ -341,7 +399,7 @@ export async function getProfile(req: Request, res: Response, next: NextFunction
       primarySubject: 'Mathematics',
       teachingLevel: 'Grade 5'
     };
-    const classes = dataStore.data.classes;
+    const classes = dataStore.data.classes.filter(c => !(c as any).is_demo);
     sendSuccess(res, { profile, classes });
   } catch (err) {
     next(err);

@@ -5,12 +5,12 @@ import { checkDatabaseConnection } from './config/db.js';
 async function startServer() {
   const port = parseInt(env.PORT, 10) || 5000;
 
-  console.log('🔍 Checking database connection...');
+  console.log('🔍 Checking Supabase connection...');
   const isConnected = await checkDatabaseConnection();
   if (isConnected) {
-    console.log('✅ PostgreSQL Database connected successfully.');
+    console.log('✅ Supabase connected successfully.');
   } else {
-    console.warn('⚠️ Warning: Database connection failed. Please check DATABASE_URL.');
+    console.warn('⚠️ Warning: Supabase connection failed. Check SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env');
   }
 
   app.listen(port, () => {

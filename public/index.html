@@ -177,7 +177,7 @@
 <section class="login-screen" id="login-view">
   <div class="login-card">
     <aside class="login-brand"><div class="logo"><img src="/assets/2block-logo.png" alt="2Block Ai logo" class="brand-logo-img login-logo-img" />2Block <small>Ai</small></div><h1>Every learner can grow brighter.</h1><p>A focused learning space for students, plus clear progress tools for teachers.</p><div class="login-points"><div><i>✦</i>Personalised learning journeys</div><div><i>✦</i>Progress insights that matter</div><div><i>✦</i>Timely support for every learner</div></div></aside>
-    <div class="login-choice-area"><div class="eyebrow">Welcome to 2Block Ai</div><h2>Choose your space</h2><p>Sign in to view the learning tools designed for your role.</p><div class="login-choices"><button class="login-choice" data-login-role="student"><i>◈</i><span><b>Login as Student</b><small>Practise, learn and track your progress</small></span><span>→</span></button><button class="login-choice" data-login-role="teacher"><i>✦</i><span><b>Login as Teacher</b><small>Monitor learners and plan support</small></span><span>→</span></button><button class="login-choice login-choice-demo" id="btn-login-demo-adam" data-login-role="demo-student"><i>★</i><span><b>Try demo account</b><small>Adam Haziq · Student demo</small></span><span>→</span></button></div><p class="login-note">Supabase Auth &amp; Database · Row Level Security active</p></div>
+    <div class="login-choice-area"><div class="eyebrow">Welcome to 2Block Ai</div><h2>Choose your space</h2><p>Sign in to view the learning tools designed for your role.</p><div class="login-choices"><button class="login-choice" data-login-role="student"><i>◈</i><span><b>Login as Student</b><small>Practise, learn and track your progress</small></span><span>→</span></button><button class="login-choice" data-login-role="teacher"><i>✦</i><span><b>Login as Teacher</b><small>Monitor learners and plan support</small></span><span>→</span></button><button class="login-choice login-choice-demo" id="btn-login-demo-adam" data-login-role="demo-student"><i>★</i><span><b>Try Demo Student — Adam Haziq</b><small>Grade 5 · Complete student demo</small></span><span>→</span></button><button class="login-choice login-choice-demo" id="btn-login-demo-liyana" data-login-role="demo-teacher"><i>★</i><span><b>Try Demo Teacher — Ms. Liyana Karim</b><small>5 Cemerlang · Complete teacher demo</small></span><span>→</span></button></div><p class="login-note">Supabase Auth &amp; Database · Row Level Security active</p></div>
   </div>
 </section>
 <div class="app hidden" id="app-shell">
@@ -1216,14 +1216,18 @@
     },
 
     async signInWithSupabase(role) {
-      const isDemo = role === 'demo-student';
-      const isStudent = isDemo || role === 'student';
-      const effectiveRole = isDemo ? 'student' : role;
+      const isDemoStudent = role === 'demo-student';
+      const isDemoTeacher = role === 'demo-teacher';
+      const isDemo = isDemoStudent || isDemoTeacher;
+      const isStudent = isDemoStudent || role === 'student';
+      const effectiveRole = isStudent ? 'student' : 'teacher';
 
       if (isDemo) {
         localStorage.setItem('2block_is_demo', 'true');
+        localStorage.setItem('2block_demo_role', isDemoStudent ? 'student' : 'teacher');
       } else {
         localStorage.removeItem('2block_is_demo');
+        localStorage.removeItem('2block_demo_role');
       }
 
       // Try real backend demo-login first
@@ -1248,7 +1252,9 @@
         console.warn('Backend demo-login failed, checking Supabase Auth:', err);
       }
 
-      const email = isDemo ? 'adam.haziq@twoblock.ai' : (isStudent ? 'student@twoblock.ai' : 'teacher@twoblock.ai');
+      const email = isDemoStudent
+        ? 'adam.haziq@twoblock.ai'
+        : (isDemoTeacher ? 'demo.teacher@twoblock.ai' : (isStudent ? 'student@twoblock.ai' : 'teacher@twoblock.ai'));
       const password = 'password123';
       if (supabaseClient) {
         try {
@@ -1262,7 +1268,7 @@
           localStorage.setItem('2block_user', JSON.stringify(this.user));
           localStorage.setItem('2block_role', userRole);
           this.updateStatus(true, 'Supabase Connected');
-          toast(`Authenticated with Supabase as ${isDemo ? 'Adam Haziq (Demo)' : role}.`);
+          toast(`Authenticated with Supabase as ${isDemoStudent ? 'Adam Haziq (Demo)' : (isDemoTeacher ? 'Ms. Liyana Karim (Demo)' : role)}.`);
           return { user: this.user, role: userRole };
         } catch (err) {
           console.warn('Supabase Auth attempt:', err.message);
@@ -1271,10 +1277,11 @@
 
       // Offline fallback
       this.user = { 
-        id: isDemo ? 'ad000000-0000-4000-8000-000000000001' : (isStudent ? ('student-user-' + Date.now()) : 'teacher-default'), 
+        id: isDemoStudent ? 'demo-student-adam' : (isDemoTeacher ? 'demo-teacher-liyana' : (isStudent ? ('student-user-' + Date.now()) : 'teacher-default')), 
         email, 
-        name: isDemo ? 'Adam Haziq' : (isStudent ? 'Student' : 'Teacher'),
-        is_demo_account: isDemo
+        name: isDemoStudent ? 'Adam Haziq' : (isDemoTeacher ? 'Ms. Liyana Karim' : (isStudent ? 'Student' : 'Teacher')),
+        is_demo_account: isDemo,
+        role: effectiveRole
       };
       this.token = 'demo_token_' + Date.now();
       localStorage.setItem('2block_token', this.token);
@@ -1298,6 +1305,7 @@
       localStorage.removeItem('2block_user');
       localStorage.removeItem('2block_role');
       localStorage.removeItem('2block_is_demo');
+      localStorage.removeItem('2block_demo_role');
       localStorage.removeItem('2block_student_profile');
       localStorage.removeItem('2block_student_diagnostic_completed');
       localStorage.removeItem('2block_initial_assessment');
@@ -1315,10 +1323,10 @@
       appShell.classList.remove('hidden');
       document.querySelectorAll('#nav button').forEach((b, i) => b.classList.toggle('active', i === 0));
 
-      const isDemo = localStorage.getItem('2block_is_demo') === 'true' || API.user?.is_demo_account || API.user?.email === 'adam.haziq@twoblock.ai';
+      const isDemo = localStorage.getItem('2block_is_demo') === 'true' || API.user?.is_demo_account || API.user?.email === 'adam.haziq@twoblock.ai' || API.user?.email === 'demo.teacher@twoblock.ai';
       const demoBadge = document.getElementById('demo-account-badge');
       if (demoBadge) {
-        if (isDemo && role === 'student') {
+        if (isDemo) {
           demoBadge.classList.remove('hidden');
         } else {
           demoBadge.classList.add('hidden');
@@ -1487,7 +1495,7 @@
         if (isDemo) {
           return {
             hasAssessment: true,
-            overallPerformance: 74,
+            overallPerformance: 84,
             healthScore: 84,
             healthCategory: 'strong',
             learningStreakDays: 12,
@@ -1497,32 +1505,31 @@
             availableFocusMinutes: 45,
             bestFocusWindow: '7:00 PM',
             weeklyActivity: [
-              { day: 'Mon', minutes: 45 },
-              { day: 'Tue', minutes: 50 },
-              { day: 'Wed', minutes: 40 },
+              { day: 'Mon', minutes: 42 },
+              { day: 'Tue', minutes: 63 },
+              { day: 'Wed', minutes: 49 },
               { day: 'Thu', minutes: 87 },
-              { day: 'Fri', minutes: 55 },
-              { day: 'Sat', minutes: 60 },
-              { day: 'Sun', minutes: 48 }
+              { day: 'Fri', minutes: 68 },
+              { day: 'Sat', minutes: 31 },
+              { day: 'Sun', minutes: 23 }
             ],
             subjects: [
-              { id: 'mathematics', name: 'Mathematics', score: 70, topicsCount: 5, learningTimeFormatted: '3h 15m' },
+              { id: 'mathematics', name: 'Mathematics', score: 70, topicsCount: 4, learningTimeFormatted: '3h 15m' },
               { id: 'bahasa-melayu', name: 'Bahasa Melayu', score: 67, topicsCount: 4, learningTimeFormatted: '1h 00m' },
-              { id: 'english', name: 'English', score: 72, topicsCount: 4, learningTimeFormatted: '1h 05m' },
-              { id: 'science', name: 'Science', score: 84, topicsCount: 3, learningTimeFormatted: '1h 05m' }
+              { id: 'english', name: 'English', score: 67, topicsCount: 4, learningTimeFormatted: '1h 05m' },
+              { id: 'science', name: 'Science', score: 90, topicsCount: 4, learningTimeFormatted: '1h 05m' }
             ],
             learningGaps: {
-              Fractions: { subject: 'Mathematics', score: 54, status: 'Needs focus', attemptsCount: 16, timeSpentMinutes: 48 },
-              Division: { subject: 'Mathematics', score: 58, status: 'Needs focus', attemptsCount: 8, timeSpentMinutes: 30 },
-              'Ayat Majmuk': { subject: 'Bahasa Melayu', score: 56, status: 'Needs focus', attemptsCount: 6, timeSpentMinutes: 25 },
-              'Sentence Structure': { subject: 'English', score: 60, status: 'Needs focus', attemptsCount: 7, timeSpentMinutes: 28 },
-              'Energy and Materials': { subject: 'Science', score: 74, status: 'Developing', attemptsCount: 10, timeSpentMinutes: 35 }
+              Mathematics: ['Subtraction (54%)', 'Division (58%)'],
+              'Bahasa Melayu': ['Penanda wacana', 'Ayat majmuk'],
+              English: ['Sentence structure', 'Evidence in essays'],
+              Science: ['Cell structure', 'Energy transfer']
             },
             recommendedPractice: {
-              topic: 'Fractions',
+              topic: 'Subtraction',
               subject: 'Mathematics',
-              title: 'Build confidence in Fractions.',
-              description: 'Your current score is 54%. Complete a 15-minute survival practice round to strengthen this core foundation.'
+              title: 'Adaptive practice, made for you',
+              description: 'Strengthen subtraction in a 15-minute session calibrated to your pace.'
             }
           };
         }
@@ -1585,13 +1592,12 @@
                 score: 70,
                 learningTimeFormatted: '3h 15m',
                 strongestSubtopic: 'Addition',
-                nextFocus: 'Fractions',
+                nextFocus: 'Subtraction',
                 topics: [
                   { id: 'topic-add', name: 'Addition', score: 88, status: 'Strong', attempts: 4, timeSpentMinutes: 45 },
-                  { id: 'topic-sub', name: 'Subtraction', score: 76, status: 'Strong', attempts: 4, timeSpentMinutes: 42 },
-                  { id: 'topic-mul', name: 'Multiplication', score: 68, status: 'Developing', attempts: 3, timeSpentMinutes: 35 },
-                  { id: 'topic-div', name: 'Division', score: 58, status: 'Needs focus', attempts: 2, timeSpentMinutes: 25 },
-                  { id: 'topic-frac', name: 'Fractions', score: 54, status: 'Needs focus', attempts: 3, timeSpentMinutes: 48 }
+                  { id: 'topic-sub', name: 'Subtraction', score: 54, status: 'Needs focus', attempts: 3, timeSpentMinutes: 48 },
+                  { id: 'topic-mul', name: 'Multiplication', score: 62, status: 'Developing', attempts: 3, timeSpentMinutes: 35 },
+                  { id: 'topic-div', name: 'Division', score: 58, status: 'Needs focus', attempts: 2, timeSpentMinutes: 25 }
                 ]
               },
               {
@@ -1599,38 +1605,41 @@
                 name: 'Bahasa Melayu',
                 score: 67,
                 learningTimeFormatted: '1h 00m',
-                strongestSubtopic: 'Kata Nama',
-                nextFocus: 'Ayat Majmuk',
+                strongestSubtopic: 'Kata nama',
+                nextFocus: 'Penanda wacana',
                 topics: [
-                  { id: 'topic-kn', name: 'Kata Nama', score: 82, status: 'Strong', attempts: 2, timeSpentMinutes: 20 },
-                  { id: 'topic-kk', name: 'Kata Kerja', score: 70, status: 'Strong', attempts: 2, timeSpentMinutes: 18 },
-                  { id: 'topic-am', name: 'Ayat Majmuk', score: 56, status: 'Needs focus', attempts: 2, timeSpentMinutes: 22 }
+                  { id: 'topic-kn', name: 'Kata nama', score: 81, status: 'Strong', attempts: 2, timeSpentMinutes: 20 },
+                  { id: 'topic-kk', name: 'Kata kerja', score: 70, status: 'Strong', attempts: 2, timeSpentMinutes: 18 },
+                  { id: 'topic-am', name: 'Ayat majmuk', score: 59, status: 'Needs focus', attempts: 2, timeSpentMinutes: 22 },
+                  { id: 'topic-pw', name: 'Penanda wacana', score: 55, status: 'Needs focus', attempts: 1, timeSpentMinutes: 15 }
                 ]
               },
               {
                 id: 'english',
                 name: 'English',
-                score: 72,
+                score: 67,
                 learningTimeFormatted: '1h 05m',
-                strongestSubtopic: 'Reading Comprehension',
-                nextFocus: 'Sentence Structure',
+                strongestSubtopic: 'Reading comprehension',
+                nextFocus: 'Essay evidence',
                 topics: [
-                  { id: 'topic-rc', name: 'Reading Comprehension', score: 84, status: 'Strong', attempts: 2, timeSpentMinutes: 25 },
-                  { id: 'topic-voc', name: 'Vocabulary', score: 74, status: 'Strong', attempts: 2, timeSpentMinutes: 20 },
-                  { id: 'topic-ss', name: 'Sentence Structure', score: 60, status: 'Needs focus', attempts: 2, timeSpentMinutes: 20 }
+                  { id: 'topic-rc', name: 'Reading comprehension', score: 78, status: 'Strong', attempts: 2, timeSpentMinutes: 25 },
+                  { id: 'topic-voc', name: 'Vocabulary', score: 73, status: 'Strong', attempts: 2, timeSpentMinutes: 20 },
+                  { id: 'topic-ss', name: 'Sentence structure', score: 62, status: 'Developing', attempts: 2, timeSpentMinutes: 20 },
+                  { id: 'topic-ee', name: 'Essay evidence', score: 55, status: 'Needs focus', attempts: 1, timeSpentMinutes: 18 }
                 ]
               },
               {
                 id: 'science',
                 name: 'Science',
-                score: 84,
+                score: 90,
                 learningTimeFormatted: '1h 05m',
-                strongestSubtopic: 'Living Things',
-                nextFocus: 'Energy and Materials',
+                strongestSubtopic: 'Living things',
+                nextFocus: 'Energy transfer',
                 topics: [
-                  { id: 'topic-lt', name: 'Living Things', score: 92, status: 'Strong', attempts: 2, timeSpentMinutes: 20 },
-                  { id: 'topic-em', name: 'Energy and Materials', score: 74, status: 'Developing', attempts: 2, timeSpentMinutes: 25 },
-                  { id: 'topic-ps', name: 'Plants & Sunlight', score: 86, status: 'Strong', attempts: 2, timeSpentMinutes: 20 }
+                  { id: 'topic-lt', name: 'Living things', score: 94, status: 'Strong', attempts: 2, timeSpentMinutes: 20 },
+                  { id: 'topic-cs', name: 'Cell structure', score: 90, status: 'Strong', attempts: 2, timeSpentMinutes: 25 },
+                  { id: 'topic-et', name: 'Energy transfer', score: 87, status: 'Strong', attempts: 2, timeSpentMinutes: 20 },
+                  { id: 'topic-mat', name: 'Matter', score: 88, status: 'Strong', attempts: 2, timeSpentMinutes: 20 }
                 ]
               }
             ]
@@ -1665,20 +1674,20 @@
           return {
             hasAssessment: true,
             priority: {
-              id: 'rec-fractions-001',
+              id: 'rec-subtraction-001',
               subject: 'Mathematics',
-              topic: 'Fractions',
-              title: 'Build confidence in Fractions.',
+              topic: 'Subtraction',
+              title: 'Build confidence in subtraction.',
               currentScore: 54,
               timeSpentMinutes: 48,
               recentCorrect: 6,
               recentTotal: 12,
               recommendedMinutes: 15,
-              reason: 'Adam needs more practice with equivalent fractions and fractions addition.',
+              reason: 'Your subtraction score is lower than your other Mathematics topics. A short, focused session now can help you improve this skill before moving to harder questions.',
               whyPoints: [
-                { icon: '↓', title: 'It is your lowest Mathematics topic.', detail: 'Fractions (54%) is lower than your other Mathematics skills.' },
-                { icon: '◷', title: 'You have practised it less.', detail: 'You spent 48 minutes on fractions compared to other topics.' },
-                { icon: '✦', title: 'It helps unlock the next level.', detail: 'Mastering fractions is required before advancing to decimal and percentage units.' }
+                { icon: '↓', title: 'It is your lowest Mathematics topic.', detail: 'Subtraction is 22 points below your strongest skill, Addition.' },
+                { icon: '◷', title: 'You have practised it less.', detail: 'You spent 48 minutes on subtraction compared to other topics.' },
+                { icon: '✦', title: 'It helps unlock the next level.', detail: 'Improving subtraction will make number problems and division easier.' }
               ],
               steps: [
                 { duration: '5 min', label: 'Warm-up' },
@@ -1687,9 +1696,9 @@
               ]
             },
             whyPoints: [
-              { icon: '↓', title: 'It is your lowest Mathematics topic.', detail: 'Fractions (54%) is lower than your other Mathematics skills.' },
-              { icon: '◷', title: 'You have practised it less.', detail: 'You spent 48 minutes on fractions compared to other topics.' },
-              { icon: '✦', title: 'It helps unlock the next level.', detail: 'Mastering fractions is required before advancing to decimal and percentage units.' }
+              { icon: '↓', title: 'It is your lowest Mathematics topic.', detail: 'Subtraction is 22 points below your strongest skill, Addition.' },
+              { icon: '◷', title: 'You have practised it less.', detail: 'You spent 48 minutes on subtraction compared to other topics.' },
+              { icon: '✦', title: 'It helps unlock the next level.', detail: 'Improving subtraction will make number problems and division easier.' }
             ],
             steps: [
               { duration: '5 min', label: 'Warm-up' },
@@ -1697,7 +1706,7 @@
               { duration: '3 min', label: 'Quick check' }
             ],
             otherSignals: [
-              { icon: '✓', title: 'Science is a strength', detail: 'Demonstrated strong 84% mastery during your assessments.' },
+              { icon: '✓', title: 'Science is a strength', detail: '90% overall score · You are ready for a challenge.' },
               { icon: '◈', title: 'Best study time: 7:00 PM', detail: 'Your focus sessions are calibrated to this window.' }
             ]
           };
@@ -1734,43 +1743,42 @@
             hasAssessment: true,
             learnerName: 'Adam Haziq',
             period: 'September 2026',
-            overallPerformance: 74,
+            overallPerformance: 84,
             totalLearningTimeFormatted: '6h 25m',
             learningStreakDays: 12,
-            practiceRoundsCompleted: 16,
+            practiceRoundsCompleted: 24,
             subjects: [
-              { name: 'Mathematics', time: '3h 15m', score: 70, trend: '↑ 5%' },
-              { name: 'Bahasa Melayu', time: '1h 0m', score: 67, trend: '↑ 3%' },
-              { name: 'English', time: '1h 5m', score: 72, trend: '↑ 4%' },
-              { name: 'Science', time: '1h 5m', score: 84, trend: '↑ 6%' }
+              { name: 'Mathematics', time: '3h 15m', score: 70, trend: '↑ 8%' },
+              { name: 'Bahasa Melayu', time: '1h 00m', score: 67, trend: '↑ 3%' },
+              { name: 'English', time: '1h 05m', score: 67, trend: '↑ 4%' },
+              { name: 'Science', time: '1h 05m', score: 90, trend: '↑ 10%' }
             ],
             trendChart: [
               { week: 'Week 1', heightPercent: 55 },
               { week: 'Week 2', heightPercent: 62 },
               { week: 'Week 3', heightPercent: 69 },
-              { week: 'Week 4', heightPercent: 74 }
+              { week: 'Week 4', heightPercent: 84 }
             ],
             mathTopicMastery: [
               { topic: 'Addition', score: 88, status: 'Strong' },
-              { topic: 'Subtraction', score: 76, status: 'Strong' },
-              { topic: 'Multiplication', score: 68, status: 'Developing' },
-              { topic: 'Division', score: 58, status: 'Needs focus' },
-              { topic: 'Fractions', score: 54, status: 'Needs focus' }
+              { topic: 'Subtraction', score: 54, status: 'Needs focus' },
+              { topic: 'Multiplication', score: 62, status: 'Developing' },
+              { topic: 'Division', score: 58, status: 'Needs focus' }
             ],
             studyHabits: [
               { icon: '◷', title: 'Best focus time: 7:00 PM', detail: 'Evening sessions fit your schedule best.' },
-              { icon: '◉', title: 'Average session: 24 minutes', detail: 'Short focused bursts maintain high retention.' },
+              { icon: '◉', title: 'Average session: 27 minutes', detail: 'Short focused bursts maintain high retention.' },
               { icon: '⌁', title: 'Most active day: Thursday', detail: 'Completed 87 minutes of focused study.' }
             ],
             achievements: [
               { icon: '🔥', text: '12-day learning streak' },
-              { icon: '∑', text: 'Math Whiz (Addition 88%)' },
-              { icon: '⚗', text: 'Science Explorer (84%)' },
-              { icon: '✦', text: '16 practice rounds completed' }
+              { icon: '⚗', text: 'Science score: 90%' },
+              { icon: '✦', text: '24 practice rounds' },
+              { icon: '↑', text: 'Maths improved by 8%' }
             ],
             recommendedNextStep: {
-              title: 'Strengthen Fractions this week.',
-              description: 'Your current score is 54% after 48 minutes of practice. Complete one 15-minute Fractions round to build confidence and improve your Mathematics foundation.'
+              title: 'Strengthen subtraction this week.',
+              description: 'Your current score is 54% after 48 minutes of practice. Complete one 15-minute subtraction round to build confidence and improve your Mathematics foundation.'
             }
           };
         }
@@ -1779,7 +1787,7 @@
         if (!assessment) {
           return {
             period: 'Current Period',
-            overallPerformance: 0,
+overallPerformance: 0,
             totalLearningTimeFormatted: '0m',
             learningStreakDays: 0,
             practiceRoundsCompleted: 0,
@@ -1796,25 +1804,23 @@
         };
       }
 
-      // Teacher Zero-State Endpoints
+      // Teacher Endpoints
       if (path === '/api/teacher/dashboard') {
-        const isDemo = localStorage.getItem('2block_is_demo') === 'true';
+        const isDemo = localStorage.getItem('2block_is_demo') === 'true' || API.user?.is_demo_account;
         if (isDemo) {
           return {
-            classHealthScore: 84,
-            onTrackCount: 1,
-            needsSupportCount: 0,
+            classHealthScore: 78,
+            onTrackCount: 21,
+            needsSupportCount: 9,
+            totalStudents: 30,
+            averageLoginMinutesPerDay: 42,
             studentList: [
-              {
-                id: '45dd6d96-1530-44c3-a772-5c9057f79561',
-                name: 'Adam Haziq',
-                initials: 'AH',
-                primarySubject: 'Mathematics',
-                timeFormatted: '6h 25m',
-                healthScore: 84,
-                status: 'On track',
-                trendSymbol: '↑'
-              }
+              { id: 'demo-student-adam', name: 'Adam Haziq', initials: 'AH', primarySubject: 'Mathematics', timeFormatted: '6h 25m', healthScore: 84, status: 'On track', trendSymbol: '→' },
+              { id: 'demo-student-omar', name: 'Omar P.', initials: 'OP', primarySubject: 'Mathematics', timeFormatted: '38m', healthScore: 47, status: 'Support', trendSymbol: '↓' },
+              { id: 'demo-student-chong', name: 'Chong L.', initials: 'CL', primarySubject: 'Mathematics', timeFormatted: '41m', healthScore: 48, status: 'Support', trendSymbol: '↓' },
+              { id: 'demo-student-oliver', name: 'Oliver B.', initials: 'OB', primarySubject: 'English', timeFormatted: '35m', healthScore: 49, status: 'Support', trendSymbol: '↓' },
+              { id: 'demo-student-sofia', name: 'Sofia R.', initials: 'SR', primarySubject: 'English', timeFormatted: '2h 41m', healthScore: 86, status: 'Thriving', trendSymbol: '↑' },
+              { id: 'demo-student-jin', name: 'Jin L.', initials: 'JL', primarySubject: 'Science', timeFormatted: '1h 08m', healthScore: 68, status: 'Watch', trendSymbol: '→' }
             ]
           };
         }
@@ -1822,6 +1828,10 @@
           classHealthScore: 0,
           onTrackCount: 0,
           needsSupportCount: 0,
+          totalStudents: 0,
+          averageLoginMinutesPerDay: 0,
+          weeklyPerformance: [],
+          subjectPerformance: [],
           studentList: [],
           emptyTitle: 'No students have been added yet.',
           emptyMessage: 'Class progress will appear after students complete their learning check.'
@@ -1829,14 +1839,67 @@
       }
 
       if (path.startsWith('/api/teacher/students')) {
+        const isDemo = localStorage.getItem('2block_is_demo') === 'true' || API.user?.is_demo_account;
+        if (isDemo) {
+          const all = [
+            { id: 'demo-student-adam', name: 'Adam Haziq', initials: 'AH', subject: 'Mathematics', healthScore: 84, timeFormatted: '6h 25m', status: 'On track', statusClass: 'good', trend: 'steady', trendSymbol: '→' },
+            { id: 'demo-student-omar', name: 'Omar P.', initials: 'OP', subject: 'Mathematics', healthScore: 47, timeFormatted: '38m', status: 'Support', statusClass: 'risk', trend: 'down', trendSymbol: '↓' },
+            { id: 'demo-student-chong', name: 'Chong L.', initials: 'CL', subject: 'Mathematics', healthScore: 48, timeFormatted: '41m', status: 'Support', statusClass: 'risk', trend: 'down', trendSymbol: '↓' },
+            { id: 'demo-student-oliver', name: 'Oliver B.', initials: 'OB', subject: 'English', healthScore: 49, timeFormatted: '35m', status: 'Support', statusClass: 'risk', trend: 'down', trendSymbol: '↓' },
+            { id: 'demo-student-sofia', name: 'Sofia R.', initials: 'SR', subject: 'English', healthScore: 86, timeFormatted: '2h 41m', status: 'Thriving', statusClass: 'good', trend: 'up', trendSymbol: '↑' },
+            { id: 'demo-student-jin', name: 'Jin L.', initials: 'JL', subject: 'Science', healthScore: 68, timeFormatted: '1h 08m', status: 'Watch', statusClass: 'watch', trend: 'steady', trendSymbol: '→' }
+          ];
+          const filter = path.includes('filter=') ? path.split('filter=')[1].split('&')[0] : 'all';
+          let filtered = all;
+          if (filter === 'bad') filtered = all.filter(s => s.healthScore < 55);
+          else if (filter === 'mid') filtered = all.filter(s => s.healthScore >= 55 && s.healthScore < 75);
+          else if (filter === 'good') filtered = all.filter(s => s.healthScore >= 75);
+
+          return {
+            students: filtered,
+            counts: { good: 21, mid: 0, bad: 9, total: 30 },
+            filter
+          };
+        }
         return {
           students: [],
+          counts: { good: 0, mid: 0, bad: 0, total: 0 },
+          filter: 'all',
           emptyTitle: 'No students have been added yet.',
           emptyMessage: 'Class progress will appear after students complete their learning check.'
         };
       }
 
       if (path === '/api/teacher/insights') {
+        const isDemo = localStorage.getItem('2block_is_demo') === 'true' || API.user?.is_demo_account;
+        if (isDemo) {
+          return {
+            priorityIntervention: {
+              studentName: 'Omar P.',
+              studentId: 'demo-student-omar',
+              focus: 'subtraction',
+              health: 47,
+              topic: '54%',
+              time: '38 min',
+              reason: 'Omar’s Mathematics progress is at risk. His subtraction score and weekly engagement are below the expected level, so a short guided session is recommended before the next class activity.',
+              whyPoints: [
+                { icon: '↓', title: 'Performance is below the support threshold.', detail: 'Omar’s health score is 47, below the class support threshold of 50.' },
+                { icon: '◷', title: 'Learning activity has declined.', detail: 'He completed only 38 minutes of Mathematics learning this week.' },
+                { icon: '◈', title: 'The gap affects future learning.', detail: 'Subtraction is a prerequisite for number problems and division.' }
+              ],
+              planSteps: [
+                { duration: '5 min', label: 'Visual warm-up' },
+                { duration: '7 min', label: 'Guided questions' },
+                { duration: '3 min', label: 'Quick review' }
+              ]
+            },
+            monitoringList: [
+              { initials: 'CL', name: 'Chong L.', focus: 'Mathematics · subtraction score: 52%', health: 48 },
+              { initials: 'OB', name: 'Oliver B.', focus: 'English · engagement has declined', health: 49 },
+              { initials: 'YS', name: 'Yasmin S.', focus: 'Mathematics · division score: 56%', health: 56 }
+            ]
+          };
+        }
         return {
           recommendations: [],
           emptyTitle: 'No interventions are available yet.',
@@ -1845,15 +1908,79 @@
       }
 
       if (path.startsWith('/api/teacher/interventions')) {
+        const isDemo = localStorage.getItem('2block_is_demo') === 'true' || API.user?.is_demo_account;
+        if (isDemo) {
+          const category = path.includes('category=') ? path.split('category=')[1].split('&')[0] : 'problem';
+          const problemStudents = [
+            { id: 'int-omar', name: 'Omar P.', classification: 'Support', focus: 'Subtraction', health: 47, topic: '54%', time: '38 min', description: 'Omar needs extra practice with subtraction before division.', plan: '15-minute guided support plan in subtraction.' },
+            { id: 'int-chong', name: 'Chong L.', classification: 'Support', focus: 'Subtraction', health: 48, topic: '52%', time: '41 min', description: 'Chong has foundational difficulty with subtraction.', plan: 'Visual number line exercises.' },
+            { id: 'int-oliver', name: 'Oliver B.', classification: 'Support', focus: 'English', health: 49, topic: '58%', time: '35 min', description: 'Oliver engagement has slipped this week.', plan: 'Reading comprehension booster.' }
+          ];
+          const reviewStudents = [
+            { id: 'int-adam', name: 'Adam Haziq', classification: 'Watch', focus: 'Subtraction', health: 84, topic: '54%', time: '6h 25m', description: 'Adam is high-performing overall but subtraction is lowest.', plan: 'Targeted subtraction review session.' },
+            { id: 'int-omar2', name: 'Omar P.', classification: 'Review', focus: 'Division', health: 47, topic: '50%', time: '38 min', description: 'Check mastery on division.', plan: 'Step-by-step division practice.' },
+            { id: 'int-chong2', name: 'Chong L.', classification: 'Review', focus: 'Fractions', health: 48, topic: '48%', time: '41 min', description: 'Review basic fractions concepts.', plan: 'Fraction bars worksheet.' }
+          ];
+          const completeStudents = [
+            { id: 'int-adam2', name: 'Adam Haziq', classification: 'Complete', focus: 'Quick Learning Check', health: 84, topic: '84%', time: '6h 25m', description: 'Completed Quick Learning Check with strong foundation.', plan: 'Science challenge extension.' },
+            { id: 'int-jin', name: 'Jin L.', classification: 'Complete', focus: 'Science Check', health: 68, topic: '72%', time: '68 min', description: 'Completed weekly Science check.', plan: 'Energy transfer module.' },
+            { id: 'int-sofia', name: 'Sofia R.', classification: 'Complete', focus: 'English Check', health: 86, topic: '84%', time: '161 min', description: 'Completed English reading check.', plan: 'Advanced comprehension.' }
+          ];
+          const students = category === 'review' ? reviewStudents : (category === 'complete' ? completeStudents : problemStudents);
+          return {
+            category,
+            counts: { total: 30, problem: 9, review: 3, complete: 12 },
+            students,
+            selectedStudent: students[0]
+          };
+        }
         return {
+          category: 'problem',
           counts: { total: 0, problem: 0, review: 0, complete: 0 },
           students: [],
+          selectedStudent: null,
           emptyTitle: 'No interventions are available yet.',
           emptyMessage: 'Recommendations will appear when student learning data is available.'
         };
       }
 
       if (path === '/api/teacher/report') {
+        const isDemo = localStorage.getItem('2block_is_demo') === 'true' || API.user?.is_demo_account;
+        if (isDemo) {
+          return {
+            period: 'September 2026',
+            className: '5 Cemerlang',
+            studentCount: 30,
+            classHealthScore: 78,
+            averagePerformance: 74,
+            studentsOnTrack: 21,
+            studentsNeedingSupport: 9,
+            subjects: [
+              { name: 'Mathematics', score: 70, trend: '↑ 8%', priority: 'Subtraction', priorityClass: 'high' },
+              { name: 'Bahasa Melayu', score: 67, trend: '↑ 3%', priority: 'Sentence structure', priorityClass: 'mid' },
+              { name: 'English', score: 67, trend: '↑ 4%', priority: 'Essay evidence', priorityClass: 'mid' },
+              { name: 'Science', score: 90, trend: '↑ 10%', priority: 'Strong', priorityClass: 'good' }
+            ],
+            weeklyTrend: [
+              { day: 'Mon', score: 54 },
+              { day: 'Tue', score: 60 },
+              { day: 'Wed', score: 66 },
+              { day: 'Thu', score: 72 },
+              { day: 'Fri', score: 78 },
+              { day: 'Sat', score: 69 },
+              { day: 'Sun', score: 74 }
+            ],
+            supportStudents: [
+              { name: 'Omar P.', need: 'Maths subtraction', score: 47 },
+              { name: 'Chong L.', need: 'Maths subtraction', score: 48 },
+              { name: 'Oliver B.', need: 'English engagement', score: 49 }
+            ],
+            recommendation: {
+              title: 'Reteach subtraction in a small group.',
+              description: 'Nine learners are below the 60% mastery threshold. Use a 15-minute visual mini-lesson, then assign Level 1 adaptive practice and review results next week.'
+            }
+          };
+        }
         return {
           classHealthScore: 0,
           averagePerformance: 0,
@@ -2642,9 +2769,11 @@
           if (p) p.textContent = data.recommendedPractice.description || 'Adam needs more practice with equivalent fractions and fractions addition.';
           const startBtn = pracCard.querySelector('#start-practice');
           if (startBtn) {
+            const topic = data.recommendedPractice.topic || 'Subtraction';
+            startBtn.textContent = `Practise ${topic.toLowerCase()} →`;
             startBtn.onclick = () => {
               openPractice();
-              startRound(data.recommendedPractice.topic || 'Fractions', data.recommendedPractice.subject || 'Mathematics');
+              startRound(topic, data.recommendedPractice.subject || 'Mathematics');
             };
           }
         }
@@ -3854,7 +3983,7 @@
       const data = await API.request('/api/teacher/insights');
       const grid = document.querySelector('.teacher-insights-grid');
 
-      if (!data || !data.recommendations || !data.recommendations.length) {
+      if (!data || (!data.priorityIntervention && (!data.recommendations || !data.recommendations.length))) {
         if (grid) {
           grid.innerHTML = `
             <div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;">
@@ -3864,8 +3993,97 @@
             </div>
           `;
         }
+        teacherInsightsView.querySelectorAll('.group-plan, .at-risk-list').forEach(el => el.remove());
+        return;
       }
-    } catch (e) {}
+
+      if (data.priorityIntervention) {
+        const p = data.priorityIntervention;
+        const whyPointsHtml = (p.whyPoints || []).map(w => `
+          <div class="why-point">
+            <i>${escapeHtml(w.icon || '✦')}</i>
+            <div>
+              <b>${escapeHtml(w.title)}</b>
+              <p>${escapeHtml(w.detail)}</p>
+            </div>
+          </div>
+        `).join('');
+
+        const planStepsHtml = (p.planSteps || []).map(s => `
+          <div>
+            <b>${escapeHtml(s.duration)}</b>
+            <span>${escapeHtml(s.label)}</span>
+          </div>
+        `).join('');
+
+        const monitoringHtml = (data.monitoringList || []).map(m => `
+          <div class="at-risk-row">
+            <i>${escapeHtml(m.initials || 'ST')}</i>
+            <div>
+              <b>${escapeHtml(m.name)}</b>
+              <small>${escapeHtml(m.focus)}</small>
+            </div>
+            <span>${escapeHtml(String(m.health))}</span>
+          </div>
+        `).join('');
+
+        if (grid) {
+          grid.innerHTML = `
+            <article class="intervention-card">
+              <div class="eyebrow">Priority intervention · Mathematics</div>
+              <h2>Support ${escapeHtml(p.studentName)} with ${escapeHtml(p.focus)}.</h2>
+              <p>${escapeHtml(p.reason)}</p>
+              <div class="intervention-evidence">
+                <div><b>${escapeHtml(String(p.evidence?.healthScore || p.health))}</b><span>Student health score</span></div>
+                <div><b>${escapeHtml(p.evidence?.subtractionScore || p.topic)}</b><span>Subtraction score</span></div>
+                <div><b>${escapeHtml(p.evidence?.mathsTime || p.time)}</b><span>Maths time this week</span></div>
+              </div>
+              <div class="intervention-actions">
+                <button class="cta" id="create-intervention">Create support plan →</button>
+                <button class="outline-action" id="reload-insight">↻ Reload suggestion</button>
+                <button class="outline-action" id="view-omar">View student progress</button>
+              </div>
+            </article>
+            <article class="card teacher-why">
+              <h2>Why this needs attention</h2>
+              ${whyPointsHtml}
+            </article>
+          `;
+        }
+
+        let planCard = teacherInsightsView.querySelector('.group-plan');
+        if (!planCard) {
+          planCard = document.createElement('article');
+          planCard.className = 'card group-plan';
+          teacherInsightsView.appendChild(planCard);
+        }
+        planCard.innerHTML = `
+          <h2>Suggested 15-minute support plan</h2>
+          <p>Use a brief guided activity during small-group time. Start with visual “take away” examples, then give ${escapeHtml(p.studentName)} a Level 1 subtraction round with teacher feedback.</p>
+          <div class="plan-steps">${planStepsHtml}</div>
+        `;
+
+        let atRiskCard = teacherInsightsView.querySelector('.at-risk-list');
+        if (!atRiskCard) {
+          atRiskCard = document.createElement('article');
+          atRiskCard.className = 'card at-risk-list';
+          teacherInsightsView.appendChild(atRiskCard);
+        }
+        atRiskCard.innerHTML = `
+          <h2>Other learners to monitor</h2>
+          ${monitoringHtml}
+        `;
+
+        const createBtn = document.querySelector('#create-intervention');
+        if (createBtn) createBtn.onclick = () => openTeacherInterventions('problem');
+        const viewStudentBtn = document.querySelector('#view-omar');
+        if (viewStudentBtn) viewStudentBtn.onclick = () => openStudentProgress(p.studentId || 'demo-student-omar');
+        const reloadBtn = document.querySelector('#reload-insight');
+        if (reloadBtn) reloadBtn.onclick = () => openTeacherInsights();
+      }
+    } catch (e) {
+      console.warn('Teacher insights load error:', e);
+    }
   }
 
   // ----------------------------------------------------

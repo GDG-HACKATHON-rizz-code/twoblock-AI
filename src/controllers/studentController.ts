@@ -6,21 +6,33 @@ import { diagnosticEngine } from '../services/diagnosticEngine.js';
 import { ScoringService } from '../services/scoringService.js';
 import { GeminiPracticeService } from '../services/geminiPracticeService.js';
 import { sendSuccess } from '../utils/response.js';
+import { demoDataService } from '../services/demoData.js';
 import { resetAdamDemoData } from '../scripts/seedAdamDemo.js';
 
+export function isDemoStudentRequest(req: Request): boolean {
+  return !!(
+    req?.user?.is_demo_account ||
+    req?.user?.id === 'demo-student-adam' ||
+    req?.user?.id === 'ad000000-0000-4000-8000-000000000001' ||
+    req?.user?.email === 'adam.haziq@twoblock.ai' ||
+    req?.headers?.['x-demo-mode'] === 'true'
+  );
+}
+
 function resolveStudentId(req: Request): string {
-  let studentId = req.user?.id || Object.keys(dataStore.data.studentProfiles)[0] || '45dd6d96-1530-44c3-a772-5c9057f79561';
-  if (!dataStore.data.studentProfiles[studentId] || req.user?.is_demo_account || req.user?.email === 'adam.haziq@twoblock.ai' || studentId === 'ad000000-0000-4000-8000-000000000001') {
-    const demoEntry = Object.values(dataStore.data.studentProfiles).find((p: any) => p.is_demo_account || p.name === 'Adam Haziq');
-    if (demoEntry) {
-      studentId = demoEntry.userId || studentId;
-    }
+  if (isDemoStudentRequest(req)) {
+    return 'demo-student-adam';
   }
-  return studentId;
+  return req.user?.id || 'real-student-unregistered';
 }
 
 export async function getDashboard(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
+    if (isDemoStudentRequest(req)) {
+      sendSuccess(res, demoDataService.getStudentDashboard());
+      return;
+    }
+
     const studentId = resolveStudentId(req);
 
     // If zero subjects or student has not completed assessment/profile, return empty state
@@ -100,6 +112,11 @@ export async function getDashboard(req: Request, res: Response, next: NextFuncti
 
 export async function getLearning(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
+    if (isDemoStudentRequest(req)) {
+      sendSuccess(res, { hasAssessment: true, ...demoDataService.getStudentLearning() });
+      return;
+    }
+
     const studentId = resolveStudentId(req);
     if (dataStore.data.subjects.length === 0 || !dataStore.data.studentProfiles[studentId]) {
       sendSuccess(res, {
@@ -163,10 +180,33 @@ export async function getPracticeQuestion(req: Request, res: Response, next: Nex
 
 export async function submitAnswer(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const studentId = req.user?.id || 'student-user-001';
+    const isDemo = isDemoStudentRequest(req);
     const { topic, studentAnswer, correctAnswer, timeSpentSeconds, questionText, question, subject, level } = req.body;
 
     const isCorrect = String(studentAnswer).trim().toLowerCase() === String(correctAnswer).trim().toLowerCase();
+
+    if (isDemo) {
+      const demoResult = demoDataService.submitPracticeAttempt(topic || 'subtraction', isCorrect);
+      const studentDash = demoDataService.getStudentDashboard();
+      sendSuccess(res, {
+        isCorrect,
+        correctAnswer,
+        previousTopicScore: demoResult.previousScore,
+        newTopicScore: demoResult.newTopicScore,
+        topicAccuracy: isCorrect ? 100 : 0,
+        topicMastery: demoResult.topicMastery,
+        subjectScore: demoDataService.subjects.find(s => s.id === 'mathematics')?.score || 70,
+        subjectMastery: 'Developing',
+        overallPerformance: studentDash.overallPerformance,
+        healthScore: studentDash.healthScore,
+        learningStreak: studentDash.learningStreakDays,
+        recommendation: studentDash.recommendedPractice,
+        feedback: isCorrect ? 'Correct! Great thinking.' : `Not quite — the answer was ${correctAnswer}.`
+      });
+      return;
+    }
+
+    const studentId = req.user?.id || 'student-user-001';
 
     const result = await ScoringService.processPracticeResult({
       studentId,
@@ -278,6 +318,11 @@ export async function endPracticeSession(req: Request, res: Response, next: Next
 
 export async function getInsights(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
+    if (isDemoStudentRequest(req)) {
+      sendSuccess(res, demoDataService.getStudentInsights());
+      return;
+    }
+
     const studentId = resolveStudentId(req);
     if (dataStore.data.subjects.length === 0 || !dataStore.data.studentProfiles[studentId]) {
       sendSuccess(res, {
@@ -328,6 +373,11 @@ export async function getInsights(req: Request, res: Response, next: NextFunctio
 
 export async function getReport(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
+    if (isDemoStudentRequest(req)) {
+      sendSuccess(res, demoDataService.getStudentReport());
+      return;
+    }
+
     const studentId = resolveStudentId(req);
     if (dataStore.data.subjects.length === 0 || !dataStore.data.studentProfiles[studentId]) {
       sendSuccess(res, {
@@ -418,6 +468,11 @@ export async function getReport(req: Request, res: Response, next: NextFunction)
 
 export async function getProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
+    if (isDemoStudentRequest(req)) {
+      sendSuccess(res, demoDataService.getStudentProfile());
+      return;
+    }
+
     const studentId = resolveStudentId(req);
     const profile = dataStore.data.studentProfiles[studentId] || Object.values(dataStore.data.studentProfiles).find((p: any) => p.is_demo_account || p.name === 'Adam Haziq') || null;
     sendSuccess(res, { profile, recentActivity: dataStore.data.recentActivity || [] });
@@ -648,6 +703,17 @@ export async function getDiagnosticQuestions(_req: Request, res: Response, next:
 
 export async function getDiagnosticStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
+    if (isDemoStudentRequest(req)) {
+      const demoProfile = demoDataService.getStudentProfile().profile;
+      sendSuccess(res, {
+        profileCompleted: true,
+        diagnosticCompleted: true,
+        gradeLevel: demoProfile.grade || 5,
+        profile: demoProfile
+      });
+      return;
+    }
+
     let studentId = req.user?.id || Object.keys(dataStore.data.studentProfiles)[0] || 'new-student-001';
     let profile = dataStore.data.studentProfiles[studentId];
 
@@ -749,11 +815,15 @@ export async function generateSyllabusQuestion(req: Request, res: Response, next
 
 export async function resetDemoProgress(_req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const result = await resetAdamDemoData();
+    demoDataService.resetDemoData();
+    let result = null;
+    try {
+      result = await resetAdamDemoData();
+    } catch (e) {}
     sendSuccess(res, {
       success: true,
       message: 'Demo progress has been reset.',
-      data: result
+      data: result || demoDataService.getStudentProfile()
     }, 200);
   } catch (err) {
     next(err);
