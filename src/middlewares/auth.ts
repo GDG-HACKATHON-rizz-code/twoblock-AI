@@ -24,6 +24,22 @@ export function authenticate(req: Request, _res: Response, next: NextFunction): 
   }
 }
 
+export function optionalAuthenticate(req: Request, _res: Response, next: NextFunction): void {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1];
+    if (token) {
+      try {
+        const decoded = verifyToken(token);
+        req.user = decoded;
+      } catch (_err) {
+        // invalid token, continue unauthenticated
+      }
+    }
+  }
+  next();
+}
+
 export function requireRoles(...allowedRoles: UserRole[]) {
   return (req: Request, _res: Response, next: NextFunction): void => {
     if (!req.user) {

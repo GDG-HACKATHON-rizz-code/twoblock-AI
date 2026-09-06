@@ -15,10 +15,13 @@ import {
   getDiagnosticQuestions,
   getDiagnosticStatus,
   generateAdaptiveQuestion,
-  generateSyllabusQuestion
+  generateSyllabusQuestion,
+  resetDemoProgress
 } from '../controllers/studentController.js';
+import { optionalAuthenticate } from '../middlewares/auth.js';
 
 const router = Router();
+router.use(optionalAuthenticate);
 
 router.get('/dashboard', getDashboard);
 router.get('/learning', getLearning);
@@ -32,6 +35,7 @@ router.get('/insights', getInsights);
 router.get('/report', getReport);
 router.get('/profile', getProfile);
 router.put('/profile', updateProfile);
+router.post('/reset-demo', resetDemoProgress);
 
 // Diagnostic quick check routes
 router.post('/diagnostic/start', startDiagnostic);

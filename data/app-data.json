@@ -1,335 +1,330 @@
 {
   "users": [],
   "studentProfiles": {
-    "new-student-001": {
-      "userId": "new-student-001",
-      "name": "Mohamad Al Jufrie bin Sudirman",
-      "initials": "MA",
+    "45dd6d96-1530-44c3-a772-5c9057f79561": {
+      "userId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "name": "Adam Haziq",
+      "initials": "AH",
       "grade": "Year 10",
-      "school": "SMKew",
-      "district": "jb",
-      "dateOfBirth": "2222-02-22",
+      "school": "Sekolah Menengah Maju Jaya",
+      "district": "Kuala Lumpur",
+      "dateOfBirth": "2010-03-18",
       "learningLanguages": [
+        "Bahasa Melayu",
         "English"
       ],
       "preferredLanguage": "English",
-      "favouriteSubject": "Mathematics",
-      "preferredStudyTime": "Evening",
-      "classId": null,
-      "className": null,
-      "classCode": null,
+      "favouriteSubject": "Science",
+      "preferredStudyTime": "19:00",
+      "is_demo_account": true,
       "diagnostic_completed": true,
       "onboarding_completed": true,
-      "estimatedGradeLevel": 2.9
+      "classId": "c93a7680-a4be-41e8-8273-0e1850050bcf",
+      "className": "Year 10 Amanah (AMANAH10)"
     }
   },
-  "teacherProfiles": {
-    "current-teacher": {
-      "userId": "cb21ed2e-dd2d-420e-9679-89156d6b62a5",
-      "name": "Liyana K.",
-      "initials": "LK",
-      "teacherId": "TCH-10482",
-      "school": "Sekolah Menengah Maju Jaya",
-      "district": "Kuala Lumpur",
-      "primarySubject": "Mathematics",
-      "teachingLevel": "Year 10"
-    }
-  },
-  "classes": [
-    {
-      "id": "year10-amanah",
-      "teacherId": "cb21ed2e-dd2d-420e-9679-89156d6b62a5",
-      "name": "Year 10 Amanah (AMANAH10)",
-      "yearLevel": "Year 10",
-      "subject": "Mathematics",
-      "studentCount": 0
-    },
-    {
-      "id": "year10-bestari",
-      "teacherId": "cb21ed2e-dd2d-420e-9679-89156d6b62a5",
-      "name": "Year 10 Bestari (BESTARI10)",
-      "yearLevel": "Year 10",
-      "subject": "Mathematics",
-      "studentCount": 0
-    },
-    {
-      "id": "year10-cemerlang",
-      "teacherId": "cb21ed2e-dd2d-420e-9679-89156d6b62a5",
-      "name": "Year 10 Cemerlang (CEMERLANG10)",
-      "yearLevel": "Year 10",
-      "subject": "Mathematics",
-      "studentCount": 0
-    }
-  ],
+  "teacherProfiles": {},
+  "classes": [],
   "subjects": [
     {
       "id": "mathematics",
       "name": "Mathematics",
-      "shortName": "Maths",
-      "score": 20,
-      "mastery": 20,
-      "learningMinutes": 15,
-      "status": "Support",
-      "strength": "Core concepts",
+      "shortName": "Mathematics",
+      "score": 70,
+      "mastery": 79,
+      "learningMinutes": 683,
+      "status": "On track",
+      "strength": "Addition",
       "topics": [
         {
-          "id": "mathematics-t1",
-          "name": "Core concepts",
-          "score": 20,
+          "id": "addition",
+          "name": "Addition",
+          "score": 88,
+          "status": "Strong"
+        },
+        {
+          "id": "subtraction",
+          "name": "Subtraction",
+          "score": 54,
+          "status": "Needs focus"
+        },
+        {
+          "id": "multiplication",
+          "name": "Multiplication",
+          "score": 62,
           "status": "Developing"
+        },
+        {
+          "id": "division",
+          "name": "Division",
+          "score": 58,
+          "status": "Needs focus"
         }
       ],
       "learningGaps": [
-        "Decimals",
-        "Multiplication",
-        "Subtraction",
-        "Addition",
-        "Kata kerja",
-        "Kata nama",
-        "Tenses",
-        "Reading comprehension",
-        "Vocabulary",
-        "Energy",
-        "Plants",
-        "Living things",
-        "Electricity"
+        "Algebraic fractions",
+        "Integrate",
+        "Simplify"
       ]
     },
     {
       "id": "bahasa-melayu",
       "name": "Bahasa Melayu",
       "shortName": "BM",
-      "score": 60,
+      "score": 67,
       "mastery": 60,
-      "learningMinutes": 15,
-      "status": "Developing",
-      "strength": "Core concepts",
+      "learningMinutes": 72,
+      "status": "Building skills",
+      "strength": "Kata nama",
       "topics": [
         {
-          "id": "bahasa-melayu-t1",
-          "name": "Core concepts",
-          "score": 60,
+          "id": "kata-nama",
+          "name": "Kata nama",
+          "score": 81,
+          "status": "Strong"
+        },
+        {
+          "id": "kata-kerja",
+          "name": "Kata kerja",
+          "score": 70,
+          "status": "On track"
+        },
+        {
+          "id": "ayat-majmuk",
+          "name": "Ayat majmuk",
+          "score": 59,
           "status": "Developing"
+        },
+        {
+          "id": "penanda-wacana",
+          "name": "Penanda wacana",
+          "score": 55,
+          "status": "Needs focus"
         }
       ],
       "learningGaps": [
-        "Decimals",
-        "Multiplication",
-        "Subtraction",
-        "Addition",
-        "Kata kerja",
-        "Kata nama",
-        "Tenses",
-        "Reading comprehension",
-        "Vocabulary",
-        "Energy",
-        "Plants",
-        "Living things",
-        "Electricity"
+        "Penanda wacana",
+        "Ayat majmuk"
       ]
     },
     {
       "id": "english",
       "name": "English",
-      "shortName": "English",
-      "score": 40,
-      "mastery": 40,
-      "learningMinutes": 15,
-      "status": "Support",
-      "strength": "Core concepts",
+      "shortName": "BI",
+      "score": 67,
+      "mastery": 60,
+      "learningMinutes": 82,
+      "status": "Building skills",
+      "strength": "Reading comprehension",
       "topics": [
         {
-          "id": "english-t1",
-          "name": "Core concepts",
-          "score": 40,
+          "id": "reading-comprehension",
+          "name": "Reading comprehension",
+          "score": 78,
+          "status": "Strong"
+        },
+        {
+          "id": "vocabulary",
+          "name": "Vocabulary",
+          "score": 73,
+          "status": "On track"
+        },
+        {
+          "id": "sentence-structure",
+          "name": "Sentence structure",
+          "score": 62,
           "status": "Developing"
+        },
+        {
+          "id": "essay-evidence",
+          "name": "Essay evidence",
+          "score": 55,
+          "status": "Needs focus"
         }
       ],
       "learningGaps": [
-        "Decimals",
-        "Multiplication",
-        "Subtraction",
-        "Addition",
-        "Kata kerja",
-        "Kata nama",
-        "Tenses",
-        "Reading comprehension",
-        "Vocabulary",
-        "Energy",
-        "Plants",
-        "Living things",
-        "Electricity"
+        "Evidence in essays",
+        "Sentence structure"
       ]
     },
     {
       "id": "science",
       "name": "Science",
       "shortName": "Science",
-      "score": 20,
-      "mastery": 20,
-      "learningMinutes": 15,
-      "status": "Support",
-      "strength": "Core concepts",
+      "score": 90,
+      "mastery": 90,
+      "learningMinutes": 150,
+      "status": "Excellent",
+      "strength": "Living things",
       "topics": [
         {
-          "id": "science-t1",
-          "name": "Core concepts",
-          "score": 20,
-          "status": "Developing"
+          "id": "living-things",
+          "name": "Living things",
+          "score": 94,
+          "status": "Strong"
+        },
+        {
+          "id": "cell-structure",
+          "name": "Cell structure",
+          "score": 90,
+          "status": "Strong"
+        },
+        {
+          "id": "energy-transfer",
+          "name": "Energy transfer",
+          "score": 87,
+          "status": "Strong"
+        },
+        {
+          "id": "matter",
+          "name": "Matter",
+          "score": 88,
+          "status": "Strong"
         }
       ],
       "learningGaps": [
-        "Decimals",
-        "Multiplication",
-        "Subtraction",
-        "Addition",
-        "Kata kerja",
-        "Kata nama",
-        "Tenses",
-        "Reading comprehension",
-        "Vocabulary",
-        "Energy",
-        "Plants",
-        "Living things",
-        "Electricity"
+        "Cell structure",
+        "Energy transfer"
       ]
     }
   ],
   "students": [
     {
-      "id": "student-user-001",
-      "name": "Active Learner",
-      "initials": "AL",
-      "primarySubject": "Bahasa Melayu",
-      "learningMinutes": 2,
-      "healthScore": 60,
-      "status": "watch",
-      "trend": "up"
+      "id": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "name": "Adam Haziq",
+      "initials": "AH",
+      "primarySubject": "Mathematics",
+      "learningMinutes": 987,
+      "healthScore": 84,
+      "status": "Assessment completed",
+      "trend": "up",
+      "classId": "c93a7680-a4be-41e8-8273-0e1850050bcf",
+      "className": "Year 10 Amanah (AMANAH10)"
     },
     {
-      "id": "new-student-001",
-      "name": "Mohamad Al Jufrie bin Sudirman",
-      "initials": "MA",
+      "id": "ad000000-0000-4000-8000-000000000001",
+      "name": "Active Learner",
+      "initials": "AL",
       "primarySubject": "Mathematics",
-      "learningMinutes": 15,
-      "healthScore": 35,
-      "status": "Assessment completed",
-      "trend": "up"
+      "learningMinutes": 1,
+      "healthScore": 60,
+      "status": "watch",
+      "trend": "steady"
     }
   ],
   "interventions": [
     {
-      "id": "inv-1788657944127-343",
-      "studentId": "new-student-001",
-      "studentName": "Mohamad Al Jufrie bin Sudirman",
+      "id": "int-subtraction-45dd6d96-1530-44c3-a772-5c9057f79561",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "studentName": "Adam Haziq",
       "status": "problem",
-      "classification": "Low topic mastery",
+      "classification": "Guided Support",
       "subject": "Mathematics",
-      "topic": "Decimals",
-      "healthScore": 35,
-      "topicScore": 30,
-      "learningMinutes": 15,
-      "recommendation": "Targeted review in Decimals: 15-minute guided practice session.",
-      "reviewDueDate": "2026-09-09",
-      "createdAt": "2026-09-06T01:25:44.127Z"
+      "topic": "Subtraction",
+      "healthScore": 54,
+      "topicScore": 54,
+      "learningMinutes": 48,
+      "recommendation": "Targeted 15-minute guided support plan in subtraction to build core arithmetic confidence.",
+      "plan": "15-minute visual subtraction mini-lesson with adaptive step-by-step hints.",
+      "createdAt": "2026-09-06T01:47:47.710Z"
     }
   ],
   "practiceAttempts": [
     {
-      "id": "att-1788657880175-983",
-      "studentId": "student-user-001",
-      "topic": "Kata Adjektif",
-      "level": 1,
-      "question": "Apakah kata adjektif bagi sifat rajin?",
-      "submittedAnswer": "rajin",
-      "correctAnswer": "rajin",
+      "id": "att-1788659120692-268",
+      "studentId": "ad000000-0000-4000-8000-000000000001",
+      "topic": "Subtraction",
+      "level": 2,
+      "question": "9 - 5 = ?",
+      "submittedAnswer": "4",
+      "correctAnswer": "4",
       "isCorrect": true,
-      "timeSpentSeconds": 8,
-      "attemptedAt": "2026-09-06T01:24:40.175Z"
-    },
-    {
-      "id": "att-1788657893989-592",
-      "studentId": "student-user-001",
-      "topic": "Kata Adjektif",
-      "level": 1,
-      "question": "Apakah kata adjektif bagi sifat rajin?",
-      "submittedAnswer": "rajin",
-      "correctAnswer": "rajin",
-      "isCorrect": true,
-      "timeSpentSeconds": 8,
-      "attemptedAt": "2026-09-06T01:24:53.989Z"
+      "timeSpentSeconds": 15,
+      "attemptedAt": "2026-09-06T01:45:20.692Z"
     }
   ],
   "dashboard": {
-    "overallPerformance": 35,
-    "healthScore": 35,
-    "learningStreakDays": 1,
-    "streakIncreaseThisWeek": 1,
-    "studyActivityMinutes": 15,
-    "studyActivityChangePercent": 100,
+    "overallPerformance": 84,
+    "healthScore": 84,
+    "learningStreakDays": 12,
+    "streakIncreaseThisWeek": 3,
+    "studyActivityMinutes": 385,
+    "studyActivityChangePercent": 18,
     "availableFocusMinutes": 45,
-    "bestFocusWindow": "5:00 PM",
+    "bestFocusWindow": "19:00",
     "weeklyActivity": [
       {
         "day": "Mon",
-        "minutes": 0
+        "minutes": 42
       },
       {
         "day": "Tue",
-        "minutes": 0
+        "minutes": 63
       },
       {
         "day": "Wed",
-        "minutes": 0
+        "minutes": 49
       },
       {
         "day": "Thu",
-        "minutes": 0
+        "minutes": 87
       },
       {
         "day": "Fri",
-        "minutes": 0
+        "minutes": 68
       },
       {
         "day": "Sat",
-        "minutes": 0
+        "minutes": 31
       },
       {
         "day": "Sun",
-        "minutes": 15
+        "minutes": 23
       }
     ],
     "recommendedPractice": {
       "subject": "Mathematics",
-      "topic": "Decimals",
-      "description": "Strengthen decimals in a 15-minute session calibrated to your Quick Learning Check.",
+      "topic": "Subtraction",
+      "description": "Strengthen subtraction in a 15-minute session calibrated to your pace.",
       "durationMinutes": 15
     }
   },
-  "classDashboard": {
-    "classId": "year10-amanah",
-    "studentCount": 0,
-    "classHealthScore": 0,
-    "onTrackCount": 0,
-    "needsSupportCount": 0,
-    "averageLoginMinutesPerDay": 0,
-    "weeklyPerformance": [],
-    "subjectPerformance": []
-  },
+  "classDashboard": {},
   "recommendations": [
     {
-      "id": "rec-1788657944127",
-      "studentId": "new-student-001",
+      "id": "rec-subtraction-001",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
       "subject": "Mathematics",
-      "topic": "Decimals",
-      "title": "Build confidence in decimals",
-      "reason": "Your Quick Learning Check highlighted decimals as your focus topic. A 15-minute session will reinforce key concepts.",
-      "currentScore": 35,
-      "timeSpentMinutes": 15,
+      "topic": "Subtraction",
+      "title": "Build confidence in subtraction",
+      "reason": "Subtraction is the lowest Mathematics topic and supports future division learning.",
+      "currentScore": 54,
+      "timeSpentMinutes": 48,
       "recommendedMinutes": 15,
       "status": "active"
     }
   ],
-  "recentActivity": [],
+  "recentActivity": [
+    {
+      "type": "practice",
+      "subject": "Mathematics",
+      "topic": "Subtraction",
+      "durationMinutes": 15,
+      "date": "2026-09-05"
+    },
+    {
+      "type": "lesson",
+      "subject": "Science",
+      "topic": "Cell structure",
+      "durationMinutes": 28,
+      "date": "2026-09-04"
+    },
+    {
+      "type": "achievement",
+      "name": "Learning streak",
+      "value": "12 days active",
+      "date": "2026-09-05"
+    }
+  ],
   "assignedInterventionStudents": []
 }

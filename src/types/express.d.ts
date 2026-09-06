@@ -5,6 +5,7 @@ export interface AuthUserPayload {
   email: string;
   role: UserRole;
   full_name: string;
+  is_demo_account?: boolean;
 }
 
 declare global {

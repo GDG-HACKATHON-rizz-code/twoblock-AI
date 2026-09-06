@@ -177,14 +177,28 @@ export class AuthService {
     };
   }
 
-  async demoLogin(role: 'student' | 'teacher') {
-    const isStudent = role.toLowerCase() === 'student';
-    const targetUser = dataStore.data.users.find(u => u.role === (isStudent ? 'student' : 'teacher')) || {
-      id: isStudent ? 'student-default' : 'teacher-default',
-      name: isStudent ? 'Student' : 'Teacher',
-      email: isStudent ? 'student@twoblock.ai' : 'teacher@twoblock.ai',
-      role: isStudent ? 'student' : 'teacher'
-    };
+  async demoLogin(role: 'student' | 'teacher' | 'demo-student') {
+    const isDemo = role === 'demo-student';
+    const isStudent = isDemo || role.toLowerCase() === 'student';
+    
+    let targetUser: any;
+    if (isDemo) {
+      targetUser = dataStore.data.users.find(u => u.email === 'adam.haziq@twoblock.ai') || {
+        id: 'ad000000-0000-4000-8000-000000000001',
+        name: 'Adam Haziq',
+        email: 'adam.haziq@twoblock.ai',
+        role: 'student',
+        is_demo_account: true
+      };
+      targetUser.is_demo_account = true;
+    } else {
+      targetUser = dataStore.data.users.find(u => u.role === (isStudent ? 'student' : 'teacher')) || {
+        id: isStudent ? 'student-default' : 'teacher-default',
+        name: isStudent ? 'Student' : 'Teacher',
+        email: isStudent ? 'student@twoblock.ai' : 'teacher@twoblock.ai',
+        role: isStudent ? 'student' : 'teacher'
+      };
+    }
 
     const userRole = (isStudent ? UserRole.STUDENT : UserRole.TEACHER);
     const token = signToken({
@@ -192,6 +206,7 @@ export class AuthService {
       email: targetUser.email,
       role: userRole,
       full_name: targetUser.name,
+      is_demo_account: isDemo
     });
 
     return {
@@ -201,6 +216,7 @@ export class AuthService {
         email: targetUser.email,
         full_name: targetUser.name,
         role: userRole,
+        is_demo_account: isDemo
       },
     };
   }

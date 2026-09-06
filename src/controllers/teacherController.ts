@@ -110,7 +110,9 @@ export async function getStudents(req: Request, res: Response, next: NextFunctio
         status: s.status,
         statusClass,
         trend: s.trend,
-        trendSymbol: s.trend === 'up' ? '↗' : s.trend === 'steady' ? '→' : '↘'
+        trendSymbol: s.trend === 'up' ? '↗' : s.trend === 'steady' ? '→' : '↘',
+        classId: (s as any).classId || 'year10-amanah',
+        className: (s as any).className || 'Year 10 Amanah (AMANAH10)'
       };
     });
 

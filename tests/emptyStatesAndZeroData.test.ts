@@ -65,11 +65,16 @@ describe('Demo Data Purge and Empty States Verification', () => {
     ];
 
     for (const table of studentTables) {
-      const { count, error } = await supabase
+      const { data, error } = await supabase
         .from(table)
-        .select('*', { count: 'exact', head: true });
+        .select('*');
       assert.strictEqual(error, null, `Error querying ${table}: ${error?.message}`);
-      assert.strictEqual(count, 0, `Table ${table} must have 0 fake student rows, found: ${count}`);
+      // Zero fake student rows other than Adam Haziq demo account
+      const fakeRows = (data || []).filter((r: any) => {
+        const isAdam = (r.name === 'Adam Haziq' || r.full_name === 'Adam Haziq' || r.student_id === '45dd6d96-1530-44c3-a772-5c9057f79561' || r.is_demo_account === true);
+        return !isAdam;
+      });
+      assert.strictEqual(fakeRows.length, 0, `Table ${table} must have 0 fake student rows, found: ${fakeRows.length}`);
     }
 
     // Teacher profiles and classes hold teacher Liyana K.

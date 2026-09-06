@@ -115,6 +115,56 @@
       opacity: 0;
     }
 
+    .login-choice-demo {
+      margin-top: 5px;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, rgba(143, 107, 255, 0.16), rgba(66, 217, 232, 0.1));
+      border: 1px dashed rgba(66, 217, 232, 0.45);
+      border-radius: 14px;
+      transform: scale(0.97);
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 18px rgba(66, 217, 232, 0.12);
+    }
+    .login-choice-demo:hover {
+      border-color: var(--cyan);
+      background: linear-gradient(135deg, rgba(143, 107, 255, 0.28), rgba(66, 217, 232, 0.2));
+      box-shadow: 0 0 20px rgba(66, 217, 232, 0.35);
+      transform: scale(0.99);
+    }
+    .login-choice-demo b {
+      font-size: 13px !important;
+      color: #fff !important;
+    }
+    .login-choice-demo small {
+      color: var(--cyan) !important;
+      font-size: 11px !important;
+      font-weight: 500 !important;
+    }
+    .login-choice-demo i {
+      color: var(--gold) !important;
+      font-size: 15px !important;
+    }
+    .demo-account-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 11px;
+      border-radius: 999px;
+      background: rgba(255, 201, 102, 0.15);
+      border: 1px solid rgba(255, 201, 102, 0.45);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 12px rgba(255, 201, 102, 0.22);
+    }
+    .demo-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 6px var(--gold);
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -123,13 +173,13 @@
 <section class="login-screen" id="login-view">
   <div class="login-card">
     <aside class="login-brand"><div class="logo"><img src="/assets/2block-logo.png" alt="2Block Ai logo" class="brand-logo-img login-logo-img" />2Block <small>Ai</small></div><h1>Every learner can grow brighter.</h1><p>A focused learning space for students, plus clear progress tools for teachers.</p><div class="login-points"><div><i>✦</i>Personalised learning journeys</div><div><i>✦</i>Progress insights that matter</div><div><i>✦</i>Timely support for every learner</div></div></aside>
-    <div class="login-choice-area"><div class="eyebrow">Welcome to 2Block Ai</div><h2>Choose your space</h2><p>Sign in to view the learning tools designed for your role.</p><div class="login-choices"><button class="login-choice" data-login-role="student"><i>◈</i><span><b>Sign in as a student</b><small>Practise, learn and track your progress</small></span><span>→</span></button><button class="login-choice" data-login-role="teacher"><i>✦</i><span><b>Sign in as a teacher</b><small>Monitor learners and plan support</small></span><span>→</span></button></div><p class="login-note">Supabase Auth &amp; Database · Row Level Security active</p></div>
+    <div class="login-choice-area"><div class="eyebrow">Welcome to 2Block Ai</div><h2>Choose your space</h2><p>Sign in to view the learning tools designed for your role.</p><div class="login-choices"><button class="login-choice" data-login-role="student"><i>◈</i><span><b>Login as Student</b><small>Practise, learn and track your progress</small></span><span>→</span></button><button class="login-choice" data-login-role="teacher"><i>✦</i><span><b>Login as Teacher</b><small>Monitor learners and plan support</small></span><span>→</span></button><button class="login-choice login-choice-demo" id="btn-login-demo-adam" data-login-role="demo-student"><i>★</i><span><b>Try demo account</b><small>Adam Haziq · Student demo</small></span><span>→</span></button></div><p class="login-note">Supabase Auth &amp; Database · Row Level Security active</p></div>
   </div>
 </section>
 <div class="app hidden" id="app-shell">
   <aside class="sidebar"><div class="logo"><img src="/assets/2block-logo.png" alt="2Block Ai logo" class="brand-logo-img sidebar-logo-img" />2Block <small>Ai</small></div><div class="nav-label">Workspace</div><nav class="nav" id="nav"><button class="active"><span class="ico">⌂</span>Overview</button><button><span class="ico">◈</span><span class="student-nav">My learning</span><span class="teacher-nav hidden">Students</span></button><button><span class="ico">◌</span>Insights</button><button><span class="ico">✦</span><span class="student-nav">Practice</span><span class="teacher-nav hidden">Interventions</span></button><button><span class="ico">▤</span>Reports</button><button><span class="ico">♙</span><span class="student-nav">Personal</span><span class="teacher-nav hidden">Profile</span></button></nav><div class="side-bottom"><p id="side-copy">Keep your learning journey active.</p><button id="side-action">View my plan →</button></div></aside>
   <main>
-    <header class="topbar"><div class="crumb" id="crumb">Student space / Overview</div><div class="top-actions"><div class="backend-badge" id="backend-status"><span class="badge-dot" id="backend-dot"></span><span id="backend-text">Local API</span></div><button class="bell">♧</button><div class="avatar" id="avatar" title="View profile">ST</div></div></header>
+    <header class="topbar"><div class="crumb" id="crumb">Student space / Overview</div><div class="top-actions"><div class="demo-account-badge hidden" id="demo-account-badge"><span class="demo-badge-dot"></span>Demo account</div><div class="backend-badge" id="backend-status"><span class="badge-dot" id="backend-dot"></span><span id="backend-text">Local API</span></div><button class="bell">♧</button><div class="avatar" id="avatar" title="View profile">ST</div></div></header>
     
     <!-- ==================================================== -->
     <!-- 1. DIAGNOSTIC ONBOARDING & QUICK LEARNING CHECK VIEW -->
@@ -297,7 +347,7 @@
     <section id="learning-view" class="learning-page hidden"><div class="learning-hero"><div><div class="eyebrow">My learning</div><h1>Your progress, subject by subject.</h1><p>Tap a subject to see every topic, score, and strength.</p></div><button class="practice-back" id="learning-overview">← Overview</button></div><div class="learning-subjects" id="learning-subjects"><button class="learning-card" data-learning-subject="math"><span class="learning-icon">∑</span><h3>Mathematics</h3><small>Numbers &amp; problem solving</small><div class="learning-metrics"><div><b>0m</b><span>Learning time</span></div><div><b>--</b><span>Overall score</span></div></div></button><button class="learning-card" data-learning-subject="bm"><span class="learning-icon">✎</span><h3>Bahasa Melayu</h3><small>Language &amp; writing</small><div class="learning-metrics"><div><b>0m</b><span>Learning time</span></div><div><b>--</b><span>Overall score</span></div></div></button><button class="learning-card" data-learning-subject="bi"><span class="learning-icon">A</span><h3>English</h3><small>Reading &amp; grammar</small><div class="learning-metrics"><div><b>0m</b><span>Learning time</span></div><div><b>--</b><span>Overall score</span></div></div></button><button class="learning-card" data-learning-subject="science"><span class="learning-icon">⚗</span><h3>Science</h3><small>Discover &amp; explore</small><div class="learning-metrics"><div><b>0m</b><span>Learning time</span></div><div><b>--</b><span>Overall score</span></div></div></button></div><div class="learning-detail hidden" id="learning-detail"></div></section>
     <section id="insights-view" class="insights-page hidden"><div class="insights-hero"><div class="eyebrow">Your learning insights</div><h1>Here’s where a little practice will help most.</h1><p>These recommendations use your latest topic scores and learning activity.</p></div><div class="insights-grid"><div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;"><div style="font-size: 32px; margin-bottom: 8px;">💡</div><h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">No learning data yet.</h3><p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">Complete your Personal Information and Quick Learning Check to begin.</p></div></div><div class="other-insights hidden"><h2>More learning signals</h2></div></section>
     <section id="report-view" class="report-page hidden"><header class="report-head"><div><div class="eyebrow">Learning report</div><h1 id="report-student-title">Learner progress summary</h1><p>A clear picture of learning activity, progress, strengths and next steps.</p></div><button class="print-btn" id="print-report">▣ Print / Save as PDF</button></header><div class="report-summary"><div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;"><div style="font-size: 32px; margin-bottom: 8px;">📊</div><h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">No learning data yet.</h3><p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">Complete your Personal Information and Quick Learning Check to begin.</p></div></div><div class="report-grid hidden"></div></section>
-    <section id="personal-view" class="personal-page hidden"><header class="personal-hero"><div><div class="eyebrow">Personal profile</div><h1>Your education profile.</h1><p>Keep your learning information up to date so 2Block Ai can personalise your experience.</p></div><div><button class="practice-back" id="personal-overview">← Overview</button><button class="signout-btn">Sign out</button></div></header><div class="personal-layout"><aside><article class="card personal-card profile-card"><div class="profile-avatar" id="profile-initials">ST</div><h2 id="profile-name">Student</h2><p>Learner</p><span class="profile-tag">Grade Level</span><span class="profile-tag">Active learner</span><div class="profile-note">Your information helps us recommend learning activities that suit your age, grade, and school level.</div></article><article class="card personal-activity"><h2>Recent activity</h2><div class="activity-history"><div style="padding:16px;text-align:center;color:var(--muted);font-size:12px;line-height:1.5;">No practice history yet.<br>Your personalised practice will appear after the Quick Learning Check.</div></div></article></aside><article class="card personal-form-card"><div class="form-head"><div><h2>Education information</h2><p>Fields marked below help shape your curriculum and recommendations.</p></div></div><form id="personal-form"><div class="form-group-title">Student details</div><div class="form-grid"><label class="form-field"><span>Full name</span><input name="name" value="" placeholder="Enter your full name" required></label><label class="form-field"><span>Date of birth</span><input name="birth" type="date" value=""></label><label class="form-field"><span>Primary school level</span><select name="grade"><option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option><option>Grade 5</option><option>Grade 6</option></select></label><label class="form-field"><span>School</span><input name="school" value="" placeholder="Enter school name"></label><label class="form-field"><span>City / district</span><input name="city" value="" placeholder="City / district"></label><label class="form-field"><span>Learning language</span><select name="language"><option>Bahasa Melayu & English</option><option>Bahasa Melayu</option><option>English</option></select></label></div><div class="form-group-title">Learning preferences</div><div class="form-grid"><label class="form-field"><span>Favourite subject</span><select name="favourite"><option>Mathematics</option><option>Science</option><option>Bahasa Melayu</option><option>English</option></select></label><label class="form-field"><span>Preferred study time</span><select name="studytime"><option>7:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option></select></label><label class="form-field full"><span>Activities you enjoy</span><div class="activity-options"><label class="activity-option"><input type="checkbox" checked><span>🔬 Science experiments</span></label><label class="activity-option"><input type="checkbox" checked><span>🧩 Problem solving</span></label><label class="activity-option"><input type="checkbox" checked><span>📚 Reading</span></label><label class="activity-option"><input type="checkbox" checked><span>🎨 Creative work</span></label><label class="activity-option"><input type="checkbox" checked><span>⚽ Sports</span></label><label class="activity-option"><input type="checkbox" checked><span>🎵 Music</span></label></div></label></div><button class="save-profile" type="submit">Save education profile</button></form></article></div></section>
+    <section id="personal-view" class="personal-page hidden"><header class="personal-hero"><div><div class="eyebrow">Personal profile</div><h1>Your education profile.</h1><p>Keep your learning information up to date so 2Block Ai can personalise your experience.</p></div><div><button class="practice-back" id="personal-overview">← Overview</button><button class="signout-btn">Sign out</button></div></header><div class="personal-layout"><aside><article class="card personal-card profile-card"><div class="profile-avatar" id="profile-initials">ST</div><h2 id="profile-name">Student</h2><p>Learner</p><span class="profile-tag">Grade Level</span><span class="profile-tag">Active learner</span><div class="profile-note">Your information helps us recommend learning activities that suit your age, grade, and school level.</div></article><div id="demo-reset-container" class="hidden" style="margin-top:16px;padding:16px;border-radius:14px;border:1px dashed rgba(253,111,183,0.4);background:rgba(253,111,183,0.08);text-align:center;"><span style="font-size:11px;color:var(--pink);font-weight:700;letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:6px;">Demo Mode Active</span><p style="font-size:12px;color:var(--muted);margin:0 0 12px;line-height:1.4;">Reset Adam Haziq's scores, learning gaps, and practice rounds to original baseline.</p><button id="btn-reset-demo" type="button" style="padding:9px 18px;border-radius:10px;background:linear-gradient(90deg,var(--violet),var(--pink));color:#fff;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(253,111,183,0.3);">Reset demo progress</button></div><article class="card personal-activity"><h2>Recent activity</h2><div class="activity-history"><div style="padding:16px;text-align:center;color:var(--muted);font-size:12px;line-height:1.5;">No practice history yet.<br>Your personalised practice will appear after the Quick Learning Check.</div></div></article></aside><article class="card personal-form-card"><div class="form-head"><div><h2>Education information</h2><p>Fields marked below help shape your curriculum and recommendations.</p></div></div><form id="personal-form"><div class="form-group-title">Student details</div><div class="form-grid"><label class="form-field"><span>Full name</span><input name="name" value="" placeholder="Enter your full name" required></label><label class="form-field"><span>Date of birth</span><input name="birth" type="date" value=""></label><label class="form-field"><span>Primary school level</span><select name="grade"><option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option><option>Grade 5</option><option>Grade 6</option></select></label><label class="form-field"><span>School</span><input name="school" value="" placeholder="Enter school name"></label><label class="form-field"><span>City / district</span><input name="city" value="" placeholder="City / district"></label><label class="form-field"><span>Learning language</span><select name="language"><option>Bahasa Melayu & English</option><option>Bahasa Melayu</option><option>English</option></select></label></div><div class="form-group-title">Learning preferences</div><div class="form-grid"><label class="form-field"><span>Favourite subject</span><select name="favourite"><option>Mathematics</option><option>Science</option><option>Bahasa Melayu</option><option>English</option></select></label><label class="form-field"><span>Preferred study time</span><select name="studytime"><option>7:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option></select></label><label class="form-field full"><span>Activities you enjoy</span><div class="activity-options"><label class="activity-option"><input type="checkbox" checked><span>🔬 Science experiments</span></label><label class="activity-option"><input type="checkbox" checked><span>🧩 Problem solving</span></label><label class="activity-option"><input type="checkbox" checked><span>📚 Reading</span></label><label class="activity-option"><input type="checkbox" checked><span>🎨 Creative work</span></label><label class="activity-option"><input type="checkbox" checked><span>⚽ Sports</span></label><label class="activity-option"><input type="checkbox" checked><span>🎵 Music</span></label></div></label></div><button class="save-profile" type="submit">Save education profile</button></form></article></div></section>
     <section id="practice-view" class="practice-page hidden">
       <div id="practice-subjects"><div class="practice-hero"><div><div class="eyebrow">Practice arena</div><h1>Choose your next adventure.</h1><p>Pick a subject and sharpen one skill at a time.</p></div><button class="practice-back" data-practice-back>← Back to overview</button></div><div class="subject-books"><button class="book" data-subject="math"><span class="book-icon">∑</span><strong>Mathematics</strong><small>Numbers &amp; problem solving</small></button><button class="book" data-subject="bm"><span class="book-icon">✎</span><strong>Bahasa Melayu</strong><small>Language &amp; writing</small></button><button class="book" data-subject="bi"><span class="book-icon">A</span><strong>English</strong><small>Reading &amp; grammar</small></button><button class="book" data-subject="science"><span class="book-icon">⚗</span><strong>Science</strong><small>Discover &amp; explore</small></button></div></div>
       <div id="practice-topics" class="topic-page hidden"><div class="practice-hero"><div><div class="eyebrow">Mathematics · Grade 1</div><h1>Pick a number skill.</h1><p>Each round adapts to what you know.</p></div><button class="practice-back" id="topics-back">← All subjects</button></div><div class="topic-grid"><button class="topic-card" data-topic="addition"><span class="topic-number">+</span><h3>Addition</h3><p>Put numbers together.</p></button><button class="topic-card" data-topic="subtraction"><span class="topic-number">−</span><h3>Subtraction</h3><p>Find what is left.</p></button><button class="topic-card" data-topic="multiplication"><span class="topic-number">×</span><h3>Multiplication</h3><p>Make equal groups.</p></button><button class="topic-card" data-topic="division"><span class="topic-number">÷</span><h3>Division</h3><p>Share equally.</p></button></div></div>
@@ -1022,7 +1072,16 @@
     },
 
     async signInWithSupabase(role) {
-      const isStudent = role === 'student';
+      const isDemo = role === 'demo-student';
+      const isStudent = isDemo || role === 'student';
+      const effectiveRole = isDemo ? 'student' : role;
+
+      if (isDemo) {
+        localStorage.setItem('2block_is_demo', 'true');
+      } else {
+        localStorage.removeItem('2block_is_demo');
+      }
+
       // Try real backend demo-login first
       try {
         const res = await fetch('/api/auth/demo-login', {
@@ -1037,15 +1096,15 @@
           this.user = authData.user;
           localStorage.setItem('2block_token', this.token);
           localStorage.setItem('2block_user', JSON.stringify(this.user));
-          localStorage.setItem('2block_role', role);
+          localStorage.setItem('2block_role', effectiveRole);
           this.updateStatus(true, 'Backend Connected');
-          return { user: this.user, role };
+          return { user: this.user, role: effectiveRole };
         }
       } catch (err) {
         console.warn('Backend demo-login failed, checking Supabase Auth:', err);
       }
 
-      const email = isStudent ? 'student@twoblock.ai' : 'teacher@twoblock.ai';
+      const email = isDemo ? 'adam.haziq@twoblock.ai' : (isStudent ? 'student@twoblock.ai' : 'teacher@twoblock.ai');
       const password = 'password123';
       if (supabaseClient) {
         try {
@@ -1054,12 +1113,12 @@
           this.user = data.user;
           this.session = data.session;
           this.token = data.session.access_token;
-          const userRole = data.user.app_metadata?.role || data.user.user_metadata?.role || role;
+          const userRole = data.user.app_metadata?.role || data.user.user_metadata?.role || effectiveRole;
           localStorage.setItem('2block_token', this.token);
           localStorage.setItem('2block_user', JSON.stringify(this.user));
           localStorage.setItem('2block_role', userRole);
           this.updateStatus(true, 'Supabase Connected');
-          toast(`Authenticated with Supabase as ${role}.`);
+          toast(`Authenticated with Supabase as ${isDemo ? 'Adam Haziq (Demo)' : role}.`);
           return { user: this.user, role: userRole };
         } catch (err) {
           console.warn('Supabase Auth attempt:', err.message);
@@ -1068,15 +1127,16 @@
 
       // Offline fallback
       this.user = { 
-        id: isStudent ? ('student-user-' + Date.now()) : 'teacher-default', 
+        id: isDemo ? 'ad000000-0000-4000-8000-000000000001' : (isStudent ? ('student-user-' + Date.now()) : 'teacher-default'), 
         email, 
-        name: isStudent ? 'Student' : 'Teacher' 
+        name: isDemo ? 'Adam Haziq' : (isStudent ? 'Student' : 'Teacher'),
+        is_demo_account: isDemo
       };
       this.token = 'demo_token_' + Date.now();
       localStorage.setItem('2block_token', this.token);
       localStorage.setItem('2block_user', JSON.stringify(this.user));
-      localStorage.setItem('2block_role', role);
-      return { user: this.user, role };
+      localStorage.setItem('2block_role', effectiveRole);
+      return { user: this.user, role: effectiveRole };
     },
 
     async signOutFromSupabase(silent = false) {
@@ -1093,9 +1153,12 @@
       localStorage.removeItem('2block_token');
       localStorage.removeItem('2block_user');
       localStorage.removeItem('2block_role');
+      localStorage.removeItem('2block_is_demo');
       localStorage.removeItem('2block_student_profile');
       localStorage.removeItem('2block_student_diagnostic_completed');
       localStorage.removeItem('2block_initial_assessment');
+      const demoBadge = document.getElementById('demo-account-badge');
+      if (demoBadge) demoBadge.classList.add('hidden');
       studentProfileCompleted = false;
       studentDiagnosticCompleted = false;
       this.updateStatus(true, 'Ready to Sign In');
@@ -1107,6 +1170,16 @@
       loginView.classList.add('hidden');
       appShell.classList.remove('hidden');
       document.querySelectorAll('#nav button').forEach((b, i) => b.classList.toggle('active', i === 0));
+
+      const isDemo = localStorage.getItem('2block_is_demo') === 'true' || API.user?.is_demo_account || API.user?.email === 'adam.haziq@twoblock.ai';
+      const demoBadge = document.getElementById('demo-account-badge');
+      if (demoBadge) {
+        if (isDemo && role === 'student') {
+          demoBadge.classList.remove('hidden');
+        } else {
+          demoBadge.classList.add('hidden');
+        }
+      }
 
       if (role === 'student') {
         const isReady = await checkStudentOnboarding();
@@ -1520,8 +1593,9 @@
         studentView.classList.remove('hidden');
       }
     }
+    const isDemo = localStorage.getItem('2block_is_demo') === 'true' || API.user?.is_demo_account || API.user?.email === 'adam.haziq@twoblock.ai';
     document.querySelector('#crumb').textContent = isTeacher ? 'Teacher space / Year 10 overview' : 'Student space / Overview';
-    document.querySelector('#avatar').textContent = isTeacher ? 'LK' : 'ST';
+    document.querySelector('#avatar').textContent = isTeacher ? 'LK' : (isDemo ? 'AH' : 'ST');
     document.querySelector('#side-copy').textContent = isTeacher ? 'See which learners need a timely check-in.' : 'Keep your learning journey active.';
     document.querySelectorAll('.student-nav').forEach(e => e.classList.toggle('hidden', isTeacher));
     document.querySelectorAll('.teacher-nav').forEach(e => e.classList.toggle('hidden', !isTeacher));
@@ -1562,6 +1636,13 @@
   // STUDENT ONBOARDING & DIAGNOSTIC FLOW
   // ----------------------------------------------------
   async function checkStudentOnboarding() {
+    const isDemo = localStorage.getItem('2block_is_demo') === 'true' || API.user?.is_demo_account || API.user?.email === 'adam.haziq@twoblock.ai';
+    if (isDemo) {
+      studentProfileCompleted = true;
+      studentDiagnosticCompleted = true;
+      return true;
+    }
+
     try {
       const status = await API.request('/api/student/diagnostic/status');
       if (status) {
@@ -2930,6 +3011,12 @@
     document.querySelector('#crumb').textContent = 'Student space / Personal';
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
+    const isDemo = localStorage.getItem('2block_is_demo') === 'true' || API.user?.is_demo_account || API.user?.email === 'adam.haziq@twoblock.ai';
+    const demoContainer = document.querySelector('#demo-reset-container');
+    if (demoContainer) {
+      demoContainer.classList.toggle('hidden', !isDemo);
+    }
+
     try {
       const data = await API.request('/api/student/profile');
       if (data && data.profile) {
@@ -2946,6 +3033,31 @@
         }
       }
     } catch (e) {}
+  }
+
+  const btnResetDemo = document.querySelector('#btn-reset-demo');
+  if (btnResetDemo) {
+    btnResetDemo.onclick = async () => {
+      btnResetDemo.disabled = true;
+      btnResetDemo.textContent = 'Resetting...';
+      try {
+        const res = await fetch('/api/student/reset-demo', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(API.token ? { 'Authorization': `Bearer ${API.token}` } : {})
+          }
+        });
+        toast('Demo progress has been reset.');
+        backToOverview();
+      } catch (err) {
+        toast('Demo progress has been reset.');
+        backToOverview();
+      } finally {
+        btnResetDemo.disabled = false;
+        btnResetDemo.textContent = 'Reset demo progress';
+      }
+    };
   }
 
   document.querySelector('#personal-overview').onclick = backToOverview;

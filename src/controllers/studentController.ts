@@ -6,10 +6,17 @@ import { diagnosticEngine } from '../services/diagnosticEngine.js';
 import { ScoringService } from '../services/scoringService.js';
 import { GeminiPracticeService } from '../services/geminiPracticeService.js';
 import { sendSuccess } from '../utils/response.js';
+import { resetAdamDemoData } from '../scripts/seedAdamDemo.js';
 
 export async function getDashboard(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const studentId = req.user?.id || Object.keys(dataStore.data.studentProfiles)[0] || 'new-student-001';
+    let studentId = req.user?.id || Object.keys(dataStore.data.studentProfiles)[0] || 'new-student-001';
+    if (!dataStore.data.studentProfiles[studentId] && (req.user?.is_demo_account || req.user?.email === 'adam.haziq@twoblock.ai')) {
+      const demoEntry = Object.values(dataStore.data.studentProfiles).find((p: any) => p.is_demo_account || p.name === 'Adam Haziq');
+      if (demoEntry) {
+        studentId = demoEntry.userId || studentId;
+      }
+    }
 
     // If zero subjects or student has not completed assessment/profile, return empty state
     if (dataStore.data.subjects.length === 0 || !dataStore.data.studentProfiles[studentId]) {
@@ -36,15 +43,17 @@ export async function getDashboard(req: Request, res: Response, next: NextFuncti
       return;
     }
 
-    const overallPerformance = AnalyticsService.calculateStudentOverallPerformance(studentId);
+    const calcOverall = AnalyticsService.calculateStudentOverallPerformance(studentId);
+    const overallPerformance = dataStore.data.dashboard.overallPerformance ?? calcOverall;
     const health = AnalyticsService.calculateStudentHealthScore(studentId);
+    const healthScore = dataStore.data.dashboard.healthScore ?? health.score;
     const learningGaps = AnalyticsService.identifyLearningGaps(studentId);
     const recommendation = RecommendationEngine.getStudentPriorityRecommendation(studentId);
 
     const dashboard = {
       hasAssessment: true,
       overallPerformance,
-      healthScore: health.score,
+      healthScore,
       healthCategory: health.category,
       learningStreakDays: dataStore.data.dashboard.learningStreakDays || 1,
       streakIncreaseThisWeek: dataStore.data.dashboard.streakIncreaseThisWeek || 1,
@@ -86,7 +95,13 @@ export async function getDashboard(req: Request, res: Response, next: NextFuncti
 
 export async function getLearning(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const studentId = req.user?.id || Object.keys(dataStore.data.studentProfiles)[0] || 'new-student-001';
+    let studentId = req.user?.id || Object.keys(dataStore.data.studentProfiles)[0] || 'new-student-001';
+    if (!dataStore.data.studentProfiles[studentId] && (req.user?.is_demo_account || req.user?.email === 'adam.haziq@twoblock.ai')) {
+      const demoEntry = Object.values(dataStore.data.studentProfiles).find((p: any) => p.is_demo_account || p.name === 'Adam Haziq');
+      if (demoEntry) {
+        studentId = demoEntry.userId || studentId;
+      }
+    }
     if (dataStore.data.subjects.length === 0 || !dataStore.data.studentProfiles[studentId]) {
       sendSuccess(res, {
         hasAssessment: false,
@@ -371,8 +386,11 @@ export async function getReport(req: Request, res: Response, next: NextFunction)
 
 export async function getProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const studentId = req.user?.id || Object.keys(dataStore.data.studentProfiles)[0] || '';
-    const profile = dataStore.data.studentProfiles[studentId] || null;
+    let studentId = req.user?.id || Object.keys(dataStore.data.studentProfiles)[0] || '';
+    let profile = dataStore.data.studentProfiles[studentId] || null;
+    if (!profile && (req.user?.is_demo_account || req.user?.email === 'adam.haziq@twoblock.ai')) {
+      profile = Object.values(dataStore.data.studentProfiles).find((p: any) => p.is_demo_account || p.name === 'Adam Haziq') || null;
+    }
     sendSuccess(res, { profile, recentActivity: dataStore.data.recentActivity || [] });
   } catch (err) {
     next(err);
@@ -601,23 +619,36 @@ export async function getDiagnosticQuestions(_req: Request, res: Response, next:
 
 export async function getDiagnosticStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const studentId = req.user?.id || Object.keys(dataStore.data.studentProfiles)[0] || 'new-student-001';
-    const profile = dataStore.data.studentProfiles[studentId];
+    let studentId = req.user?.id || Object.keys(dataStore.data.studentProfiles)[0] || 'new-student-001';
+    let profile = dataStore.data.studentProfiles[studentId];
 
-    // Check all 8 required profile fields
+    if (!profile && (req.user?.is_demo_account || req.user?.email === 'adam.haziq@twoblock.ai')) {
+      const demoEntry = Object.values(dataStore.data.studentProfiles).find((p: any) => p.is_demo_account || p.name === 'Adam Haziq');
+      if (demoEntry) {
+        profile = demoEntry;
+        studentId = demoEntry.userId || studentId;
+      }
+    }
+
+    // Check all 8 required profile fields (or demo account)
     const isProfileComplete = !!(
-      profile &&
-      (profile as any).name &&
-      (profile as any).grade &&
-      (profile as any).school &&
-      ((profile as any).district || (profile as any).city) &&
-      ((profile as any).birth || (profile as any).dateOfBirth) &&
-      ((profile as any).language || (profile as any).preferred_language) &&
-      ((profile as any).favourite || (profile as any).favourite_subject) &&
-      ((profile as any).studytime || (profile as any).preferred_study_time)
+      profile && (
+        (profile as any).is_demo_account === true ||
+        ((profile as any).name &&
+         (profile as any).grade &&
+         (profile as any).school &&
+         ((profile as any).district || (profile as any).city) &&
+         ((profile as any).birth || (profile as any).dateOfBirth) &&
+         ((profile as any).language || (profile as any).preferred_language || (profile as any).preferredLanguage) &&
+         ((profile as any).favourite || (profile as any).favourite_subject || (profile as any).favouriteSubject) &&
+         ((profile as any).studytime || (profile as any).preferred_study_time || (profile as any).preferredStudyTime))
+      )
     );
 
-    const isDiagnosticComplete = isProfileComplete && (profile as any).diagnostic_completed === true;
+    const isDiagnosticComplete = isProfileComplete && (
+      (profile as any).diagnostic_completed === true ||
+      (profile as any).is_demo_account === true
+    );
     const gradeLevel = profile?.grade ? parseInt(String(profile.grade), 10) : 1;
 
     sendSuccess(res, {
@@ -682,6 +713,19 @@ export async function generateSyllabusQuestion(req: Request, res: Response, next
     });
 
     sendSuccess(res, question);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function resetDemoProgress(_req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await resetAdamDemoData();
+    sendSuccess(res, {
+      success: true,
+      message: 'Demo progress has been reset.',
+      data: result
+    }, 200);
   } catch (err) {
     next(err);
   }

@@ -26,7 +26,7 @@ const loginSchema = z.object({
 
 const demoLoginSchema = z.object({
   body: z.object({
-    role: z.enum(['student', 'teacher']).optional(),
+    role: z.enum(['student', 'teacher', 'demo-student']).optional(),
   }),
 });
 
