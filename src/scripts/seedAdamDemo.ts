@@ -6,12 +6,18 @@ import { dataStore } from '../services/dataStore.js';
 
 dotenv.config();
 
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://jpapghryrtnelmgfnfjg.supabase.co';
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-
-const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-  auth: { autoRefreshToken: false, persistSession: false }
-});
+function getSupabaseAdmin() {
+  const url = process.env.SUPABASE_URL || 'https://jpapghryrtnelmgfnfjg.supabase.co';
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || '';
+  if (!url || !key) return null;
+  try {
+    return createClient(url, key, {
+      auth: { autoRefreshToken: false, persistSession: false }
+    });
+  } catch {
+    return null;
+  }
+}
 
 export const ADAM_HAZIQ_USER_ID = 'ad000000-0000-4000-8000-000000000001';
 export const ADAM_HAZIQ_EMAIL = 'adam.haziq@twoblock.ai';
@@ -20,164 +26,184 @@ export async function seedAdamDemoAccount() {
   console.log('🧑‍🎓 Seeding Adam Haziq demonstration account from student-demo-data.json...');
 
   // 1. Read student-demo-data.json
-  const dataPath = path.resolve(process.cwd(), 'student-demo-data.json');
-  const demoData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+  let demoData: any = null;
+  try {
+    const dataPath = path.resolve(process.cwd(), 'student-demo-data.json');
+    if (fs.existsSync(dataPath)) {
+      demoData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+    }
+  } catch (e) {
+    console.warn('Could not read student-demo-data.json:', e);
+  }
+
+  if (!demoData) {
+    demoData = {
+      student: {
+        name: 'Adam Haziq',
+        grade: 'Grade 5',
+        school: 'Sekolah Menengah Maju Jaya',
+        district: 'Kuala Lumpur',
+        dateOfBirth: '2014-03-18',
+        learningLanguages: ['Bahasa Melayu', 'English'],
+        favouriteSubject: 'Mathematics',
+        preferredStudyTime: '7:00 PM'
+      },
+      dashboard: { healthScore: 84 },
+      subjects: []
+    };
+  }
 
   const studentName = 'Adam Haziq';
   const studentInitials = 'AH';
   const email = ADAM_HAZIQ_EMAIL;
   const password = 'password123';
-
-  // 2. Ensure Supabase Auth user exists for Adam Haziq
   let authUserId = ADAM_HAZIQ_USER_ID;
-  try {
-    const { data: listUsers } = await supabaseAdmin.auth.admin.listUsers();
-    const existing = listUsers?.users?.find(u => u.email === email);
-
-    if (existing) {
-      authUserId = existing.id;
-      // Update metadata to reflect demo account
-      await supabaseAdmin.auth.admin.updateUserById(authUserId, {
-        user_metadata: {
-          full_name: studentName,
-          role: 'student',
-          is_demo_account: true,
-          profile_completed: true,
-          quick_test_completed: true
-        },
-        app_metadata: {
-          role: 'student',
-          is_demo_account: true
-        }
-      });
-      console.log(`  ✓ Updated Supabase auth user for Adam Haziq (${authUserId})`);
-    } else {
-      const { data: newUser, error: createErr } = await supabaseAdmin.auth.admin.createUser({
-        email,
-        password,
-        email_confirm: true,
-        user_metadata: {
-          full_name: studentName,
-          role: 'student',
-          is_demo_account: true,
-          profile_completed: true,
-          quick_test_completed: true
-        },
-        app_metadata: {
-          role: 'student',
-          is_demo_account: true
-        }
-      });
-
-      if (!createErr && newUser?.user) {
-        authUserId = newUser.user.id;
-        console.log(`  ✓ Created Supabase auth user for Adam Haziq (${authUserId})`);
-      }
-    }
-  } catch (err: any) {
-    console.warn('  Note on auth user creation:', err?.message || err);
-  }
-
-  // 3. Upsert into public.users if table exists
-  try {
-    await supabaseAdmin.from('users').upsert({
-      id: authUserId,
-      email,
-      password_hash: 'managed_by_supabase_auth',
-      role: 'student'
-    });
-  } catch (err) {}
-
-  // 4. Find Teacher Liyana's class to enroll Adam Haziq
-  const { data: classes } = await supabaseAdmin
-    .from('classes')
-    .select('id, class_name')
-    .limit(5);
-
-  const targetClass = classes?.find(c => (c.class_name || '').includes('Amanah')) || classes?.[0];
-  const classId = targetClass?.id || 'year10-amanah';
-  const className = targetClass?.class_name || 'Year 10 Amanah (AMANAH10)';
-
-  // 5. Upsert into public.student_profiles
+  const supabaseAdmin = getSupabaseAdmin();
+  let className = 'Year 10 Amanah (AMANAH10)';
+  let classId = 'year10-amanah';
   let studentProfileId = authUserId;
-  try {
-    const { data: sp, error: spErr } = await supabaseAdmin.from('student_profiles').upsert({
-      user_id: authUserId,
-      full_name: studentName,
-      grade_level: 'Grade 5',
-      preferred_language: 'English',
-      learning_preferences: {
-        district: 'Kuala Lumpur',
-        dateOfBirth: '2014-03-18',
-        learningLanguages: ['Bahasa Melayu', 'English'],
-        favouriteSubject: 'Mathematics',
-        preferredStudyTime: '7:00 PM',
-        school: 'Sekolah Menengah Maju Jaya',
-        is_demo_account: true,
-        profile_completed: true,
-        quick_test_completed: true,
-        classCode: 'AMANAH10'
-      },
-      onboarding_completed: true
-    }).select().single();
 
-    if (!spErr && sp?.id) {
-      studentProfileId = sp.id;
-      console.log(`  ✓ Upserted student_profiles in Supabase (${studentProfileId})`);
+  if (supabaseAdmin) {
+    // 2. Ensure Supabase Auth user exists for Adam Haziq
+    try {
+      const { data: listUsers } = await supabaseAdmin.auth.admin.listUsers();
+      const existing = listUsers?.users?.find(u => u.email === email);
+
+      if (existing) {
+        authUserId = existing.id;
+        await supabaseAdmin.auth.admin.updateUserById(authUserId, {
+          user_metadata: {
+            full_name: studentName,
+            role: 'student',
+            is_demo_account: true,
+            profile_completed: true,
+            quick_test_completed: true
+          },
+          app_metadata: {
+            role: 'student',
+            is_demo_account: true
+          }
+        });
+      } else {
+        const { data: newUser, error: createErr } = await supabaseAdmin.auth.admin.createUser({
+          email,
+          password,
+          email_confirm: true,
+          user_metadata: {
+            full_name: studentName,
+            role: 'student',
+            is_demo_account: true,
+            profile_completed: true,
+            quick_test_completed: true
+          },
+          app_metadata: {
+            role: 'student',
+            is_demo_account: true
+          }
+        });
+
+        if (!createErr && newUser?.user) {
+          authUserId = newUser.user.id;
+        }
+      }
+    } catch (err: any) {
+      console.warn('  Note on auth user creation:', err?.message || err);
     }
-  } catch (err: any) {
-    console.warn('  Note on student_profiles:', err?.message || err);
-  }
 
-  // 6. Enroll Adam Haziq in class_enrolments
-  try {
-    const isClassUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(classId);
-    const isStudentUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(studentProfileId);
-
-    if (isClassUuid && isStudentUuid) {
-      await supabaseAdmin.from('class_enrolments').upsert({
-        class_id: classId,
-        student_id: studentProfileId
+    // 3. Upsert into public.users if table exists
+    try {
+      await supabaseAdmin.from('users').upsert({
+        id: authUserId,
+        email,
+        password_hash: 'managed_by_supabase_auth',
+        role: 'student'
       });
-      console.log(`  ✓ Enrolled Adam Haziq in class: ${className}`);
-    }
-  } catch (err: any) {
-    console.warn('  Note on class_enrolments:', err?.message || err);
-  }
+    } catch (err) {}
 
-  // 7. Upsert subject progress in public.student_subject_progress
-  try {
-    for (const sub of demoData.subjects) {
-      await supabaseAdmin.from('student_subject_progress').upsert({
-        student_id: authUserId,
-        subject_id: sub.id,
-        score: sub.score,
-        mastery: sub.mastery || sub.score,
-        learning_minutes: sub.learningMinutes,
-        status: sub.status,
-        strength: sub.strength
-      });
-    }
-    console.log(`  ✓ Upserted 4 subject progress records in Supabase`);
-  } catch (err: any) {
-    console.warn('  Note on student_subject_progress:', err?.message || err);
-  }
+    // 4. Find Teacher Liyana's class to enroll Adam Haziq
+    try {
+      const { data: classes } = await supabaseAdmin
+        .from('classes')
+        .select('id, class_name')
+        .limit(5);
 
-  // 8. Upsert topic progress in public.student_topic_progress
-  try {
-    for (const sub of demoData.subjects) {
-      for (const topic of sub.topics) {
-        await supabaseAdmin.from('student_topic_progress').upsert({
-          student_id: authUserId,
-          topic_id: topic.id,
-          score: topic.score,
-          status: topic.status
+      const targetClass = classes?.find(c => (c.class_name || '').includes('Amanah')) || classes?.[0];
+      if (targetClass?.id) classId = targetClass.id;
+      if (targetClass?.class_name) className = targetClass.class_name;
+    } catch (err) {}
+
+    // 5. Upsert into public.student_profiles
+    try {
+      const { data: sp, error: spErr } = await supabaseAdmin.from('student_profiles').upsert({
+        user_id: authUserId,
+        full_name: studentName,
+        grade_level: 'Grade 5',
+        preferred_language: 'English',
+        learning_preferences: {
+          district: 'Kuala Lumpur',
+          dateOfBirth: '2014-03-18',
+          learningLanguages: ['Bahasa Melayu', 'English'],
+          favouriteSubject: 'Mathematics',
+          preferredStudyTime: '7:00 PM',
+          school: 'Sekolah Menengah Maju Jaya',
+          is_demo_account: true,
+          profile_completed: true,
+          quick_test_completed: true,
+          classCode: 'AMANAH10'
+        },
+        onboarding_completed: true
+      }).select().single();
+
+      if (!spErr && sp?.id) {
+        studentProfileId = sp.id;
+      }
+    } catch (err: any) {
+      console.warn('  Note on student_profiles:', err?.message || err);
+    }
+
+    // 6. Enroll Adam Haziq in class_enrolments
+    try {
+      const isClassUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(classId);
+      const isStudentUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(studentProfileId);
+
+      if (isClassUuid && isStudentUuid) {
+        await supabaseAdmin.from('class_enrolments').upsert({
+          class_id: classId,
+          student_id: studentProfileId
         });
       }
+    } catch (err: any) {
+      console.warn('  Note on class_enrolments:', err?.message || err);
     }
-    console.log(`  ✓ Upserted 16 topic progress records in Supabase`);
-  } catch (err: any) {
-    console.warn('  Note on student_topic_progress:', err?.message || err);
+
+    // 7. Upsert subject progress in public.student_subject_progress
+    try {
+      for (const sub of (demoData.subjects || [])) {
+        await supabaseAdmin.from('student_subject_progress').upsert({
+          student_id: authUserId,
+          subject_id: sub.id,
+          score: sub.score,
+          mastery: sub.mastery || sub.score,
+          learning_minutes: sub.learningMinutes,
+          status: sub.status,
+          strength: sub.strength
+        });
+      }
+    } catch (err: any) {}
+
+    // 8. Upsert topic progress in public.student_topic_progress
+    try {
+      for (const sub of (demoData.subjects || [])) {
+        for (const topic of (sub.topics || [])) {
+          await supabaseAdmin.from('student_topic_progress').upsert({
+            student_id: authUserId,
+            topic_id: topic.id,
+            score: topic.score,
+            status: topic.status
+          });
+        }
+      }
+    } catch (err: any) {}
   }
 
   // 9. Sync into local dataStore for fast query and fallback
