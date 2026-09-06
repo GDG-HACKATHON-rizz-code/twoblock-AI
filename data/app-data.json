@@ -501,6 +501,33 @@
       "score": 75,
       "isCorrect": true,
       "createdAt": "2026-09-06T03:06:28.686Z"
+    },
+    {
+      "id": "practice-attempt-1788667807993",
+      "studentId": "demo-student-adam",
+      "subject": "Mathematics",
+      "topic": "Pecahan",
+      "score": 25,
+      "isCorrect": false,
+      "createdAt": "2026-09-06T04:10:07.993Z"
+    },
+    {
+      "id": "practice-attempt-1788667830426",
+      "studentId": "demo-student-adam",
+      "subject": "Mathematics",
+      "topic": "Operasi Asas",
+      "score": 40,
+      "isCorrect": false,
+      "createdAt": "2026-09-06T04:10:30.426Z"
+    },
+    {
+      "id": "practice-attempt-1788667850041",
+      "studentId": "demo-student-adam",
+      "subject": "Mathematics",
+      "topic": "Kata Nama",
+      "score": 57,
+      "isCorrect": false,
+      "createdAt": "2026-09-06T04:10:50.041Z"
     }
   ],
   "dashboard": {
@@ -508,7 +535,7 @@
     "healthScore": 84,
     "learningStreakDays": 12,
     "streakIncreaseThisWeek": 3,
-    "studyActivityMinutes": 385,
+    "studyActivityMinutes": 400,
     "studyActivityChangePercent": 18,
     "availableFocusMinutes": 45,
     "bestFocusWindow": "7:00 PM",
@@ -600,6 +627,27 @@
     }
   ],
   "recentActivity": [
+    {
+      "type": "practice",
+      "subject": "Mathematics",
+      "topic": "Kata Nama",
+      "detail": "Score 57% · Just now",
+      "date": "Just now"
+    },
+    {
+      "type": "practice",
+      "subject": "Mathematics",
+      "topic": "Operasi Asas",
+      "detail": "Score 40% · Just now",
+      "date": "Just now"
+    },
+    {
+      "type": "practice",
+      "subject": "Mathematics",
+      "topic": "Pecahan",
+      "detail": "Score 25% · Just now",
+      "date": "Just now"
+    },
     {
       "type": "practice",
       "subject": "Mathematics",

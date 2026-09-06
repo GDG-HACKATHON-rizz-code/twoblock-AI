@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/health",
+      "destination": "/api"
+    },
+    {
+      "source": "/auth/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/students/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/practice/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/courses/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/modules/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/lessons/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/recommendations/(.*)",
+      "destination": "/api"
+    }
+  ]
+}
