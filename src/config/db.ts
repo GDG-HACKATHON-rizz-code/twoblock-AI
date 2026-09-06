@@ -6,13 +6,23 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
-export const prisma =
-  global.prisma ||
-  new PrismaClient({
-    log: ['error'],
-  });
+function initPrisma(): PrismaClient {
+  try {
+    return (
+      global.prisma ||
+      new PrismaClient({
+        log: ['error'],
+      })
+    );
+  } catch (err) {
+    console.warn('⚠️ Prisma client initialization deferred or skipped:', err);
+    return null as any;
+  }
+}
 
-if (process.env.NODE_ENV !== 'production') {
+export const prisma = initPrisma();
+
+if (process.env.NODE_ENV !== 'production' && prisma) {
   global.prisma = prisma;
 }
 
