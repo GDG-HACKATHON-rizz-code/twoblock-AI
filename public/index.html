@@ -4002,7 +4002,7 @@ overallPerformance: 0,
               <h4 style="margin:7px 0 4px;font-size:13px;">Support Omar P. with Subtraction</h4>
               <p style="margin:0 0 10px;font-size:11px;color:var(--muted);line-height:1.45;">Omar scored 54% in subtraction after 38m practice. Recommended 15-minute guided visual review before the next unit.</p>
               <div style="display:flex;gap:8px;">
-                <button class="cta" style="padding:6px 12px;font-size:11px;margin:0;" onclick="openTeacherInterventions('problem')">Create support plan →</button>
+                <button class="cta" style="padding:6px 12px;font-size:11px;margin:0;" onclick="toast('Done send to student')">Create support plan →</button>
                 <button class="secondary-btn" style="padding:6px 10px;font-size:11px;" onclick="openStudentProgress('Omar P.')">View learner</button>
               </div>
             </div>
@@ -4014,7 +4014,7 @@ overallPerformance: 0,
               <h4 style="margin:7px 0 4px;font-size:13px;">Visual division practice for Chong L.</h4>
               <p style="margin:0 0 10px;font-size:11px;color:var(--muted);line-height:1.45;">Chong requires structured number regrouping practice. Interactive step-by-step questions will bridge the gap.</p>
               <div style="display:flex;gap:8px;">
-                <button class="cta" style="padding:6px 12px;font-size:11px;margin:0;" onclick="openTeacherInterventions('problem')">Assign practice →</button>
+                <button class="cta" style="padding:6px 12px;font-size:11px;margin:0;" onclick="toast('Done send to student')">Assign practice →</button>
                 <button class="secondary-btn" style="padding:6px 10px;font-size:11px;" onclick="openStudentProgress('Chong L.')">View learner</button>
               </div>
             </div>
@@ -4414,7 +4414,7 @@ overallPerformance: 0,
         `;
 
         const createBtn = document.querySelector('#create-intervention');
-        if (createBtn) createBtn.onclick = () => openTeacherInterventions('problem');
+        if (createBtn) createBtn.onclick = () => toast('Done send to student');
         const viewStudentBtn = document.querySelector('#view-omar');
         if (viewStudentBtn) viewStudentBtn.onclick = () => openStudentProgress(p.studentName || 'Omar P.');
         const reloadBtn = document.querySelector('#reload-insight');
