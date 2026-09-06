@@ -300,7 +300,7 @@ export class ScoringService {
     // Class aggregate calculations
     const allStudents = dataStore.data.students;
     const classHealthScore = allStudents.length
-      ? Math.round(allStudents.reduce((acc, s) => acc + s.healthScore, 0) / allStudents.length)
+      ? Math.round(allStudents.reduce((acc, s) => acc + (s.healthScore ?? 0), 0) / allStudents.length)
       : 0;
     const onTrackCount = allStudents.filter(s => s.status === 'thriving' || s.status === 'on track').length;
     const needsSupportCount = allStudents.filter(s => s.status === 'support' || s.status === 'watch').length;

@@ -22,6 +22,13 @@ export interface StudentProfile {
   learningLanguages: string[];
   favouriteSubject: string;
   preferredStudyTime: string;
+  is_demo_account?: boolean;
+  is_demo?: boolean;
+  profile_completed?: boolean;
+  diagnostic_completed?: boolean;
+  onboarding_completed?: boolean;
+  quick_test_completed?: boolean;
+  className?: string;
 }
 
 export interface TeacherProfile {
@@ -72,7 +79,7 @@ export interface StudentListItem {
   primarySubject: string;
   learningMinutes: number;
   healthScore: number | null;
-  status: 'thriving' | 'on track' | 'watch' | 'support' | 'Assessment pending' | 'Assessment completed';
+  status: 'thriving' | 'on track' | 'watch' | 'support' | 'Assessment pending' | 'Assessment completed' | 'On track';
   trend: 'up' | 'steady' | 'down';
   classId?: string;
   className?: string;
@@ -99,14 +106,17 @@ export interface PracticeAttempt {
   id: string;
   studentId: string;
   topic: string;
-  level: number;
-  question: string;
+  subject?: string;
+  level?: number;
+  question?: string;
+  score?: number;
   studentAnswer?: number | string;
   submittedAnswer?: string;
-  correctAnswer: number | string;
+  correctAnswer?: number | string;
   isCorrect: boolean;
-  timeSpentSeconds: number;
-  attemptedAt: string;
+  timeSpentSeconds?: number;
+  attemptedAt?: string;
+  createdAt?: string;
 }
 
 class DataStore {
@@ -120,6 +130,7 @@ class DataStore {
     students: StudentListItem[];
     interventions: InterventionItem[];
     practiceAttempts: PracticeAttempt[];
+    diagnosticAttempts?: any[];
     dashboard: any;
     classDashboard: any;
     recommendations: any[];
@@ -134,6 +145,7 @@ class DataStore {
     students: [],
     interventions: [],
     practiceAttempts: [],
+    diagnosticAttempts: [],
     dashboard: {},
     classDashboard: {},
     recommendations: [],

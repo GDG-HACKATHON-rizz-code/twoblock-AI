@@ -760,7 +760,7 @@ export async function getDiagnosticStatus(req: Request, res: Response, next: Nex
 export async function generateAdaptiveQuestion(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const { studentGrade, subject, topic, difficulty, previousAnswers } = req.body;
-    const grade = Number(studentGrade) || req.user?.grade || 5;
+    const grade = Number(studentGrade) || (req.user as any)?.grade || 5;
     const subj = subject || 'Mathematics';
     const top = topic || 'Addition';
     const diff = (difficulty === 'easy' || difficulty === 'medium' || difficulty === 'hard') ? difficulty : 'medium';

@@ -333,7 +333,7 @@
       "learningMinutes": 48,
       "recommendation": "Targeted 15-minute guided support plan in Fractions to build core equivalent fractions confidence.",
       "plan": "15-minute visual fractions mini-lesson with adaptive step-by-step hints.",
-      "createdAt": "2026-09-06T03:36:11.369Z"
+      "createdAt": "2026-09-06T03:45:07.035Z"
     }
   ],
   "practiceAttempts": [
@@ -344,7 +344,7 @@
       "topic": "Fractions",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T11:36:11.369Z"
+      "createdAt": "2026-09-05T11:45:07.035Z"
     },
     {
       "id": "practice-attempt-2",
@@ -353,7 +353,7 @@
       "topic": "Living Things",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T12:36:11.369Z"
+      "createdAt": "2026-09-05T12:45:07.035Z"
     },
     {
       "id": "practice-attempt-3",
@@ -362,7 +362,7 @@
       "topic": "Fractions",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T13:36:11.369Z"
+      "createdAt": "2026-09-05T13:45:07.035Z"
     },
     {
       "id": "practice-attempt-4",
@@ -371,7 +371,7 @@
       "topic": "Living Things",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T14:36:11.369Z"
+      "createdAt": "2026-09-05T14:45:07.035Z"
     },
     {
       "id": "practice-attempt-5",
@@ -380,7 +380,7 @@
       "topic": "Fractions",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T15:36:11.369Z"
+      "createdAt": "2026-09-05T15:45:07.035Z"
     },
     {
       "id": "practice-attempt-6",
@@ -389,7 +389,7 @@
       "topic": "Living Things",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T16:36:11.369Z"
+      "createdAt": "2026-09-05T16:45:07.035Z"
     },
     {
       "id": "practice-attempt-7",
@@ -398,7 +398,7 @@
       "topic": "Fractions",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T17:36:11.369Z"
+      "createdAt": "2026-09-05T17:45:07.035Z"
     },
     {
       "id": "practice-attempt-8",
@@ -407,7 +407,7 @@
       "topic": "Living Things",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T18:36:11.369Z"
+      "createdAt": "2026-09-05T18:45:07.035Z"
     },
     {
       "id": "practice-attempt-9",
@@ -416,7 +416,7 @@
       "topic": "Fractions",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T19:36:11.369Z"
+      "createdAt": "2026-09-05T19:45:07.035Z"
     },
     {
       "id": "practice-attempt-10",
@@ -425,7 +425,7 @@
       "topic": "Living Things",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T20:36:11.369Z"
+      "createdAt": "2026-09-05T20:45:07.035Z"
     },
     {
       "id": "practice-attempt-11",
@@ -434,7 +434,7 @@
       "topic": "Fractions",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T21:36:11.369Z"
+      "createdAt": "2026-09-05T21:45:07.035Z"
     },
     {
       "id": "practice-attempt-12",
@@ -443,7 +443,7 @@
       "topic": "Living Things",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T22:36:11.369Z"
+      "createdAt": "2026-09-05T22:45:07.035Z"
     },
     {
       "id": "practice-attempt-13",
@@ -452,7 +452,7 @@
       "topic": "Fractions",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-05T23:36:11.369Z"
+      "createdAt": "2026-09-05T23:45:07.035Z"
     },
     {
       "id": "practice-attempt-14",
@@ -461,7 +461,7 @@
       "topic": "Living Things",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-06T00:36:11.369Z"
+      "createdAt": "2026-09-06T00:45:07.035Z"
     },
     {
       "id": "practice-attempt-15",
@@ -470,7 +470,7 @@
       "topic": "Fractions",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-06T01:36:11.369Z"
+      "createdAt": "2026-09-06T01:45:07.035Z"
     },
     {
       "id": "practice-attempt-16",
@@ -479,7 +479,7 @@
       "topic": "Living Things",
       "score": 75,
       "isCorrect": true,
-      "createdAt": "2026-09-06T02:36:11.369Z"
+      "createdAt": "2026-09-06T02:45:07.035Z"
     }
   ],
   "dashboard": {
@@ -616,7 +616,7 @@
       "questionId": "diag-q-1",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-2",
@@ -624,7 +624,7 @@
       "questionId": "diag-q-2",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-3",
@@ -632,7 +632,7 @@
       "questionId": "diag-q-3",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-4",
@@ -640,7 +640,7 @@
       "questionId": "diag-q-4",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-5",
@@ -648,7 +648,7 @@
       "questionId": "diag-q-5",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-6",
@@ -656,7 +656,7 @@
       "questionId": "diag-q-6",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-7",
@@ -664,7 +664,7 @@
       "questionId": "diag-q-7",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-8",
@@ -672,7 +672,7 @@
       "questionId": "diag-q-8",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-9",
@@ -680,7 +680,7 @@
       "questionId": "diag-q-9",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-10",
@@ -688,7 +688,7 @@
       "questionId": "diag-q-10",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-11",
@@ -696,7 +696,7 @@
       "questionId": "diag-q-11",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-12",
@@ -704,7 +704,7 @@
       "questionId": "diag-q-12",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-13",
@@ -712,7 +712,7 @@
       "questionId": "diag-q-13",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-14",
@@ -720,7 +720,7 @@
       "questionId": "diag-q-14",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-15",
@@ -728,7 +728,7 @@
       "questionId": "diag-q-15",
       "selectedAnswer": "A",
       "isCorrect": true,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-16",
@@ -736,7 +736,7 @@
       "questionId": "diag-q-16",
       "selectedAnswer": "A",
       "isCorrect": false,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-17",
@@ -744,7 +744,7 @@
       "questionId": "diag-q-17",
       "selectedAnswer": "A",
       "isCorrect": false,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-18",
@@ -752,7 +752,7 @@
       "questionId": "diag-q-18",
       "selectedAnswer": "A",
       "isCorrect": false,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-19",
@@ -760,7 +760,7 @@
       "questionId": "diag-q-19",
       "selectedAnswer": "A",
       "isCorrect": false,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     },
     {
       "id": "diag-attempt-20",
@@ -768,7 +768,7 @@
       "questionId": "diag-q-20",
       "selectedAnswer": "A",
       "isCorrect": false,
-      "createdAt": "2026-09-03T03:36:11.369Z"
+      "createdAt": "2026-09-03T03:45:07.035Z"
     }
   ]
 }

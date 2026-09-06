@@ -281,7 +281,7 @@ class DiagnosticEngine {
             is_correct: isCorrect,
             response_time_seconds: Math.max(1, timeSpentSeconds),
             attempted_at: new Date().toISOString()
-          }).then(() => {}).catch(() => {});
+          }).then(() => {}, () => {});
         }
       }).catch(() => {});
     } catch (e) {}

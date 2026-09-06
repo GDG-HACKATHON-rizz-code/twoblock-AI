@@ -32,8 +32,8 @@ export class RecommendationEngine {
 
     // Sort by: lowest health score first, then lowest learning minutes
     const sortedAtRisk = [...unassignedStudents]
-      .filter(s => s.healthScore < 60 || s.trend === 'down' || s.learningMinutes < 50)
-      .sort((a, b) => a.healthScore - b.healthScore);
+      .filter(s => (s.healthScore ?? 100) < 60 || s.trend === 'down' || s.learningMinutes < 50)
+      .sort((a, b) => (a.healthScore ?? 100) - (b.healthScore ?? 100));
 
     const pool = sortedAtRisk.length > 0 ? sortedAtRisk : unassignedStudents;
 
@@ -44,8 +44,8 @@ export class RecommendationEngine {
       let reason = `${s.name}’s ${subject} progress requires support. Performance and engagement are below expected benchmarks.`;
 
       if (subject === 'Mathematics') {
-        focus = s.healthScore < 50 ? 'Subtraction' : 'Division';
-        topicScore = s.healthScore < 50 ? '54%' : '56%';
+        focus = (s.healthScore ?? 100) < 50 ? 'Subtraction' : 'Division';
+        topicScore = (s.healthScore ?? 100) < 50 ? '54%' : '56%';
         reason = `${s.name}’s Mathematics progress is at risk. Their ${focus.toLowerCase()} score and weekly engagement indicate that foundational reinforcement is needed before class progression.`;
       } else if (subject === 'English') {
         focus = 'Reading engagement';
@@ -64,11 +64,11 @@ export class RecommendationEngine {
         topic: focus,
         title: `Support ${s.name} with ${focus.toLowerCase()}`,
         reason,
-        healthScore: s.healthScore,
+        healthScore: s.healthScore ?? 0,
         topicScore,
         learningMinutes: `${s.learningMinutes} min`,
         evidence: {
-          healthScore: s.healthScore,
+          healthScore: s.healthScore ?? 0,
           topicScore,
           learningMinutes: `${s.learningMinutes} min`
         },
