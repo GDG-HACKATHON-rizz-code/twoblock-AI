@@ -8,3 +8,4 @@ twoblock_AI_all_code.*
 *.original.*
 /scripts/
 
+.vercel

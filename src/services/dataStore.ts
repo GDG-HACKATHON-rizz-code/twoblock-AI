@@ -158,23 +158,27 @@ class DataStore {
   }
 
   private init() {
-    // Ensure data directory exists
-    const dir = path.dirname(this.dataFilePath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+    try {
+      const dir = path.dirname(this.dataFilePath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      this.load();
+    } catch (e) {
+      console.warn('Could not initialize data file directory, using in-memory state:', e);
+      this.resetToZero();
     }
-    this.load();
   }
 
   public load() {
-    if (fs.existsSync(this.dataFilePath)) {
-      try {
+    try {
+      if (fs.existsSync(this.dataFilePath)) {
         const raw = fs.readFileSync(this.dataFilePath, 'utf-8');
         this.data = JSON.parse(raw);
         return;
-      } catch (err) {
-        console.warn('Failed to parse app-data.json, starting with clean zero-data state.');
       }
+    } catch (err) {
+      console.warn('Failed to parse app-data.json, starting with clean zero-data state.');
     }
     this.resetToZero();
   }
