@@ -71,9 +71,11 @@ export interface StudentListItem {
   initials: string;
   primarySubject: string;
   learningMinutes: number;
-  healthScore: number;
-  status: 'thriving' | 'on track' | 'watch' | 'support';
+  healthScore: number | null;
+  status: 'thriving' | 'on track' | 'watch' | 'support' | 'Assessment pending' | 'Assessment completed';
   trend: 'up' | 'steady' | 'down';
+  classId?: string;
+  className?: string;
 }
 
 export interface InterventionItem {
@@ -149,7 +151,10 @@ class DataStore {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
+    this.load();
+  }
 
+  public load() {
     if (fs.existsSync(this.dataFilePath)) {
       try {
         const raw = fs.readFileSync(this.dataFilePath, 'utf-8');
@@ -159,9 +164,7 @@ class DataStore {
         console.warn('Failed to parse app-data.json, starting with clean zero-data state.');
       }
     }
-
     this.resetToZero();
-    this.save();
   }
 
   public resetToZero() {

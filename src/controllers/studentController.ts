@@ -11,11 +11,14 @@ export async function getDashboard(req: Request, res: Response, next: NextFuncti
   try {
     const studentId = req.user?.id || Object.keys(dataStore.data.studentProfiles)[0] || 'new-student-001';
 
-    // If zero subjects / no assessment completed yet, return empty state
-    if (dataStore.data.subjects.length === 0) {
+    // If zero subjects or student has not completed assessment/profile, return empty state
+    if (dataStore.data.subjects.length === 0 || !dataStore.data.studentProfiles[studentId]) {
       sendSuccess(res, {
         hasAssessment: false,
-        emptyMessage: 'Complete your Quick Learning Check to personalise your learning.',
+        emptyTitle: 'No learning data yet.',
+        emptyMessage: 'Complete your Personal Information and Quick Learning Check to begin.',
+        practiceEmptyTitle: 'No practice history yet.',
+        practiceEmptyMessage: 'Your personalised practice will appear after the Quick Learning Check.',
         overallPerformance: 0,
         healthScore: 0,
         healthCategory: 'beginning',
@@ -83,10 +86,12 @@ export async function getDashboard(req: Request, res: Response, next: NextFuncti
 
 export async function getLearning(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    if (dataStore.data.subjects.length === 0) {
+    const studentId = req.user?.id || Object.keys(dataStore.data.studentProfiles)[0] || 'new-student-001';
+    if (dataStore.data.subjects.length === 0 || !dataStore.data.studentProfiles[studentId]) {
       sendSuccess(res, {
         hasAssessment: false,
-        emptyMessage: 'Complete your Quick Learning Check to personalise your learning.',
+        emptyTitle: 'No learning data yet.',
+        emptyMessage: 'Complete your Personal Information and Quick Learning Check to begin.',
         subjects: []
       });
       return;
@@ -234,10 +239,12 @@ export async function endPracticeSession(req: Request, res: Response, next: Next
 
 export async function getInsights(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    if (dataStore.data.subjects.length === 0 || !dataStore.data.recommendations || dataStore.data.recommendations.length === 0) {
+    const studentId = req.user?.id || Object.keys(dataStore.data.studentProfiles)[0] || 'new-student-001';
+    if (dataStore.data.subjects.length === 0 || !dataStore.data.studentProfiles[studentId] || !dataStore.data.recommendations || dataStore.data.recommendations.length === 0) {
       sendSuccess(res, {
         hasAssessment: false,
-        emptyMessage: 'Your recommendations will appear after your first learning check.',
+        emptyTitle: 'No practice history yet.',
+        emptyMessage: 'Your personalised practice will appear after the Quick Learning Check.',
         priority: null,
         whyPoints: [],
         steps: [],
@@ -245,8 +252,6 @@ export async function getInsights(req: Request, res: Response, next: NextFunctio
       });
       return;
     }
-
-    const studentId = req.user?.id || 'new-student-001';
     const priority = RecommendationEngine.getStudentPriorityRecommendation(studentId);
 
     const insights = {
@@ -284,11 +289,14 @@ export async function getInsights(req: Request, res: Response, next: NextFunctio
 
 export async function getReport(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    if (dataStore.data.subjects.length === 0) {
+    const studentId = req.user?.id || Object.keys(dataStore.data.studentProfiles)[0] || 'new-student-001';
+    if (dataStore.data.subjects.length === 0 || !dataStore.data.studentProfiles[studentId]) {
       sendSuccess(res, {
         hasAssessment: false,
-        emptyMessage: 'Not enough learning data to generate a report yet.',
-        period: 'September 2026',
+        emptyTitle: 'No learning data yet.',
+        emptyMessage: 'Complete your Personal Information and Quick Learning Check to begin.',
+        learnerName: 'Learner',
+        period: 'Current Period',
         overallPerformance: 0,
         totalLearningTimeFormatted: '0m',
         learningStreakDays: 0,
@@ -303,7 +311,6 @@ export async function getReport(req: Request, res: Response, next: NextFunction)
       return;
     }
 
-    const studentId = req.user?.id || 'new-student-001';
     const overallPerformance = AnalyticsService.calculateStudentOverallPerformance(studentId);
     const mathSub = dataStore.data.subjects.find(s => s.id === 'mathematics');
 
@@ -379,25 +386,163 @@ export async function updateProfile(req: Request, res: Response, next: NextFunct
 
     const name = req.body.name || (current as any).name || 'Student';
     const initials = name.split(/\s+/).filter(Boolean).map((p: string) => p[0]).join('').slice(0, 2).toUpperCase() || 'ST';
+    const grade = req.body.grade || (current as any).grade || 'Grade 1';
+    const school = req.body.school || (current as any).school || '';
+    const district = req.body.city || req.body.district || (current as any).district || '';
+    const dateOfBirth = req.body.birth || req.body.dateOfBirth || (current as any).dateOfBirth || '';
+    const preferredLanguage = req.body.language || req.body.preferred_language || (current as any).preferredLanguage || 'English';
+    const favouriteSubject = req.body.favourite || req.body.favouriteSubject || (current as any).favouriteSubject || 'Mathematics';
+    const preferredStudyTime = req.body.studytime || req.body.preferredStudyTime || (current as any).preferredStudyTime || '7:00 PM';
+    const classCode = (req.body.classCode || req.body.class_code || req.body.classSelection || '').trim();
+
+    // Match student to class using:
+    // 1. Class code (e.g. AMANAH10, BESTARI10, CEMERLANG10)
+    // 2. School and Grade/Year level
+    // 3. Selected class name / ID
+    let matchedClass: any = null;
+
+    if (classCode) {
+      const upperCode = classCode.toUpperCase();
+      matchedClass = dataStore.data.classes.find(c => {
+        const cName = c.name.toUpperCase();
+        return c.id.toUpperCase() === upperCode ||
+               cName.includes(upperCode) ||
+               (upperCode === 'AMANAH10' && cName.includes('AMANAH')) ||
+               (upperCode === 'BESTARI10' && cName.includes('BESTARI')) ||
+               (upperCode === 'CEMERLANG10' && cName.includes('CEMERLANG'));
+      });
+    }
+
+    if (!matchedClass && school) {
+      const teacher = dataStore.data.teacherProfiles['current-teacher'];
+      const schoolLower = school.toLowerCase();
+      const teacherSchoolLower = (teacher?.school || 'sekolah menengah maju jaya').toLowerCase();
+
+      const schoolMatches = schoolLower.includes('maju jaya') || teacherSchoolLower.includes(schoolLower);
+      const gradeStr = String(grade).toLowerCase();
+      const gradeMatches = gradeStr.includes('10') || (teacher?.teachingLevel && gradeStr.includes(teacher.teachingLevel.toLowerCase()));
+
+      if (schoolMatches && gradeMatches) {
+        matchedClass = dataStore.data.classes[0];
+      }
+    }
+
+    if (!matchedClass && req.body.className) {
+      matchedClass = dataStore.data.classes.find(c =>
+        c.name.toLowerCase().includes(String(req.body.className).toLowerCase())
+      );
+    }
 
     const updated = {
       userId: studentId,
       name,
       initials,
-      grade: req.body.grade || (current as any).grade || 'Grade 1',
-      school: req.body.school || (current as any).school || '',
-      district: req.body.city || req.body.district || (current as any).district || '',
-      dateOfBirth: req.body.birth || req.body.dateOfBirth || (current as any).dateOfBirth || '',
+      grade,
+      school,
+      district,
+      dateOfBirth,
       learningLanguages: req.body.language ? [req.body.language] : ((current as any).learningLanguages || ['English']),
-      preferredLanguage: req.body.language || req.body.preferred_language || 'English',
-      favouriteSubject: req.body.favourite || (current as any).favouriteSubject || 'Mathematics',
-      preferredStudyTime: req.body.studytime || (current as any).preferredStudyTime || '7:00 PM',
-      diagnostic_completed: (current as any).diagnostic_completed || false
+      preferredLanguage,
+      favouriteSubject,
+      preferredStudyTime,
+      classId: matchedClass?.id || null,
+      className: matchedClass?.name || null,
+      classCode: classCode || null,
+      diagnostic_completed: (current as any).diagnostic_completed || false,
+      onboarding_completed: false
     };
 
     dataStore.data.studentProfiles[studentId] = updated as any;
+
+    if (matchedClass) {
+      matchedClass.studentCount = Math.max(1, (matchedClass.studentCount || 0) + 1);
+
+      // Add or update student on teacher roster with Assessment pending
+      const existingIdx = dataStore.data.students.findIndex(s => s.id === studentId || s.name.toLowerCase() === name.toLowerCase());
+      const pendingStudent = {
+        id: studentId,
+        name,
+        initials,
+        primarySubject: favouriteSubject,
+        learningMinutes: 0,
+        healthScore: null,
+        status: 'Assessment pending' as const,
+        trend: 'steady' as const,
+        classId: matchedClass.id,
+        className: matchedClass.name
+      };
+
+      if (existingIdx >= 0) {
+        const existing = dataStore.data.students[existingIdx];
+        if (existing.status !== 'Assessment completed') {
+          dataStore.data.students[existingIdx] = pendingStudent;
+        }
+      } else {
+        dataStore.data.students.push(pendingStudent);
+      }
+
+      // Sync with Supabase (student_profiles and class_enrolments)
+      try {
+        const { supabase } = await import('../config/supabase.js');
+        if (supabase) {
+          let studentProfileId = studentId;
+          const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(studentId);
+
+          if (isUuid) {
+            const { data: sp } = await supabase.from('student_profiles').upsert({
+              user_id: studentId,
+              full_name: name,
+              grade_level: String(grade),
+              preferred_language: preferredLanguage,
+              learning_preferences: {
+                school,
+                district,
+                dateOfBirth,
+                favouriteSubject,
+                preferredStudyTime,
+                classCode
+              },
+              onboarding_completed: false
+            }).select().single();
+
+            if (sp?.id) {
+              studentProfileId = sp.id;
+            }
+          }
+
+          const classUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(matchedClass.id) ? matchedClass.id : null;
+          const studentProfUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(studentProfileId) ? studentProfileId : null;
+
+          if (classUuid && studentProfUuid) {
+            await supabase.from('class_enrolments').upsert({
+              class_id: classUuid,
+              student_id: studentProfUuid
+            });
+          }
+        }
+      } catch (sbErr) {}
+
+      dataStore.save();
+
+      sendSuccess(res, {
+        profile: updated,
+        classMatched: true,
+        matchedClass: {
+          id: matchedClass.id,
+          name: matchedClass.name
+        },
+        message: 'Your education profile has been saved and connected to your class.'
+      });
+      return;
+    }
+
+    // If no class match
     dataStore.save();
-    sendSuccess(res, { profile: updated, message: 'Your education profile has been saved.' });
+    sendSuccess(res, {
+      profile: updated,
+      classMatched: false,
+      message: 'Your class is not available yet. Please ask your teacher to create or share a class code.'
+    });
   } catch (err) {
     next(err);
   }

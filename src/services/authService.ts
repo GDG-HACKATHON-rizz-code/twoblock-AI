@@ -180,9 +180,9 @@ export class AuthService {
   async demoLogin(role: 'student' | 'teacher') {
     const isStudent = role.toLowerCase() === 'student';
     const targetUser = dataStore.data.users.find(u => u.role === (isStudent ? 'student' : 'teacher')) || {
-      id: isStudent ? 'student-amira-001' : 'teacher-liyana-001',
-      name: isStudent ? 'Amira M.' : 'Liyana K.',
-      email: isStudent ? 'amira@twoblock.ai' : 'liyana@twoblock.ai',
+      id: isStudent ? 'student-default' : 'teacher-default',
+      name: isStudent ? 'Student' : 'Teacher',
+      email: isStudent ? 'student@twoblock.ai' : 'teacher@twoblock.ai',
       role: isStudent ? 'student' : 'teacher'
     };
 

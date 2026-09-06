@@ -16,7 +16,8 @@ export async function getDashboard(req: Request, res: Response, next: NextFuncti
         weeklyPerformance: [],
         subjectPerformance: [],
         studentList: [],
-        emptyMessage: 'No students or class data yet.'
+        emptyTitle: 'No students have been added yet.',
+        emptyMessage: 'Class progress will appear after students complete their learning check.'
       });
       return;
     }
@@ -41,11 +42,14 @@ export async function getDashboard(req: Request, res: Response, next: NextFuncti
     ];
 
     const studentList = dataStore.data.students.map(s => {
-      const hours = Math.floor(s.learningMinutes / 60);
-      const mins = s.learningMinutes % 60;
-      const timeFormatted = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+      const isPending = s.status === 'Assessment pending' || s.healthScore === null || s.healthScore === undefined;
+      const hours = Math.floor((s.learningMinutes || 0) / 60);
+      const mins = (s.learningMinutes || 0) % 60;
+      const timeFormatted = isPending ? '0 minutes' : (hours > 0 ? `${hours}h ${mins}m` : `${mins}m`);
       return {
         ...s,
+        healthScore: isPending ? null : s.healthScore,
+        healthScoreDisplay: isPending ? 'Not available' : `${s.healthScore}`,
         timeFormatted,
         trendSymbol: s.trend === 'up' ? '↗' : s.trend === 'steady' ? '→' : '↘'
       };
@@ -68,32 +72,40 @@ export async function getStudents(req: Request, res: Response, next: NextFunctio
     const filter = (req.query.filter as string) || 'all';
 
     if (dataStore.data.students.length === 0) {
-      sendSuccess(res, { students: [], counts: { good: 0, bad: 0, total: 0 }, filter, emptyMessage: 'No students or class data yet.' });
+      sendSuccess(res, {
+        students: [],
+        counts: { good: 0, bad: 0, total: 0 },
+        filter,
+        emptyTitle: 'No students have been added yet.',
+        emptyMessage: 'Class progress will appear after students complete their learning check.'
+      });
       return;
     }
 
     let list = dataStore.data.students;
     if (filter === 'bad') {
-      list = list.filter(s => s.healthScore < 55);
+      list = list.filter(s => typeof s.healthScore === 'number' && s.healthScore !== null && s.healthScore < 55);
     } else if (filter === 'mid') {
-      list = list.filter(s => s.healthScore >= 55 && s.healthScore < 75);
+      list = list.filter(s => typeof s.healthScore === 'number' && s.healthScore !== null && s.healthScore >= 55 && s.healthScore < 75);
     } else if (filter === 'good') {
-      list = list.filter(s => s.healthScore >= 75);
+      list = list.filter(s => typeof s.healthScore === 'number' && s.healthScore !== null && s.healthScore >= 75);
     }
 
     const students = list.map(s => {
-      const hours = Math.floor(s.learningMinutes / 60);
-      const mins = s.learningMinutes % 60;
-      const timeFormatted = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
-      const statusClass = s.healthScore >= 75 ? 'good' : s.healthScore >= 55 ? 'watch' : 'risk';
+      const isPending = s.status === 'Assessment pending' || s.healthScore === null || s.healthScore === undefined;
+      const hours = Math.floor((s.learningMinutes || 0) / 60);
+      const mins = (s.learningMinutes || 0) % 60;
+      const timeFormatted = isPending ? '0 minutes' : (hours > 0 ? `${hours}h ${mins}m` : `${mins}m`);
+      const statusClass = isPending ? 'watch' : ((s.healthScore as number) >= 75 ? 'good' : (s.healthScore as number) >= 55 ? 'watch' : 'risk');
 
       return {
         id: s.id,
         name: s.name,
         initials: s.initials,
         subject: s.primarySubject,
-        healthScore: s.healthScore,
-        learningMinutes: s.learningMinutes,
+        healthScore: isPending ? null : s.healthScore,
+        healthScoreDisplay: isPending ? 'Not available' : `${s.healthScore}`,
+        learningMinutes: s.learningMinutes || 0,
         timeFormatted,
         status: s.status,
         statusClass,
@@ -102,9 +114,10 @@ export async function getStudents(req: Request, res: Response, next: NextFunctio
       };
     });
 
+    const assessed = dataStore.data.students.filter(s => typeof s.healthScore === 'number' && s.healthScore !== null);
     const counts = {
-      good: dataStore.data.students.filter(s => s.healthScore >= 75).length,
-      bad: dataStore.data.students.filter(s => s.healthScore < 55).length,
+      good: assessed.filter(s => (s.healthScore as number) >= 75).length,
+      bad: assessed.filter(s => (s.healthScore as number) < 55).length,
       total: dataStore.data.students.length
     };
 
@@ -119,45 +132,45 @@ export async function getStudentDetail(req: Request, res: Response, next: NextFu
     const query = req.params.nameOrId;
     const student = dataStore.data.students.find(
       s => s.id === query || s.name.toLowerCase() === decodeURIComponent(query).toLowerCase()
-    ) || dataStore.data.students[0];
+    );
 
-    const hours = Math.floor(student.learningMinutes / 60);
-    const mins = student.learningMinutes % 60;
-    const timeFormatted = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+    if (!student) {
+      sendSuccess(res, null);
+      return;
+    }
+
+    const isPending = student.status === 'Assessment pending' || student.healthScore === null || student.healthScore === undefined;
+    const hours = Math.floor((student.learningMinutes || 0) / 60);
+    const mins = (student.learningMinutes || 0) % 60;
+    const timeFormatted = isPending ? '0 minutes' : (hours > 0 ? `${hours}h ${mins}m` : `${mins}m`);
 
     const detail = {
       id: student.id,
       name: student.name,
       initials: student.initials,
-      meta: `Year 10 · ${student.primarySubject} focus · Active today`,
-      healthScore: student.healthScore,
-      healthStatus: AnalyticsService.getStudentCategory(student.healthScore),
-      overallPerformance: Math.max(50, student.healthScore - 7),
+      meta: `${student.className || 'Year 10'} · ${student.primarySubject} · ${isPending ? 'Assessment pending' : 'Active learner'}`,
+      healthScore: isPending ? null : student.healthScore,
+      healthScoreDisplay: isPending ? 'Not available' : `${student.healthScore}`,
+      healthStatus: isPending ? 'Assessment pending' : AnalyticsService.getStudentCategory(student.healthScore as number),
+      overallPerformance: isPending ? 0 : Math.max(50, (student.healthScore as number) - 7),
       learningTimeFormatted: timeFormatted,
-      streakDays: 12,
-      roundsCompleted: 24,
-      subjects: [
-        { name: 'Mathematics', score: 70 },
-        { name: 'Bahasa Melayu', score: 67 },
-        { name: 'English', score: 67 },
-        { name: 'Science', score: 90 }
-      ],
-      topics: [
-        { topic: 'Addition', score: 88, note: 'Strong foundation' },
-        { topic: 'Subtraction', score: 54, note: 'Recommended guided practice' },
-        { topic: 'Multiplication', score: 62, note: 'Developing' },
-        { topic: 'Division', score: 58, note: 'Needs more repetition' }
-      ],
-      recommendation: {
-        title: student.healthScore >= 80 ? `Keep ${student.name} challenged in Science` : `Support ${student.name} with Subtraction`,
-        text: student.healthScore >= 80
-          ? `${student.name} is performing strongly in Science at 90%. Consider offering extension questions while targeted Mathematics continues.`
-          : `${student.name} is below mastery thresholds. Offer a short 15-minute visual mini-lesson to rebuild core arithmetic.`
+      streakDays: isPending ? 0 : 1,
+      roundsCompleted: isPending ? 0 : 1,
+      subjects: isPending ? [] : (dataStore.data.subjects.length > 0 ? dataStore.data.subjects.map(s => ({ name: s.name, score: s.score })) : [
+        { name: 'Mathematics', score: student.healthScore || 0 }
+      ]),
+      topics: isPending ? [] : (dataStore.data.subjects.flatMap(s => s.topics).slice(0, 4).map(t => ({ topic: t.name, score: t.score, note: t.status }))),
+      recommendation: isPending ? {
+        title: `Waiting for ${student.name} to complete Quick Learning Check`,
+        text: 'Personalised recommendations and performance trends will appear once the diagnostic assessment is completed.'
+      } : {
+        title: (student.healthScore as number) >= 80 ? `Keep ${student.name} challenged` : `Support ${student.name}`,
+        text: (student.healthScore as number) >= 80
+          ? `${student.name} is performing strongly across core curriculum topics. Consider extension exercises.`
+          : `${student.name} needs focused practice on identified growth areas. Offer targeted review.`
       },
-      recentActivity: [
-        { icon: '∑', title: 'Mathematics practice', detail: 'Subtraction · 15 minutes · today' },
-        { icon: '⚗', title: 'Science lesson', detail: 'Cell structure · 28 minutes · yesterday' },
-        { icon: '✦', title: 'Practice round completed', detail: 'Addition Level 1 · 88% · 2 days ago' }
+      recentActivity: isPending ? [] : [
+        { icon: '✦', title: 'Quick Learning Check completed', detail: '20 calibrated questions · today' }
       ]
     };
 
@@ -170,7 +183,11 @@ export async function getStudentDetail(req: Request, res: Response, next: NextFu
 export async function getInsights(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     if (dataStore.data.students.length === 0) {
-      sendSuccess(res, { recommendations: [], emptyMessage: 'No students or class data yet.' });
+      sendSuccess(res, {
+        recommendations: [],
+        emptyTitle: 'No interventions are available yet.',
+        emptyMessage: 'Recommendations will appear when student learning data is available.'
+      });
       return;
     }
     const recommendations = RecommendationEngine.getTeacherPriorityRecommendations();
@@ -220,52 +237,43 @@ export async function createIntervention(req: Request, res: Response, next: Next
 export async function getInterventions(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const category = (req.query.category as string) || 'problem';
+    const allInterventions = dataStore.data.interventions || [];
 
-    if (dataStore.data.students.length === 0) {
+    if (allInterventions.length === 0) {
       sendSuccess(res, {
         category,
         counts: { total: 0, problem: 0, review: 0, complete: 0 },
         students: [],
         selectedStudent: null,
-        emptyMessage: 'No students or class data yet.'
+        emptyTitle: 'No interventions are available yet.',
+        emptyMessage: 'Recommendations will appear when student learning data is available.'
       });
       return;
     }
 
-    const unassignedProblems = [
-      { name: 'Omar P.', classification: 'Low Mathematics performance', focus: 'Subtraction', health: 47, topic: '54%', time: '38 min', description: 'Omar needs guided Mathematics support before moving to more difficult number work.', plan: 'Schedule a 15-minute guided subtraction activity: five minutes of visual warm-up, seven minutes of teacher-guided questions, and a short review.' },
-      { name: 'Chong L.', classification: 'Low topic mastery', focus: 'Subtraction', health: 48, topic: '52%', time: '41 min', description: 'Chong benefits from visual “take away” activities and short repetition practice.', plan: 'Use visual counters for a 15-minute small-group session, then check understanding with three simple questions.' },
-      { name: 'Oliver B.', classification: 'Low engagement', focus: 'English reading', health: 49, topic: '58%', time: '35 min', description: 'Oliver’s English engagement has declined during the last week.', plan: 'Schedule a short check-in and assign one age-appropriate reading activity with encouragement.' }
-    ].filter(s => !dataStore.data.assignedInterventionStudents.includes(s.name));
-
-    const reviewStudents = [
-      { name: 'Amira M.', classification: 'Review due', focus: 'Maths + Science plan', health: 91, topic: '54%', time: '4h 12m', description: 'Amira’s extension-and-support plan is ready for teacher review this week.', plan: 'Review her Science extension activity and confirm whether the weekly subtraction support can continue or be adjusted.' },
-      { name: 'Omar P.', classification: 'Review due', focus: 'Subtraction plan', health: 47, topic: '54%', time: '38 min', description: 'Omar’s guided subtraction plan needs a progress review.', plan: 'Compare his new subtraction answers with the baseline, then extend the plan if accuracy remains below 60%.' },
-      { name: 'Chong L.', classification: 'Review due', focus: 'Visual Maths activity', health: 48, topic: '52%', time: '41 min', description: 'Chong’s visual activity plan is due for a teacher review.', plan: 'Check whether visual supports improved accuracy before moving to mixed subtraction questions.' }
-    ];
-
-    const completeStudents = [
-      { name: 'Amira M.', classification: 'Complete check', focus: 'Science extension', health: 91, topic: '90%', time: '4h 12m', description: 'Amira completed a Science extension task and is ready for a teacher check.', plan: 'Review the extension task, celebrate progress, and assign the next Science challenge.' },
-      { name: 'Jin L.', classification: 'Complete check', focus: 'Science confidence practice', health: 68, topic: '72%', time: '1h 08m', description: 'Jin completed the planned confidence practice this week.', plan: 'Review the completed questions and set one realistic next learning goal.' },
-      { name: 'Sofia R.', classification: 'Complete check', focus: 'English writing task', health: 86, topic: '84%', time: '2h 41m', description: 'Sofia completed her English writing practice successfully.', plan: 'Provide short feedback and offer a more challenging evidence-writing activity.' }
-    ];
-
-    const categoryMap: Record<string, any[]> = {
-      problem: unassignedProblems,
-      review: reviewStudents,
-      complete: completeStudents
+    const filtered = allInterventions.filter(i => category === 'all' || i.status === category);
+    const counts = {
+      total: allInterventions.length,
+      problem: allInterventions.filter(i => i.status === 'problem').length,
+      review: allInterventions.filter(i => i.status === 'review').length,
+      complete: allInterventions.filter(i => i.status === 'complete').length
     };
 
-    const students = categoryMap[category] || unassignedProblems;
+    const students = filtered.map(i => ({
+      id: i.id,
+      name: i.studentName || 'Student',
+      classification: i.classification,
+      focus: i.topic,
+      health: i.healthScore,
+      topic: typeof i.topicScore === 'number' ? `${i.topicScore}%` : i.topicScore,
+      time: typeof i.learningMinutes === 'number' ? `${i.learningMinutes} min` : i.learningMinutes,
+      description: i.recommendation,
+      plan: i.plan
+    }));
 
     sendSuccess(res, {
       category,
-      counts: {
-        total: 30,
-        problem: unassignedProblems.length,
-        review: reviewStudents.length,
-        complete: completeStudents.length
-      },
+      counts,
       students,
       selectedStudent: students[0] || null
     });
@@ -278,7 +286,7 @@ export async function getReport(req: Request, res: Response, next: NextFunction)
   try {
     if (dataStore.data.students.length === 0) {
       sendSuccess(res, {
-        period: 'September 2026 · Year 10 · 0 students',
+        period: 'Current Term · 0 students',
         classHealthScore: 0,
         averagePerformance: 0,
         studentsOnTrack: 0,
@@ -286,43 +294,30 @@ export async function getReport(req: Request, res: Response, next: NextFunction)
         subjectPerformance: [],
         weeklyPerformance: [],
         studentsNeedingSupportList: [],
-        emptyMessage: 'No students or class data yet.'
+        emptyTitle: 'No students have been added yet.',
+        emptyMessage: 'Class progress will appear after students complete their learning check.'
       });
       return;
     }
 
     const classMetrics = AnalyticsService.calculateClassHealthScore();
+    const assessedStudents = dataStore.data.students.filter(s => typeof s.healthScore === 'number' && s.healthScore !== null);
+    const avgPerf = assessedStudents.length > 0
+      ? Math.round(assessedStudents.reduce((acc, s) => acc + (s.healthScore as number), 0) / assessedStudents.length)
+      : 0;
 
     const report = {
-      period: 'September 2026 · Year 10 · 30 students',
+      period: `Current Term · ${dataStore.data.students.length} students`,
       classHealthScore: classMetrics.classHealthScore,
-      averagePerformance: 74,
+      averagePerformance: avgPerf,
       studentsOnTrack: classMetrics.onTrackCount,
       studentsNeedingSupport: classMetrics.needsSupportCount,
-      subjectPerformance: [
-        { subject: 'Mathematics', score: '70%', trend: '↑ 8%', priority: 'Subtraction', priorityClass: 'high' },
-        { subject: 'Bahasa Melayu', score: '67%', trend: '↑ 3%', priority: 'Sentence structure', priorityClass: 'mid' },
-        { subject: 'English', score: '67%', trend: '↑ 4%', priority: 'Essay evidence', priorityClass: 'mid' },
-        { subject: 'Science', score: '90%', trend: '↑ 10%', priority: 'Strong', priorityClass: 'good' }
-      ],
-      weeklyPerformance: [
-        { day: 'Mon', score: 54 },
-        { day: 'Tue', score: 60 },
-        { day: 'Wed', score: 66 },
-        { day: 'Thu', score: 72 },
-        { day: 'Fri', score: 78 },
-        { day: 'Sat', score: 69 },
-        { day: 'Sun', score: 74 }
-      ],
-      studentsNeedingSupportList: [
-        { name: 'Omar P.', need: 'Maths subtraction', score: 47 },
-        { name: 'Chong L.', need: 'Maths subtraction', score: 48 },
-        { name: 'Oliver B.', need: 'English engagement', score: 49 }
-      ],
-      recommendedNextAction: {
-        title: 'Reteach subtraction in a small group.',
-        text: 'Nine learners are below the 60% mastery threshold. Use a 15-minute visual mini-lesson, then assign Level 1 adaptive practice and review results next week.'
-      }
+      subjectPerformance: [],
+      weeklyPerformance: [],
+      studentsNeedingSupportList: assessedStudents
+        .filter(s => (s.healthScore as number) < 55)
+        .map(s => ({ name: s.name, need: `${s.primarySubject} support`, score: s.healthScore })),
+      recommendedNextAction: null
     };
 
     sendSuccess(res, report);
@@ -333,7 +328,15 @@ export async function getReport(req: Request, res: Response, next: NextFunction)
 
 export async function getProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const profile = dataStore.data.teacherProfiles['teacher-liyana-001'];
+    const profile = dataStore.data.teacherProfiles['current-teacher'] || {
+      name: '',
+      initials: '',
+      teacherId: '',
+      school: '',
+      district: '',
+      primarySubject: 'Mathematics',
+      teachingLevel: 'Grade 5'
+    };
     const classes = dataStore.data.classes;
     sendSuccess(res, { profile, classes });
   } catch (err) {
@@ -343,11 +346,19 @@ export async function getProfile(req: Request, res: Response, next: NextFunction
 
 export async function updateProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const current = dataStore.data.teacherProfiles['teacher-liyana-001'];
+    const current = dataStore.data.teacherProfiles['current-teacher'] || {
+      name: '',
+      initials: '',
+      teacherId: '',
+      school: '',
+      district: '',
+      primarySubject: 'Mathematics',
+      teachingLevel: 'Grade 5'
+    };
     const updated = {
       ...current,
-      name: req.body.teacherName || current.name,
-      initials: (req.body.teacherName || current.name).split(/\s+/).map((p: string) => p[0]).join('').slice(0, 2).toUpperCase(),
+      name: req.body.teacherName || current.name || 'Teacher',
+      initials: (req.body.teacherName || current.name || 'TC').split(/\s+/).map((p: string) => p[0]).join('').slice(0, 2).toUpperCase(),
       teacherId: req.body.teacherId || current.teacherId,
       school: req.body.school || current.school,
       district: req.body.district || current.district,
@@ -355,7 +366,7 @@ export async function updateProfile(req: Request, res: Response, next: NextFunct
       teachingLevel: req.body.level || current.teachingLevel
     };
 
-    dataStore.data.teacherProfiles['teacher-liyana-001'] = updated;
+    dataStore.data.teacherProfiles['current-teacher'] = updated;
     const user = dataStore.data.users.find(u => u.role === 'teacher');
     if (user) user.name = updated.name;
 

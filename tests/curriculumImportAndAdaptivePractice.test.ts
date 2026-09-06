@@ -1,5 +1,7 @@
-import { describe, it } from 'node:test';
+import { describe, it, after } from 'node:test';
 import assert from 'node:assert';
+import fs from 'node:fs';
+import path from 'node:path';
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 
@@ -228,6 +230,32 @@ describe('Grade 5 BM, Mathematics, Science & English Curriculum & Adaptive Pract
     assert(q.question.includes('+') || q.question.includes('='), 'Question must be an arithmetic equation');
     assert.strictEqual(q.options.length, 0, 'Numeric question must have 0 options for input rendering');
     assert(Boolean(q.correctAnswer || q.answer), 'Must have a correct answer');
+  });
+
+  after(() => {
+    try {
+      const emptyState = {
+        users: [],
+        studentProfiles: {},
+        teacherProfiles: {},
+        classes: [],
+        subjects: [],
+        students: [],
+        interventions: [],
+        practiceAttempts: [],
+        dashboard: {},
+        classDashboard: {},
+        recommendations: [],
+        recentActivity: [],
+        assignedInterventionStudents: []
+      };
+      fs.writeFileSync(
+        path.resolve(process.cwd(), 'data/app-data.json'),
+        JSON.stringify(emptyState, null, 2)
+      );
+    } catch (e) {
+      console.error('Failed to reset app-data.json after test:', e);
+    }
   });
 });
 

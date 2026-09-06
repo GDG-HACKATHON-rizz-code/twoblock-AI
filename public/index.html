@@ -93,10 +93,33 @@
       to { opacity: 1; transform: scale(1.02); }
     }
 
+    /* Visual API Loading Bar */
+    #api-loading-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--cyan), var(--pink), var(--lime));
+      z-index: 9999;
+      transition: width 0.25s ease, opacity 0.25s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #api-loading-bar.active {
+      opacity: 1;
+      width: 85%;
+    }
+    #api-loading-bar.done {
+      width: 100%;
+      opacity: 0;
+    }
+
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+<div id="api-loading-bar"></div>
 <section class="login-screen" id="login-view">
   <div class="login-card">
     <aside class="login-brand"><div class="logo"><img src="/assets/2block-logo.png" alt="2Block Ai logo" class="brand-logo-img login-logo-img" />2Block <small>Ai</small></div><h1>Every learner can grow brighter.</h1><p>A focused learning space for students, plus clear progress tools for teachers.</p><div class="login-points"><div><i>✦</i>Personalised learning journeys</div><div><i>✦</i>Progress insights that matter</div><div><i>✦</i>Timely support for every learner</div></div></aside>
@@ -104,9 +127,9 @@
   </div>
 </section>
 <div class="app hidden" id="app-shell">
-  <aside class="sidebar"><div class="logo"><img src="/assets/2block-logo.png" alt="2Block Ai logo" class="brand-logo-img sidebar-logo-img" />2Block <small>Ai</small></div><div class="nav-label">Workspace</div><nav class="nav" id="nav"><button class="active"><span class="ico">⌂</span>Overview</button><button><span class="ico">◈</span><span class="student-nav">My learning</span><span class="teacher-nav hidden">Students</span></button><button><span class="ico">◌</span>Insights</button><button><span class="ico">✦</span><span class="student-nav">Practice</span><span class="teacher-nav hidden">Interventions</span></button><button><span class="ico">▤</span>Reports</button><button><span class="ico">♙</span><span class="student-nav">Personal</span><span class="teacher-nav hidden">Profile</span></button></nav><div class="side-bottom"><p id="side-copy">Keep your 7-day learning streak alive.</p><button id="side-action">View my plan →</button></div></aside>
+  <aside class="sidebar"><div class="logo"><img src="/assets/2block-logo.png" alt="2Block Ai logo" class="brand-logo-img sidebar-logo-img" />2Block <small>Ai</small></div><div class="nav-label">Workspace</div><nav class="nav" id="nav"><button class="active"><span class="ico">⌂</span>Overview</button><button><span class="ico">◈</span><span class="student-nav">My learning</span><span class="teacher-nav hidden">Students</span></button><button><span class="ico">◌</span>Insights</button><button><span class="ico">✦</span><span class="student-nav">Practice</span><span class="teacher-nav hidden">Interventions</span></button><button><span class="ico">▤</span>Reports</button><button><span class="ico">♙</span><span class="student-nav">Personal</span><span class="teacher-nav hidden">Profile</span></button></nav><div class="side-bottom"><p id="side-copy">Keep your learning journey active.</p><button id="side-action">View my plan →</button></div></aside>
   <main>
-    <header class="topbar"><div class="crumb" id="crumb">Student space / Overview</div><div class="top-actions"><div class="backend-badge" id="backend-status"><span class="badge-dot" id="backend-dot"></span><span id="backend-text">Local API</span></div><button class="bell">♧</button><div class="avatar" id="avatar" title="View profile">AM</div></div></header>
+    <header class="topbar"><div class="crumb" id="crumb">Student space / Overview</div><div class="top-actions"><div class="backend-badge" id="backend-status"><span class="badge-dot" id="backend-dot"></span><span id="backend-text">Local API</span></div><button class="bell">♧</button><div class="avatar" id="avatar" title="View profile">ST</div></div></header>
     
     <!-- ==================================================== -->
     <!-- 1. DIAGNOSTIC ONBOARDING & QUICK LEARNING CHECK VIEW -->
@@ -129,10 +152,14 @@
               <select id="diag-grade" name="grade" required>
                 <option value="1">Grade 1</option>
                 <option value="2">Grade 2</option>
-                <option value="3" selected>Grade 3</option>
+                <option value="3">Grade 3</option>
                 <option value="4">Grade 4</option>
                 <option value="5">Grade 5</option>
                 <option value="6">Grade 6</option>
+                <option value="Year 7">Year 7</option>
+                <option value="Year 8">Year 8</option>
+                <option value="Year 9">Year 9</option>
+                <option value="Year 10" selected>Year 10</option>
               </select>
             </label>
           </div>
@@ -140,7 +167,7 @@
           <div class="form-grid">
             <label class="form-field">
               <span>3. School Name *</span>
-              <input type="text" id="diag-school" name="school" placeholder="e.g. SK Seri Bintang" required />
+              <input type="text" id="diag-school" name="school" placeholder="e.g. Sekolah Menengah Maju Jaya" required />
             </label>
             <label class="form-field">
               <span>4. District / City *</span>
@@ -183,14 +210,26 @@
             </label>
           </div>
 
+          <div class="form-grid">
+            <label class="form-field full">
+              <span>Teacher Class Code / Class Name</span>
+              <input type="text" id="diag-class-code" name="classCode" placeholder="Enter Class Code (e.g. AMANAH10, BESTARI10, CEMERLANG10) or Class Name" />
+              <small style="color: var(--muted); font-size: 11px; margin-top: 4px; display: block;">Enter your teacher's class code to automatically sync with your teacher's class.</small>
+            </label>
+          </div>
+
+          <div id="diag-class-alert" class="hidden" style="padding: 12px 14px; border-radius: 10px; background: rgba(253,111,183,0.15); border: 1px solid var(--pink); color: #fff; font-size: 12px; line-height: 1.5; text-align: left;">
+            Your class is not available yet. Please ask your teacher to create or share a class code.
+          </div>
+
           <button type="submit" class="cta" style="width: 100%; margin-top: 14px; padding: 13px; font-size: 14px;">Save Profile &amp; Start Quick Learning Check →</button>
         </form>
       </div>
 
-      <!-- STEP 2: Quick Learning Check (10 Adaptive Questions) -->
+      <!-- STEP 2: Quick Learning Check (20 Calibrated Questions: 5 Math, 5 BM, 5 English, 5 Science) -->
       <div id="diag-step-quiz" class="diag-card hidden">
         <div class="diag-badge-row">
-          <span class="diag-badge" id="diag-badge-counter">Question 1 of 10</span>
+          <span class="diag-badge" id="diag-badge-counter">Question 1 of 20</span>
           <span class="diag-badge gold" id="diag-badge-grade">Grade 3</span>
           <span class="diag-badge pink" id="diag-badge-subject">Mathematics</span>
         </div>
@@ -245,20 +284,20 @@
 
     <section id="student-view">
       <div class="welcome"><div><div class="eyebrow">Your learning universe</div><div class="welcome-title-row"><h1 id="student-welcome-heading">Good morning, Learner <span>✦</span></h1><button class="get-started" id="get-started">Get started →</button></div><p>Small steps today create a brighter tomorrow.</p></div><div class="date" id="student-date-display">Active Learning Space</div></div>
-      <div id="student-empty-banner" class="card empty-banner hidden" style="border-color: var(--cyan); background: rgba(66, 217, 232, 0.08);">
+      <div id="student-empty-banner" class="card empty-banner" style="border-color: var(--cyan); background: rgba(66, 217, 232, 0.08);">
         <div style="font-size: 28px; margin-bottom: 8px;">✦</div>
-        <h3>Complete your Quick Learning Check to personalise your learning.</h3>
-        <p>Your dashboard metrics, strengths, and recommendations will activate once your quick check is finished.</p>
-        <button id="btn-start-diag-check" class="cta" style="margin-top: 14px;">Start Quick Learning Check →</button>
+        <h3>No learning data yet.</h3>
+        <p>Complete your Personal Information and Quick Learning Check to begin.</p>
+        <button id="btn-start-diag-check" class="cta" style="margin-top: 14px;">Complete Quick Learning Check →</button>
       </div>
-      <div class="grid stats"><article class="card streak-card"><div class="metric-top">Learning streak <span class="metric-icon">🔥</span></div><div class="metric-value">12 days</div><span class="delta">↑ 3 days this week</span><div class="streak-days" aria-label="Weekly learning streak"><div class="streak-day complete">Su<i class="streak-dot">✓</i></div><div class="streak-day complete">Mo<i class="streak-dot">✓</i></div><div class="streak-day today">Tu<i class="streak-dot">✓</i></div><div class="streak-day complete">We<i class="streak-dot">✓</i></div><div class="streak-day">Th<i class="streak-dot"></i></div><div class="streak-day">Fr<i class="streak-dot"></i></div><div class="streak-day">Sa<i class="streak-dot"></i></div></div></article><article class="card metric-card"><div class="metric-top">Study activity <button class="metric-menu" aria-label="Study activity actions">⌁</button></div><div class="metric-value">6h 25m</div><span class="delta">↑ 18% from last week</span><div class="popout hidden"><button>View weekly breakdown</button><button>Set study reminder</button></div></article><article class="card metric-card"><div class="metric-top">Overall performance <button class="metric-menu" aria-label="Overall performance actions">↗</button></div><div class="metric-value" id="student-overall-score">84%</div><span class="delta">↑ 6.2% this month</span><div class="popout hidden"><button>See subject performance</button><button>View assessment history</button></div></article><article class="card metric-card"><div class="metric-top">Available focus time <button class="metric-menu" aria-label="Focus time actions">◷</button></div><div class="metric-value">45 min</div><span class="delta warn">Best window: 7:00 PM</span><div class="popout hidden"><button>Plan a focus session</button><button>Update availability</button></div></article></div>
-      <div class="grid mid"><article class="card"><div class="chart-head"><div><h2 class="card-title">Learning activity</h2><p class="sub">Hover over a day to see your focused study time</p></div><span class="pill">This week⌄</span></div><div class="chart"><div class="bar-wrap"><div class="bar" data-tip="Mon · 42 min" style="height:42%"></div><span>Mon</span></div><div class="bar-wrap"><div class="bar" data-tip="Tue · 1h 03m" style="height:63%"></div><span>Tue</span></div><div class="bar-wrap"><div class="bar" data-tip="Wed · 49 min" style="height:49%"></div><span>Wed</span></div><div class="bar-wrap"><div class="bar" data-tip="Thu · 1h 27m" style="height:87%"></div><span>Thu</span></div><div class="bar-wrap"><div class="bar" data-tip="Fri · 1h 08m" style="height:68%"></div><span>Fri</span></div><div class="bar-wrap"><div class="bar" data-tip="Sat · 31 min" style="height:31%"></div><span>Sat</span></div><div class="bar-wrap"><div class="bar" data-tip="Sun · 23 min" style="height:23%"></div><span>Sun</span></div></div></article><article class="card"><h2 class="card-title">Your mastery</h2><p class="sub">Four core subjects, at a glance</p><div class="subject-mastery"><div class="subject-donut"><div class="mini-ring" style="--percent:79"><b>79%</b></div><div><strong>Mathematics</strong><span>On track</span></div></div><div class="subject-donut"><div class="mini-ring" style="--percent:60"><b>60%</b></div><div><strong>BM</strong><span>Building skills</span></div></div><div class="subject-donut"><div class="mini-ring" style="--percent:60"><b>60%</b></div><div><strong>BI</strong><span>Building skills</span></div></div><div class="subject-donut"><div class="mini-ring" style="--percent:90"><b>90%</b></div><div><strong>Science</strong><span>Excellent</span></div></div></div></article></div>
-      <div class="grid bottom"><article class="card"><h2 class="card-title">Learning gaps to close</h2><p class="sub">Your next concepts, organised by subject</p><div class="subject-gaps"><div class="subject-gap"><h3>Mathematics</h3><ol><li>Algebraic fractions</li><li>Integrate</li><li>Simplify</li></ol></div><div class="subject-gap"><h3>BM</h3><ol><li>Penanda wacana</li><li>Ayat majmuk</li></ol></div><div class="subject-gap"><h3>BI</h3><ol><li>Evidence in essays</li><li>Sentence structure</li></ol></div><div class="subject-gap"><h3>Science</h3><ol><li>Cell structure</li><li>Energy transfer</li></ol></div></div></article><article class="card practice"><div class="eyebrow">Recommended next</div><h3>Adaptive practice, made for you</h3><p>Strengthen algebraic fractions in a 15-minute session calibrated to your pace.</p><button class="cta" id="start-practice">Start practice →</button></article></div>
+      <div class="grid stats"><article class="card streak-card"><div class="metric-top">Learning streak <span class="metric-icon">🔥</span></div><div class="metric-value">0 days</div><span class="delta">No streak yet</span><div class="streak-days" aria-label="Weekly learning streak"><div class="streak-day">Su<i class="streak-dot"></i></div><div class="streak-day">Mo<i class="streak-dot"></i></div><div class="streak-day">Tu<i class="streak-dot"></i></div><div class="streak-day">We<i class="streak-dot"></i></div><div class="streak-day">Th<i class="streak-dot"></i></div><div class="streak-day">Fr<i class="streak-dot"></i></div><div class="streak-day">Sa<i class="streak-dot"></i></div></div></article><article class="card metric-card"><div class="metric-top">Study activity <button class="metric-menu" aria-label="Study activity actions">⌁</button></div><div class="metric-value">0m</div><span class="delta">No activity yet</span><div class="popout hidden"><button>View weekly breakdown</button><button>Set study reminder</button></div></article><article class="card metric-card"><div class="metric-top">Overall performance <button class="metric-menu" aria-label="Overall performance actions">↗</button></div><div class="metric-value" id="student-overall-score">--</div><span class="delta">Pending check</span><div class="popout hidden"><button>See subject performance</button><button>View assessment history</button></div></article><article class="card metric-card"><div class="metric-top">Available focus time <button class="metric-menu" aria-label="Focus time actions">◷</button></div><div class="metric-value">--</div><span class="delta warn">Best window: --</span><div class="popout hidden"><button>Plan a focus session</button><button>Update availability</button></div></article></div>
+      <div class="grid mid"><article class="card"><div class="chart-head"><div><h2 class="card-title">Learning activity</h2><p class="sub">Focused study time by day</p></div><span class="pill">This week⌄</span></div><div class="chart"><div class="bar-wrap"><div class="bar" data-tip="--" style="height:0%"></div><span>Mon</span></div><div class="bar-wrap"><div class="bar" data-tip="--" style="height:0%"></div><span>Tue</span></div><div class="bar-wrap"><div class="bar" data-tip="--" style="height:0%"></div><span>Wed</span></div><div class="bar-wrap"><div class="bar" data-tip="--" style="height:0%"></div><span>Thu</span></div><div class="bar-wrap"><div class="bar" data-tip="--" style="height:0%"></div><span>Fri</span></div><div class="bar-wrap"><div class="bar" data-tip="--" style="height:0%"></div><span>Sat</span></div><div class="bar-wrap"><div class="bar" data-tip="--" style="height:0%"></div><span>Sun</span></div></div></article><article class="card"><h2 class="card-title">Your mastery</h2><p class="sub">Four core subjects, at a glance</p><div class="subject-mastery"><div class="subject-donut"><div class="mini-ring" style="--percent:0"><b>--</b></div><div><strong>Mathematics</strong><span>Pending check</span></div></div><div class="subject-donut"><div class="mini-ring" style="--percent:0"><b>--</b></div><div><strong>BM</strong><span>Pending check</span></div></div><div class="subject-donut"><div class="mini-ring" style="--percent:0"><b>--</b></div><div><strong>BI</strong><span>Pending check</span></div></div><div class="subject-donut"><div class="mini-ring" style="--percent:0"><b>--</b></div><div><strong>Science</strong><span>Pending check</span></div></div></div></article></div>
+      <div class="grid bottom"><article class="card"><h2 class="card-title">Learning gaps to close</h2><p class="sub">Your next concepts, organised by subject</p><div class="subject-gaps"><div style="grid-column:1/-1;text-align:center;padding:26px 12px;color:var(--muted);font-size:12px;line-height:1.5;">No learning gaps identified yet.<br>Complete your Quick Learning Check to activate gap analysis.</div></div></article><article class="card practice"><div class="eyebrow">Recommended next</div><h3>Adaptive practice, made for you</h3><p>No practice history yet. Your personalised practice will appear after the Quick Learning Check.</p><button class="cta" id="start-practice">Start practice →</button></article></div>
     </section>
-    <section id="learning-view" class="learning-page hidden"><div class="learning-hero"><div><div class="eyebrow">My learning</div><h1>Your progress, subject by subject.</h1><p>Tap a subject to see every topic, score, and strength.</p></div><button class="practice-back" id="learning-overview">← Overview</button></div><div class="learning-subjects" id="learning-subjects"><button class="learning-card" data-learning-subject="math"><span class="learning-icon">∑</span><h3>Mathematics</h3><small>Numbers &amp; problem solving</small><div class="learning-metrics"><div><b>11h 23m</b><span>Learning time</span></div><div><b>70%</b><span>Overall score</span></div></div></button><button class="learning-card" data-learning-subject="bm"><span class="learning-icon">✎</span><h3>Bahasa Melayu</h3><small>Language &amp; writing</small><div class="learning-metrics"><div><b>1h 12m</b><span>Learning time</span></div><div><b>67%</b><span>Overall score</span></div></div></button><button class="learning-card" data-learning-subject="bi"><span class="learning-icon">A</span><h3>English</h3><small>Reading &amp; grammar</small><div class="learning-metrics"><div><b>1h 22m</b><span>Learning time</span></div><div><b>67%</b><span>Overall score</span></div></div></button><button class="learning-card" data-learning-subject="science"><span class="learning-icon">⚗</span><h3>Science</h3><small>Discover &amp; explore</small><div class="learning-metrics"><div><b>2h 30m</b><span>Learning time</span></div><div><b>90%</b><span>Overall score</span></div></div></button></div><div class="learning-detail hidden" id="learning-detail"></div></section>
-    <section id="insights-view" class="insights-page hidden"><div class="insights-hero"><div class="eyebrow">Your learning insights</div><h1>Here’s where a little practice will help most.</h1><p>These recommendations use your latest topic scores and learning activity.</p></div><div class="insights-grid"><article class="recommendation-card"><div class="eyebrow">Priority recommendation · Mathematics</div><h2>Build confidence in subtraction.</h2><p>Your subtraction score is lower than your other Mathematics topics. A short, focused session now can help you improve this skill before moving to harder questions.</p><div class="insight-data"><div><b>54%</b><span>Current topic score</span></div><div><b>48 min</b><span>Time spent practising</span></div><div><b>6 / 12</b><span>Recent correct answers</span></div></div><button class="cta" id="insight-practice">Practise subtraction →</button></article><div><article class="card reason-card"><h2>Why we recommend this</h2><div class="reason-list"><div class="reason-row"><i>↓</i><div><b>It is your lowest Mathematics topic.</b><p>Subtraction is 22 points below your strongest skill, Addition.</p></div></div><div class="reason-row"><i>◷</i><div><b>You have practised it less.</b><p>You spent 48 minutes on subtraction compared with 1h 45m on addition.</p></div></div><div class="reason-row"><i>✦</i><div><b>It helps unlock the next level.</b><p>Improving subtraction will make number problems and division easier.</p></div></div></div></article><article class="card support-card"><h2>Your next 15-minute plan</h2><p>Start with simple “take away” questions, then practise mixed subtraction problems with visual hints.</p><div class="insight-steps"><div class="insight-step"><b>5 min</b><span>Warm-up</span></div><div class="insight-step"><b>7 min</b><span>Guided practice</span></div><div class="insight-step"><b>3 min</b><span>Quick check</span></div></div></article></div></div><div class="other-insights"><h2>More learning signals</h2><div class="mini-insight"><i>✓</i><div><b>Science is a strength</b><small>90% overall score · You are ready for a challenge.</small></div></div><div class="mini-insight"><i>◈</i><div><b>Best study time: 7:00 PM</b><small>Your focus sessions are most consistent during this window.</small></div></div></div></section>
-    <section id="report-view" class="report-page hidden"><header class="report-head"><div><div class="eyebrow">Learning report · September 2026</div><h1>Amira’s progress summary</h1><p>A clear picture of learning activity, progress, strengths and next steps.</p></div><button class="print-btn" id="print-report">▣ Print / Save as PDF</button></header><div class="report-summary"><article class="report-overall"><div class="eyebrow">Overall progress</div><h2><span class="report-number">84%</span> learning performance</h2><p>You are building strong learning habits. Science is your biggest strength; focused subtraction practice is your best next step.</p></article><article class="report-kpi"><b>16h 27m</b><span>Total learning time</span></article><article class="report-kpi"><b>12 days</b><span>Current learning streak</span></article><article class="report-kpi"><b>24</b><span>Practice rounds completed</span></article></div><div class="report-grid"><article class="card report-section"><h2>Subject progress</h2><p class="sub">Learning time and current subject score</p><table class="report-table"><thead><tr><th>Subject</th><th>Hours</th><th>Score</th><th>Trend</th></tr></thead><tbody><tr><td>Mathematics</td><td>11h 23m</td><td><span class="score-tag watch">70%</span></td><td>↑ 8%</td></tr><tr><td>Bahasa Melayu</td><td>1h 12m</td><td><span class="score-tag watch">67%</span></td><td>↑ 3%</td></tr><tr><td>English</td><td>1h 22m</td><td><span class="score-tag watch">67%</span></td><td>↑ 4%</td></tr><tr><td>Science</td><td>2h 30m</td><td><span class="score-tag good">90%</span></td><td>↑ 10%</td></tr></tbody></table></article><article class="card report-section"><h2>Monthly learning trend</h2><p class="sub">Overall score during the last four weeks</p><div class="trend-chart"><div><i style="height:55%"></i>Week 1</div><div><i style="height:62%"></i>Week 2</div><div><i style="height:69%"></i>Week 3</div><div><i style="height:84%"></i>Week 4</div></div></article><article class="card report-section"><h2>Mathematics topic mastery</h2><p class="sub">Your current detailed topic scores</p><table class="report-table"><thead><tr><th>Topic</th><th>Score</th><th>Status</th></tr></thead><tbody><tr><td>Addition</td><td>88%</td><td><span class="score-tag good">Strong</span></td></tr><tr><td>Subtraction</td><td>54%</td><td><span class="score-tag focus">Needs focus</span></td></tr><tr><td>Multiplication</td><td>62%</td><td><span class="score-tag watch">Developing</span></td></tr><tr><td>Division</td><td>58%</td><td><span class="score-tag focus">Needs focus</span></td></tr></tbody></table></article><article class="card report-section"><h2>Study habits</h2><p class="sub">Your most effective learning pattern</p><div class="habit-list"><div class="habit"><i>◷</i><div><b>Best focus time: 7:00 PM</b><small>Your sessions are most consistent in the evening.</small></div></div><div class="habit"><i>◉</i><div><b>Average session: 27 minutes</b><small>Short focused sessions are working well for you.</small></div></div><div class="habit"><i>⌁</i><div><b>Most active day: Thursday</b><small>You completed 1h 27m of focused learning.</small></div></div></div></article><article class="card report-section"><h2>Achievements</h2><p class="sub">Wins worth celebrating</p><div class="achievement-list"><div class="achievement"><i>🔥</i>12-day learning streak</div><div class="achievement"><i>⚗</i>Science score: 90%</div><div class="achievement"><i>✦</i>24 practice rounds</div><div class="achievement"><i>↑</i>Maths improved by 8%</div></div></article><article class="report-recommendation"><div class="eyebrow">Recommended next step</div><h2>Strengthen subtraction this week.</h2><p>Your current score is 54% after 48 minutes of practice. Complete one 15-minute subtraction round to build confidence and improve your Mathematics foundation.</p><button class="cta" id="report-practice">Start subtraction practice →</button></article></div></section>
-    <section id="personal-view" class="personal-page hidden"><header class="personal-hero"><div><div class="eyebrow">Personal profile</div><h1>Your education profile.</h1><p>Keep your learning information up to date so 2Block Ai can personalise your experience.</p></div><div><button class="practice-back" id="personal-overview">← Overview</button><button class="signout-btn">Sign out</button></div></header><div class="personal-layout"><aside><article class="card personal-card profile-card"><div class="profile-avatar" id="profile-initials">AM</div><h2 id="profile-name">Amira M.</h2><p>Primary school learner</p><span class="profile-tag">Grade 1</span><span class="profile-tag">Active learner</span><div class="profile-note">Your information helps us recommend learning activities that suit your age, grade, and school level.</div></article><article class="card personal-activity"><h2>Recent activity</h2><div class="activity-history"><div><i>∑</i><span><b>Maths practice</b><small>Subtraction · Today</small></span></div><div><i>⚗</i><span><b>Science lesson</b><small>Cell structure · Yesterday</small></span></div><div><i>🔥</i><span><b>Learning streak</b><small>12 days active</small></span></div></div></article></aside><article class="card personal-form-card"><div class="form-head"><div><h2>Education information</h2><p>Fields marked below help shape your curriculum and recommendations.</p></div></div><form id="personal-form"><div class="form-group-title">Student details</div><div class="form-grid"><label class="form-field"><span>Full name</span><input name="name" value="Amira M." required></label><label class="form-field"><span>Date of birth</span><input name="birth" type="date" value="2019-03-18"></label><label class="form-field"><span>Primary school level</span><select name="grade"><option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option><option>Grade 5</option><option>Grade 6</option></select></label><label class="form-field"><span>School</span><input name="school" value="Sekolah Kebangsaan Maju Jaya"></label><label class="form-field"><span>City / district</span><input name="city" value="Kuala Lumpur"></label><label class="form-field"><span>Learning language</span><select name="language"><option>Bahasa Melayu & English</option><option>Bahasa Melayu</option><option>English</option></select></label></div><div class="form-group-title">Learning preferences</div><div class="form-grid"><label class="form-field"><span>Favourite subject</span><select name="favourite"><option>Science</option><option>Mathematics</option><option>Bahasa Melayu</option><option>English</option></select></label><label class="form-field"><span>Preferred study time</span><select name="studytime"><option>7:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option></select></label><label class="form-field full"><span>Activities you enjoy</span><div class="activity-options"><label class="activity-option"><input type="checkbox" checked><span>🔬 Science experiments</span></label><label class="activity-option"><input type="checkbox" checked><span>🧩 Problem solving</span></label><label class="activity-option"><input type="checkbox" checked><span>📚 Reading</span></label><label class="activity-option"><input type="checkbox" checked><span>🎨 Creative work</span></label><label class="activity-option"><input type="checkbox" checked><span>⚽ Sports</span></label><label class="activity-option"><input type="checkbox" checked><span>🎵 Music</span></label></div></label></div><button class="save-profile" type="submit">Save education profile</button></form></article></div></section>
+    <section id="learning-view" class="learning-page hidden"><div class="learning-hero"><div><div class="eyebrow">My learning</div><h1>Your progress, subject by subject.</h1><p>Tap a subject to see every topic, score, and strength.</p></div><button class="practice-back" id="learning-overview">← Overview</button></div><div class="learning-subjects" id="learning-subjects"><button class="learning-card" data-learning-subject="math"><span class="learning-icon">∑</span><h3>Mathematics</h3><small>Numbers &amp; problem solving</small><div class="learning-metrics"><div><b>0m</b><span>Learning time</span></div><div><b>--</b><span>Overall score</span></div></div></button><button class="learning-card" data-learning-subject="bm"><span class="learning-icon">✎</span><h3>Bahasa Melayu</h3><small>Language &amp; writing</small><div class="learning-metrics"><div><b>0m</b><span>Learning time</span></div><div><b>--</b><span>Overall score</span></div></div></button><button class="learning-card" data-learning-subject="bi"><span class="learning-icon">A</span><h3>English</h3><small>Reading &amp; grammar</small><div class="learning-metrics"><div><b>0m</b><span>Learning time</span></div><div><b>--</b><span>Overall score</span></div></div></button><button class="learning-card" data-learning-subject="science"><span class="learning-icon">⚗</span><h3>Science</h3><small>Discover &amp; explore</small><div class="learning-metrics"><div><b>0m</b><span>Learning time</span></div><div><b>--</b><span>Overall score</span></div></div></button></div><div class="learning-detail hidden" id="learning-detail"></div></section>
+    <section id="insights-view" class="insights-page hidden"><div class="insights-hero"><div class="eyebrow">Your learning insights</div><h1>Here’s where a little practice will help most.</h1><p>These recommendations use your latest topic scores and learning activity.</p></div><div class="insights-grid"><div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;"><div style="font-size: 32px; margin-bottom: 8px;">💡</div><h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">No learning data yet.</h3><p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">Complete your Personal Information and Quick Learning Check to begin.</p></div></div><div class="other-insights hidden"><h2>More learning signals</h2></div></section>
+    <section id="report-view" class="report-page hidden"><header class="report-head"><div><div class="eyebrow">Learning report</div><h1 id="report-student-title">Learner progress summary</h1><p>A clear picture of learning activity, progress, strengths and next steps.</p></div><button class="print-btn" id="print-report">▣ Print / Save as PDF</button></header><div class="report-summary"><div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;"><div style="font-size: 32px; margin-bottom: 8px;">📊</div><h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">No learning data yet.</h3><p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">Complete your Personal Information and Quick Learning Check to begin.</p></div></div><div class="report-grid hidden"></div></section>
+    <section id="personal-view" class="personal-page hidden"><header class="personal-hero"><div><div class="eyebrow">Personal profile</div><h1>Your education profile.</h1><p>Keep your learning information up to date so 2Block Ai can personalise your experience.</p></div><div><button class="practice-back" id="personal-overview">← Overview</button><button class="signout-btn">Sign out</button></div></header><div class="personal-layout"><aside><article class="card personal-card profile-card"><div class="profile-avatar" id="profile-initials">ST</div><h2 id="profile-name">Student</h2><p>Learner</p><span class="profile-tag">Grade Level</span><span class="profile-tag">Active learner</span><div class="profile-note">Your information helps us recommend learning activities that suit your age, grade, and school level.</div></article><article class="card personal-activity"><h2>Recent activity</h2><div class="activity-history"><div style="padding:16px;text-align:center;color:var(--muted);font-size:12px;line-height:1.5;">No practice history yet.<br>Your personalised practice will appear after the Quick Learning Check.</div></div></article></aside><article class="card personal-form-card"><div class="form-head"><div><h2>Education information</h2><p>Fields marked below help shape your curriculum and recommendations.</p></div></div><form id="personal-form"><div class="form-group-title">Student details</div><div class="form-grid"><label class="form-field"><span>Full name</span><input name="name" value="" placeholder="Enter your full name" required></label><label class="form-field"><span>Date of birth</span><input name="birth" type="date" value=""></label><label class="form-field"><span>Primary school level</span><select name="grade"><option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option><option>Grade 5</option><option>Grade 6</option></select></label><label class="form-field"><span>School</span><input name="school" value="" placeholder="Enter school name"></label><label class="form-field"><span>City / district</span><input name="city" value="" placeholder="City / district"></label><label class="form-field"><span>Learning language</span><select name="language"><option>Bahasa Melayu & English</option><option>Bahasa Melayu</option><option>English</option></select></label></div><div class="form-group-title">Learning preferences</div><div class="form-grid"><label class="form-field"><span>Favourite subject</span><select name="favourite"><option>Mathematics</option><option>Science</option><option>Bahasa Melayu</option><option>English</option></select></label><label class="form-field"><span>Preferred study time</span><select name="studytime"><option>7:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option></select></label><label class="form-field full"><span>Activities you enjoy</span><div class="activity-options"><label class="activity-option"><input type="checkbox" checked><span>🔬 Science experiments</span></label><label class="activity-option"><input type="checkbox" checked><span>🧩 Problem solving</span></label><label class="activity-option"><input type="checkbox" checked><span>📚 Reading</span></label><label class="activity-option"><input type="checkbox" checked><span>🎨 Creative work</span></label><label class="activity-option"><input type="checkbox" checked><span>⚽ Sports</span></label><label class="activity-option"><input type="checkbox" checked><span>🎵 Music</span></label></div></label></div><button class="save-profile" type="submit">Save education profile</button></form></article></div></section>
     <section id="practice-view" class="practice-page hidden">
       <div id="practice-subjects"><div class="practice-hero"><div><div class="eyebrow">Practice arena</div><h1>Choose your next adventure.</h1><p>Pick a subject and sharpen one skill at a time.</p></div><button class="practice-back" data-practice-back>← Back to overview</button></div><div class="subject-books"><button class="book" data-subject="math"><span class="book-icon">∑</span><strong>Mathematics</strong><small>Numbers &amp; problem solving</small></button><button class="book" data-subject="bm"><span class="book-icon">✎</span><strong>Bahasa Melayu</strong><small>Language &amp; writing</small></button><button class="book" data-subject="bi"><span class="book-icon">A</span><strong>English</strong><small>Reading &amp; grammar</small></button><button class="book" data-subject="science"><span class="book-icon">⚗</span><strong>Science</strong><small>Discover &amp; explore</small></button></div></div>
       <div id="practice-topics" class="topic-page hidden"><div class="practice-hero"><div><div class="eyebrow">Mathematics · Grade 1</div><h1>Pick a number skill.</h1><p>Each round adapts to what you know.</p></div><button class="practice-back" id="topics-back">← All subjects</button></div><div class="topic-grid"><button class="topic-card" data-topic="addition"><span class="topic-number">+</span><h3>Addition</h3><p>Put numbers together.</p></button><button class="topic-card" data-topic="subtraction"><span class="topic-number">−</span><h3>Subtraction</h3><p>Find what is left.</p></button><button class="topic-card" data-topic="multiplication"><span class="topic-number">×</span><h3>Multiplication</h3><p>Make equal groups.</p></button><button class="topic-card" data-topic="division"><span class="topic-number">÷</span><h3>Division</h3><p>Share equally.</p></button></div></div>
@@ -287,30 +326,30 @@
           <div class="answer-feedback" id="answer-feedback" aria-live="polite"></div>
         </article>
       </div>
-      <div id="practice-summary" class="summary-page hidden"><article class="summary-card"><div class="summary-star">✦</div><div class="eyebrow">Round complete</div><h1>Nice effort, Amira!</h1><p id="summary-note">You completed the survival round.</p><div class="summary-stats"><div class="summary-stat"><b id="summary-correct">0</b><span>Correct</span></div><div class="summary-stat"><b id="summary-wrong">0</b><span>Wrong</span></div><div class="summary-stat"><b id="summary-score">0%</b><span>Score</span></div></div><div class="mastery-result" id="mastery-result">Topic mastery: Beginning</div><div class="summary-actions"><button class="secondary-btn" id="try-again">Try again</button><button class="cta" id="other-topic">Choose another topic</button></div></article></div>
+      <div id="practice-summary" class="summary-page hidden"><article class="summary-card"><div class="summary-star">✦</div><div class="eyebrow">Round complete</div><h1>Round complete!</h1><p id="summary-note">You completed the survival round.</p><div class="summary-stats"><div class="summary-stat"><b id="summary-correct">0</b><span>Correct</span></div><div class="summary-stat"><b id="summary-wrong">0</b><span>Wrong</span></div><div class="summary-stat"><b id="summary-score">0%</b><span>Score</span></div></div><div class="mastery-result" id="mastery-result">Topic mastery: Beginning</div><div class="summary-actions"><button class="secondary-btn" id="try-again">Try again</button><button class="cta" id="other-topic">Choose another topic</button></div></article></div>
     </section>
-    <section id="teacher-profile-view" class="teacher-profile-page hidden"><header class="teacher-profile-head"><div><div class="eyebrow">Teacher profile</div><h1>Your teaching profile.</h1><p>Keep your school, class, and teaching preferences current.</p></div><button class="signout-btn">Sign out</button></header><div class="teacher-profile-layout"><aside><article class="card teacher-profile-card"><div class="teacher-avatar-large" id="teacher-profile-initials">LK</div><h2 id="teacher-profile-name">Liyana K.</h2><p>Year 10 Mathematics Teacher</p><span class="teacher-profile-tag">Year 10</span><span class="teacher-profile-tag">3 active classes</span><div class="teacher-class-list"><div><b>Year 10 Amanah</b><small>30 students · Mathematics</small></div><div><b>Year 10 Bestari</b><small>28 students · Mathematics</small></div><div><b>Year 10 Cemerlang</b><small>26 students · Mathematics</small></div></div></article></aside><article class="card teacher-profile-form"><h2>Professional information</h2><p>This information helps organise your classes and teaching recommendations.</p><form id="teacher-profile-form"><div class="form-group-title">Teacher details</div><div class="form-grid"><label class="form-field"><span>Full name</span><input name="teacherName" value="Liyana K." required></label><label class="form-field"><span>Teacher ID</span><input name="teacherId" value="TCH-10482"></label><label class="form-field"><span>School</span><input name="school" value="Sekolah Menengah Maju Jaya"></label><label class="form-field"><span>District / city</span><input name="district" value="Kuala Lumpur"></label><label class="form-field"><span>Primary subject</span><select name="subject"><option>Mathematics</option><option>Science</option><option>Bahasa Melayu</option><option>English</option></select></label><label class="form-field"><span>Teaching level</span><select name="level"><option>Year 10</option><option>Year 9</option><option>Year 8</option><option>Year 7</option></select></label></div><div class="form-group-title">Teaching preferences</div><div class="form-grid"><label class="form-field"><span>Preferred intervention style</span><select name="intervention"><option>Small-group guided practice</option><option>One-to-one check-in</option><option>Whole-class reteaching</option><option>Adaptive practice assignment</option></select></label><label class="form-field"><span>Report frequency</span><select name="reports"><option>Weekly</option><option>Monthly</option><option>Each term</option></select></label><label class="form-field full"><span>Teaching interests</span><div class="activity-options"><label class="activity-option"><input type="checkbox" checked><span>📊 Learning analytics</span></label><label class="activity-option"><input type="checkbox" checked><span>✦ AI recommendations</span></label><label class="activity-option"><input type="checkbox" checked><span>🧩 Adaptive learning</span></label><label class="activity-option"><input type="checkbox" checked><span>👥 Small-group support</span></label></div></label></div><button class="teacher-save" type="submit">Save teacher profile</button></form></article></div></section>
-    <section id="teacher-report-view" class="teacher-report-page hidden"><header class="teacher-report-head"><div><div class="eyebrow">Class report · Year 10</div><h1>Learning progress report</h1><p>September 2026 · 30 students · Evidence from study activity, mastery, and interventions.</p></div><div class="teacher-report-actions"><select aria-label="Report period"><option>This month</option><option>Last month</option><option>This term</option></select><button class="print-btn" id="print-teacher-report">▣ Print / Save as PDF</button></div></header><div class="teacher-report-summary"><article class="teacher-report-highlight"><b>78</b><h2>Class health score</h2><p>The class is progressing steadily. Mathematics remains the priority subject, while Science is the strongest area.</p></article><article class="card teacher-report-kpi"><b>74%</b><span>Average performance</span></article><article class="card teacher-report-kpi"><b>21</b><span>Students on track</span></article><article class="card teacher-report-kpi"><b>9</b><span>Students needing support</span></article></div><div class="teacher-report-grid"><article class="card"><h2>Subject performance</h2><p class="sub">Current class average by core subject</p><table class="teacher-report-table"><thead><tr><th>Subject</th><th>Score</th><th>Trend</th><th>Priority</th></tr></thead><tbody><tr><td>Mathematics</td><td>70%</td><td>↑ 8%</td><td><span class="report-status high">Subtraction</span></td></tr><tr><td>Bahasa Melayu</td><td>67%</td><td>↑ 3%</td><td><span class="report-status mid">Sentence structure</span></td></tr><tr><td>English</td><td>67%</td><td>↑ 4%</td><td><span class="report-status mid">Essay evidence</span></td></tr><tr><td>Science</td><td>90%</td><td>↑ 10%</td><td><span class="report-status good">Strong</span></td></tr></tbody></table></article><article class="card"><h2>Weekly class performance</h2><p class="sub">Average score across all learners</p><div class="report-performance"><div><i style="height:54%"></i>Mon</div><div><i style="height:60%"></i>Tue</div><div><i style="height:66%"></i>Wed</div><div><i style="height:72%"></i>Thu</div><div><i style="height:78%"></i>Fri</div><div><i style="height:69%"></i>Sat</div><div><i style="height:74%"></i>Sun</div></div></article><article class="card"><h2>Students needing support</h2><p class="sub">Highest-priority learners this month</p><table class="teacher-report-table"><thead><tr><th>Student</th><th>Need</th><th>Score</th></tr></thead><tbody><tr><td>Omar P.</td><td>Maths subtraction</td><td>47</td></tr><tr><td>Chong L.</td><td>Maths subtraction</td><td>48</td></tr><tr><td>Oliver B.</td><td>English engagement</td><td>49</td></tr></tbody></table></article><article class="teacher-report-note"><div class="eyebrow">Recommended next action</div><h2>Reteach subtraction in a small group.</h2><p>Nine learners are below the 60% mastery threshold. Use a 15-minute visual mini-lesson, then assign Level 1 adaptive practice and review results next week.</p><button class="cta" id="teacher-report-interventions">Open interventions →</button></article></div></section>
-    <section id="teacher-interventions-view" class="interventions-page hidden"><header class="intervention-simple-head"><div><div class="eyebrow">Teacher interventions · Year 10</div><h1>Support plans that make progress visible.</h1><p>Use AI-classified learning signals to focus support where it is needed most.</p></div></header><div class="intervention-simple-kpis"><article class="card simple-kpi"><b>30</b><span>Total students</span></article><article class="card simple-kpi"><b>9</b><span>Problem students</span></article><article class="card simple-kpi"><b>3</b><span>Due for review</span></article><article class="card simple-kpi"><b>12</b><span>Complete check this week</span></article></div><article class="learning-challenge"><div><div class="eyebrow">AI learning support</div><h2>Challenge and strengthen learning.</h2><p>Choose an AI-classified student group below. The table will update with the matching learners, then select a student to review their learning profile and recommended support plan.</p></div><div class="intervention-category"><select id="simple-intervention-filter" aria-label="Filter intervention students"><option value="problem">Problem students</option><option value="review">Due for review</option><option value="complete">Complete check this week</option></select></div></article><article class="card intervention-simple-table"><h2 id="simple-intervention-title">Problem students</h2><p class="sub" id="simple-intervention-subtitle">AI identified learners who need additional support.</p><table><thead><tr><th>Student</th><th>AI classification</th><th>Focus area</th><th>Health score</th><th></th></tr></thead><tbody id="simple-intervention-body"></tbody></table></article><section class="selected-student-detail"><article class="card detail-student-card"><div class="eyebrow">Selected student detail</div><h2 id="simple-detail-name">Omar P.</h2><p id="simple-detail-description">Omar needs guided Mathematics support before moving to more difficult number work.</p><div class="detail-score-grid"><div><b id="simple-detail-health">47</b><span>Health score</span></div><div><b id="simple-detail-topic">54%</b><span>Topic score</span></div><div><b id="simple-detail-time">38 min</b><span>Learning time</span></div></div></article><article class="detail-student-plan"><h2 id="simple-plan-title">Recommended support plan</h2><p id="simple-plan-description">Schedule a 15-minute guided subtraction activity: five minutes of visual warm-up, seven minutes of teacher-guided questions, and a short review.</p><button class="cta" id="simple-detail-action">Open student progress →</button></article></section></section>
-    <section id="teacher-progress-view" class="teacher-progress-page hidden"><header class="student-progress-head"><button class="practice-back" id="student-progress-back">← Students</button><span class="directory-avatar" id="progress-avatar">AM</span><div><h1 id="progress-name">Amira M.</h1><p id="progress-meta">Year 10 · Mathematics focus · Active today</p></div><div class="student-progress-health"><b id="progress-health">91</b><span>health score · thriving</span></div></header><div class="teacher-progress-kpis"><article class="card teacher-progress-kpi"><b id="progress-overall">84%</b><span>Overall performance</span></article><article class="card teacher-progress-kpi"><b id="progress-time">4h 12m</b><span>Learning time this week</span></article><article class="card teacher-progress-kpi"><b>12 days</b><span>Current learning streak</span></article><article class="card teacher-progress-kpi"><b>24</b><span>Practice rounds completed</span></article></div><div class="student-progress-grid"><article class="card report-section"><h2>Subject progress</h2><p class="sub">Current subject score and tracking</p><div class="teacher-subject-track"><div class="teacher-subject-row"><b>Mathematics</b><div class="progress-line"><i style="--value:70%"></i></div><span>70%</span></div><div class="teacher-subject-row"><b>Bahasa Melayu</b><div class="progress-line"><i style="--value:67%"></i></div><span>67%</span></div><div class="teacher-subject-row"><b>English</b><div class="progress-line"><i style="--value:67%"></i></div><span>67%</span></div><div class="teacher-subject-row"><b>Science</b><div class="progress-line"><i style="--value:90%"></i></div><span>90%</span></div></div><h2 style="margin-top:25px">Mathematics topic tracking</h2><table class="teacher-topic-table"><thead><tr><th>Topic</th><th>Score</th><th>Teacher note</th></tr></thead><tbody><tr><td>Addition</td><td>88%</td><td>Strong foundation</td></tr><tr><td>Subtraction</td><td>54%</td><td>Recommended guided practice</td></tr><tr><td>Multiplication</td><td>62%</td><td>Developing</td></tr><tr><td>Division</td><td>58%</td><td>Needs more repetition</td></tr></tbody></table></article><aside><article class="teacher-note"><div class="eyebrow">Teacher recommendation</div><h2>Keep Amira challenged in Science</h2><p>Amira is performing strongly in Science at 90%. Consider offering extension questions while she continues targeted Mathematics practice.</p><button class="cta" id="assign-amira">Assign challenge activity →</button></article><article class="card report-section" style="margin-top:17px"><h2>Recent learning activity</h2><p class="sub">Latest completed learning events</p><div class="habit-list"><div class="habit"><i>∑</i><div><b>Mathematics practice</b><small>Subtraction · 15 minutes · today</small></div></div><div class="habit"><i>⚗</i><div><b>Science lesson</b><small>Cell structure · 28 minutes · yesterday</small></div></div><div class="habit"><i>✦</i><div><b>Practice round completed</b><small>Addition Level 1 · 88% · 2 days ago</small></div></div></div></article></aside></div></section>
-    <section id="teacher-insights-view" class="teacher-insights-page hidden"><header class="teacher-insights-head"><div class="eyebrow">Teacher insights · Year 10</div><h1>Turn learning signals into support.</h1><p>Recommendations identify students and topics where a timely action can make the biggest difference.</p></header><div class="teacher-insights-grid"><article class="intervention-card"><div class="eyebrow">Priority intervention · Mathematics</div><h2>Support Omar with subtraction.</h2><p>Omar’s Mathematics progress is at risk. His subtraction score and weekly engagement are both below the expected level, so a short guided session is recommended before the next class activity.</p><div class="intervention-evidence"><div><b>47</b><span>Student health score</span></div><div><b>54%</b><span>Subtraction score</span></div><div><b>38 min</b><span>Maths time this week</span></div></div><div class="intervention-actions"><button class="cta" id="create-intervention">Create support plan →</button><button class="outline-action" id="reload-insight">↻ Reload suggestion</button><button class="outline-action" id="view-omar">View student progress</button></div></article><article class="card teacher-why"><h2>Why this needs attention</h2><div class="why-point"><i>↓</i><div><b>Performance is below the support threshold.</b><p>Omar’s health score is 47, below the class support threshold of 50.</p></div></div><div class="why-point"><i>◷</i><div><b>Learning activity has declined.</b><p>He completed only 38 minutes of Mathematics learning this week.</p></div></div><div class="why-point"><i>◈</i><div><b>The gap affects future learning.</b><p>Subtraction is a prerequisite for number problems and division.</p></div></div></article></div><article class="card group-plan"><h2>Suggested 15-minute support plan</h2><p>Use a brief guided activity during small-group time. Start with visual “take away” examples, then give Omar a Level 1 subtraction round with teacher feedback.</p><div class="plan-steps"><div><b>5 min</b><span>Visual warm-up</span></div><div><b>7 min</b><span>Guided questions</span></div><div><b>3 min</b><span>Quick review</span></div></div></article><article class="card at-risk-list"><h2>Other learners to monitor</h2><div class="at-risk-row"><i>CL</i><div><b>Chong L.</b><small>Mathematics · subtraction score: 52%</small></div><span>48</span></div><div class="at-risk-row"><i>OB</i><div><b>Oliver B.</b><small>English · engagement has declined</small></div><span>49</span></div><div class="at-risk-row"><i>YS</i><div><b>Yasmin S.</b><small>Mathematics · division score: 56%</small></div><span>56</span></div></article></section>
-    <section id="teacher-students-view" class="teacher-students-page hidden"><header class="teacher-students-head"><div><div class="eyebrow">Year 10 · Student directory</div><h1>Track every learner.</h1><p>Review performance, learning time, and students who may need timely support.</p></div><span class="pill">30 students</span></header><div class="student-summary-grid"><article class="card student-summary"><h2>Students with good performance</h2><button class="metric-menu teacher-summary-button" data-drawer="good" aria-label="View good performance details">↗</button><b>21</b><small>70% of class are on track or thriving</small></article><article class="card student-summary bad"><h2>Students with bad performance</h2><button class="metric-menu teacher-summary-button" data-drawer="bad" aria-label="View students needing support">!</button><b>9</b><small>Need extra support or monitoring</small></article><article class="card student-summary"><h2>Average login time per day</h2><button class="metric-menu teacher-summary-button" data-drawer="time" aria-label="View learning time details">◷</button><b>42 min</b><small>↑ 6 minutes from last week</small></article></div><article class="card student-directory"><div class="directory-head"><div><h2 id="directory-title">All students</h2><p id="directory-subtitle">Current overall performance and activity this week</p></div><select class="directory-filter" id="performance-filter" aria-label="Filter students by performance"><option value="all">All performance</option><option value="bad">Bad performance</option><option value="mid">Mid performance</option><option value="good">Good performance</option></select></div><table class="directory-table"><thead><tr><th>Student</th><th>Primary subject</th><th>Health score</th><th>Learning time</th><th>Status</th><th aria-label="Open progress"></th></tr></thead><tbody id="teacher-directory-body"></tbody></table></article></section>
+    <section id="teacher-profile-view" class="teacher-profile-page hidden"><header class="teacher-profile-head"><div><div class="eyebrow">Teacher profile</div><h1>Your teaching profile.</h1><p>Keep your school, class, and teaching preferences current.</p></div><button class="signout-btn">Sign out</button></header><div class="teacher-profile-layout"><aside><article class="card teacher-profile-card"><div class="teacher-avatar-large" id="teacher-profile-initials">TC</div><h2 id="teacher-profile-name">Teacher</h2><p>Educator Profile</p><span class="teacher-profile-tag">Educator</span><span class="teacher-profile-tag">Active</span><div class="teacher-class-list"><div><b>No active classes yet</b><small>Class rosters will appear here</small></div></div></article></aside><article class="card teacher-profile-form"><h2>Professional information</h2><p>This information helps organise your classes and teaching recommendations.</p><form id="teacher-profile-form"><div class="form-group-title">Teacher details</div><div class="form-grid"><label class="form-field"><span>Full name</span><input name="teacherName" value="" placeholder="Full name" required></label><label class="form-field"><span>Teacher ID</span><input name="teacherId" value="" placeholder="Teacher ID"></label><label class="form-field"><span>School</span><input name="school" value="" placeholder="School name"></label><label class="form-field"><span>District / city</span><input name="district" value="" placeholder="District / city"></label><label class="form-field"><span>Primary subject</span><select name="subject"><option>Mathematics</option><option>Science</option><option>Bahasa Melayu</option><option>English</option></select></label><label class="form-field"><span>Teaching level</span><select name="level"><option>Primary Level</option><option>Secondary Level</option></select></label></div><div class="form-group-title">Teaching preferences</div><div class="form-grid"><label class="form-field"><span>Preferred intervention style</span><select name="intervention"><option>Small-group guided practice</option><option>One-to-one check-in</option><option>Whole-class reteaching</option><option>Adaptive practice assignment</option></select></label><label class="form-field"><span>Report frequency</span><select name="reports"><option>Weekly</option><option>Monthly</option><option>Each term</option></select></label><label class="form-field full"><span>Teaching interests</span><div class="activity-options"><label class="activity-option"><input type="checkbox" checked><span>📊 Learning analytics</span></label><label class="activity-option"><input type="checkbox" checked><span>✦ AI recommendations</span></label><label class="activity-option"><input type="checkbox" checked><span>🧩 Adaptive learning</span></label><label class="activity-option"><input type="checkbox" checked><span>👥 Small-group support</span></label></div></label></div><button class="teacher-save" type="submit">Save teacher profile</button></form></article></div></section>
+    <section id="teacher-report-view" class="teacher-report-page hidden"><header class="teacher-report-head"><div><div class="eyebrow">Class report</div><h1>Learning progress report</h1><p>Class learning activity, mastery, and interventions.</p></div><div class="teacher-report-actions"><select aria-label="Report period"><option>This month</option><option>Last month</option><option>This term</option></select><button class="print-btn" id="print-teacher-report">▣ Print / Save as PDF</button></div></header><div class="teacher-report-summary"><div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;"><div style="font-size: 32px; margin-bottom: 8px;">📋</div><h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">No students have been added yet.</h3><p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">Class progress will appear after students complete their learning check.</p></div></div><div class="teacher-report-grid hidden"></div></section>
+    <section id="teacher-interventions-view" class="interventions-page hidden"><header class="intervention-simple-head"><div><div class="eyebrow">Teacher interventions</div><h1>Support plans that make progress visible.</h1><p>Use AI-classified learning signals to focus support where it is needed most.</p></div></header><div class="intervention-simple-kpis"><article class="card simple-kpi"><b>0</b><span>Total students</span></article><article class="card simple-kpi"><b>0</b><span>Problem students</span></article><article class="card simple-kpi"><b>0</b><span>Due for review</span></article><article class="card simple-kpi"><b>0</b><span>Complete check this week</span></article></div><article class="learning-challenge"><div><div class="eyebrow">AI learning support</div><h2>Challenge and strengthen learning.</h2><p>Choose an AI-classified student group below. The table will update with the matching learners, then select a student to review their learning profile and recommended support plan.</p></div><div class="intervention-category"><select id="simple-intervention-filter" aria-label="Filter intervention students"><option value="problem">Problem students</option><option value="review">Due for review</option><option value="complete">Complete check this week</option></select></div></article><article class="card intervention-simple-table"><h2 id="simple-intervention-title">Student interventions</h2><p class="sub" id="simple-intervention-subtitle">AI identified learners who need additional support.</p><div class="card empty-banner" style="padding: 38px 20px; text-align: center; margin-top: 14px;"><div style="font-size: 28px; margin-bottom: 8px;">✦</div><h3 style="font-family: 'Space Grotesk'; font-size: 18px; margin: 0 0 6px;">No interventions are available yet.</h3><p style="color: var(--muted); font-size: 13px; max-width: 460px; margin: auto;">Recommendations will appear when student learning data is available.</p></div><table style="display:none"><thead><tr><th>Student</th><th>AI classification</th><th>Focus area</th><th>Health score</th><th></th></tr></thead><tbody id="simple-intervention-body"></tbody></table></article><section class="selected-student-detail"><article class="card detail-student-card"><div class="eyebrow">Selected student detail</div><h2 id="simple-detail-name">No student selected</h2><p id="simple-detail-description">Select a student from the list to view their learning profile and support plan.</p><div class="detail-score-grid"><div><b id="simple-detail-health">0</b><span>Health score</span></div><div><b id="simple-detail-topic">--</b><span>Topic score</span></div><div><b id="simple-detail-time">0 min</b><span>Learning time</span></div></div></article><article class="detail-student-plan"><h2 id="simple-plan-title">Recommended support plan</h2><p id="simple-plan-description">Recommendations will appear when student learning data is available.</p><button class="cta" id="simple-detail-action" style="display:none">Open student progress →</button></article></section></section>
+    <section id="teacher-progress-view" class="teacher-progress-page hidden"><header class="student-progress-head"><button class="practice-back" id="student-progress-back">← Students</button><span class="directory-avatar" id="progress-avatar">ST</span><div><h1 id="progress-name">Student</h1><p id="progress-meta">Learner overview</p></div><div class="student-progress-health"><b id="progress-health">0</b><span>health score</span></div></header><div class="teacher-progress-kpis"><article class="card teacher-progress-kpi"><b id="progress-overall">--</b><span>Overall performance</span></article><article class="card teacher-progress-kpi"><b id="progress-time">0m</b><span>Learning time this week</span></article><article class="card teacher-progress-kpi"><b>0 days</b><span>Current learning streak</span></article><article class="card teacher-progress-kpi"><b>0</b><span>Practice rounds completed</span></article></div><div class="student-progress-grid"><article class="card report-section"><h2>Subject progress</h2><p class="sub">Current subject score and tracking</p><div class="teacher-subject-track"><div class="teacher-subject-row"><b>Mathematics</b><div class="progress-line"><i style="--value:0%"></i></div><span>--</span></div><div class="teacher-subject-row"><b>Bahasa Melayu</b><div class="progress-line"><i style="--value:0%"></i></div><span>--</span></div><div class="teacher-subject-row"><b>English</b><div class="progress-line"><i style="--value:0%"></i></div><span>--</span></div><div class="teacher-subject-row"><b>Science</b><div class="progress-line"><i style="--value:0%"></i></div><span>--</span></div></div><h2 style="margin-top:25px">Mathematics topic tracking</h2><table class="teacher-topic-table"><thead><tr><th>Topic</th><th>Score</th><th>Teacher note</th></tr></thead><tbody><tr><td colspan="3" style="text-align:center;padding:24px;color:var(--muted);">No topic data available yet.</td></tr></tbody></table></article><aside><article class="teacher-note"><div class="eyebrow">Teacher recommendation</div><h2>No recommendation yet</h2><p>Recommendations will appear when student learning data is available.</p><button class="cta" id="assign-challenge-btn">Assign practice →</button></article><article class="card report-section" style="margin-top:17px"><h2>Recent learning activity</h2><p class="sub">Latest completed learning events</p><div class="habit-list"><div style="text-align:center;padding:20px;color:var(--muted);font-size:12px;">No recent learning activity.</div></div></article></aside></div></section>
+    <section id="teacher-insights-view" class="teacher-insights-page hidden"><header class="teacher-insights-head"><div class="eyebrow">Teacher insights</div><h1>Turn learning signals into support.</h1><p>Recommendations identify students and topics where a timely action can make the biggest difference.</p></header><div class="teacher-insights-grid"><div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;"><div style="font-size: 32px; margin-bottom: 8px;">✦</div><h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">No interventions are available yet.</h3><p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">Recommendations will appear when student learning data is available.</p></div></div></section>
+    <section id="teacher-students-view" class="teacher-students-page hidden"><header class="teacher-students-head"><div><div class="eyebrow">Student directory</div><h1>Track every learner.</h1><p>Review performance, learning time, and students who may need timely support.</p></div><span class="pill">0 students</span></header><div class="student-summary-grid"><article class="card student-summary"><h2>Students with good performance</h2><button class="metric-menu teacher-summary-button" data-drawer="good" aria-label="View good performance details">↗</button><b>0</b><small>0% of class are on track or thriving</small></article><article class="card student-summary bad"><h2>Students with bad performance</h2><button class="metric-menu teacher-summary-button" data-drawer="bad" aria-label="View students needing support">!</button><b>0</b><small>Need extra support or monitoring</small></article><article class="card student-summary"><h2>Average login time per day</h2><button class="metric-menu teacher-summary-button" data-drawer="time" aria-label="View learning time details">◷</button><b>0 min</b><small>No activity yet</small></article></div><article class="card student-directory"><div class="directory-head"><div><h2 id="directory-title">All students</h2><p id="directory-subtitle">0 students shown</p></div><select class="directory-filter" id="performance-filter" aria-label="Filter students by performance"><option value="all">All performance</option><option value="bad">Bad performance</option><option value="mid">Mid performance</option><option value="good">Good performance</option></select></div><table class="directory-table"><thead><tr><th>Student</th><th>Primary subject</th><th>Health score</th><th>Learning time</th><th>Status</th><th aria-label="Open progress"></th></tr></thead><tbody id="teacher-directory-body"><tr><td colspan="6" style="text-align:center;padding:36px;color:var(--muted);"><b>No students have been added yet.</b><br><span style="font-size:12px;">Class progress will appear after students complete their learning check.</span></td></tr></tbody></table></article></section>
     <section id="teacher-view" class="hidden">
       <div class="welcome"><div><div class="eyebrow">Educator intelligence</div><h1>Your class, clearly seen.</h1><p>Spot needs early. Support every learner.</p></div><div class="date" id="teacher-stats-date">Active Class Overview</div></div>
       <div id="teacher-empty-banner" class="card empty-banner" style="border-color: var(--pink); background: rgba(253, 111, 183, 0.08);">
         <div style="font-size: 28px; margin-bottom: 8px;">📋</div>
-        <h3>No students or class data yet.</h3>
-        <p>As learners complete their profiles and learning checks, their mastery levels, interventions, and weekly performance will appear here automatically.</p>
+        <h3>No students have been added yet.</h3>
+        <p>Class progress will appear after students complete their learning check.</p>
       </div>
-      <div class="grid teacher-grid"><article class="card"><div class="metric-top">Class health score <span class="metric-icon">♥</span></div><div class="metric-value">78 <small style="font-size:13px;color:var(--muted)">/100</small></div><span class="delta">↑ 4 points this fortnight</span></article><article class="card"><div class="metric-top">On track <span class="metric-icon">✓</span></div><div class="metric-value">21</div><span class="delta">75% of class</span></article><article class="card"><div class="metric-top">Need support <span class="metric-icon">!</span></div><div class="metric-value">5</div><span class="delta warn">2 need attention today</span></article></div>
-      <div class="teacher-weekly"><article class="card weekly-overall"><h2>Overall class performance</h2><p>Average performance across all 28 learners this week</p><div class="weekly-line"><svg viewBox="0 0 500 100" preserveAspectRatio="none"><path d="M0,74 C55,70 60,57 105,59 S165,73 210,51 S290,49 320,39 S390,49 425,27 S470,24 500,15" fill="none" stroke="#42d9e8" stroke-width="3"/><path d="M0,74 C55,70 60,57 105,59 S165,73 210,51 S290,49 320,39 S390,49 425,27 S470,24 500,15 L500,100 L0,100Z" fill="#42d9e81c"/></svg></div><div class="weekly-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></article><article class="card subject-weekly"><h3>Mathematics</h3><p>Class score this week</p><div class="subject-score">70% <span>↑ 8%</span></div><div class="mini-bars"><i style="height:43%"></i><i style="height:55%"></i><i style="height:48%"></i><i style="height:66%"></i><i style="height:72%"></i><i style="height:62%"></i><i style="height:70%"></i></div></article><article class="card subject-weekly"><h3>Bahasa Melayu</h3><p>Class score this week</p><div class="subject-score">67% <span>↑ 3%</span></div><div class="mini-bars"><i style="height:54%"></i><i style="height:49%"></i><i style="height:61%"></i><i style="height:65%"></i><i style="height:58%"></i><i style="height:68%"></i><i style="height:67%"></i></div></article><article class="card subject-weekly"><h3>English</h3><p>Class score this week</p><div class="subject-score">67% <span>↑ 4%</span></div><div class="mini-bars"><i style="height:45%"></i><i style="height:56%"></i><i style="height:59%"></i><i style="height:62%"></i><i style="height:68%"></i><i style="height:65%"></i><i style="height:67%"></i></div></article><article class="card subject-weekly"><h3>Science</h3><p>Class score this week</p><div class="subject-score">90% <span>↑ 10%</span></div><div class="mini-bars"><i style="height:73%"></i><i style="height:78%"></i><i style="height:82%"></i><i style="height:79%"></i><i style="height:88%"></i><i style="height:86%"></i><i style="height:90%"></i></div></article></div>
-      <div class="grid teacher-main"><article class="card"><div class="chart-head"><div><h2 class="card-title">Individual student progress</h2><p class="sub">Health score combines mastery, engagement & consistency · 30 learners</p></div><span class="pill">All students⌄</span></div><div class="health-list" id="teacher-student-list"></div></article><article class="card"><h2 class="card-title">AI intervention recommendations</h2><p class="sub">Prioritised actions for this week</p><div style="margin-top:15px"><div class="insight"><div class="tag">Priority · high</div><h4>Check in with Omar P.</h4><p>Engagement has dropped 42% and fractions mastery is below 50%. Offer a short guided catch-up.</p></div><div class="insight"><div class="tag" style="color:var(--pink)">Pattern detected</div><h4>Reteach algebraic fractions</h4><p>9 learners missed the same prerequisite. Try a 12-minute visual mini-lesson.</p></div></div></article></div>
-      <div class="grid bottom" style="margin-top:17px"><article class="card"><h2 class="card-title">Class-level learning gaps</h2><p class="sub">Average mastery across four core subjects</p><div class="class-subjects"><div class="class-subject"><b>70%</b><span>Mathematics</span><small>Subtraction needs focus</small></div><div class="class-subject"><b>67%</b><span>Bahasa Melayu</span><small>Sentence structure</small></div><div class="class-subject"><b>67%</b><span>English</span><small>Essay evidence</small></div><div class="class-subject"><b>90%</b><span>Science</span><small>Strongest class subject</small></div></div></article><article class="card practice"><div class="eyebrow">Teaching signal</div><h3>Study patterns changed</h3><p>Focus time across the class is strongest between 6–8 PM. Consider releasing practice by 5:30 PM.</p><button class="cta" id="view-report">Open class report →</button></article></div>
+      <div class="grid teacher-grid"><article class="card"><div class="metric-top">Class health score <span class="metric-icon">♥</span></div><div class="metric-value">0 <small style="font-size:13px;color:var(--muted)">/100</small></div><span class="delta">No data yet</span></article><article class="card"><div class="metric-top">On track <span class="metric-icon">✓</span></div><div class="metric-value">0</div><span class="delta">0% of class</span></article><article class="card"><div class="metric-top">Need support <span class="metric-icon">!</span></div><div class="metric-value">0</div><span class="delta warn">0 need attention</span></article></div>
+      <div class="teacher-weekly"><article class="card weekly-overall"><h2>Overall class performance</h2><p>Average performance across all learners this week</p><div class="weekly-line"><svg viewBox="0 0 500 100" preserveAspectRatio="none"><path d="M0,85 L500,85" fill="none" stroke="#42d9e844" stroke-width="2"/></svg></div><div class="weekly-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></article><article class="card subject-weekly"><h3>Mathematics</h3><p>Class score this week</p><div class="subject-score">0% <span>--</span></div><div class="mini-bars"><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i></div></article><article class="card subject-weekly"><h3>Bahasa Melayu</h3><p>Class score this week</p><div class="subject-score">0% <span>--</span></div><div class="mini-bars"><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i></div></article><article class="card subject-weekly"><h3>English</h3><p>Class score this week</p><div class="subject-score">0% <span>--</span></div><div class="mini-bars"><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i></div></article><article class="card subject-weekly"><h3>Science</h3><p>Class score this week</p><div class="subject-score">0% <span>--</span></div><div class="mini-bars"><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i><i style="height:10%"></i></div></article></div>
+      <div class="grid teacher-main"><article class="card"><div class="chart-head"><div><h2 class="card-title">Individual student progress</h2><p class="sub">Health score combines mastery, engagement &amp; consistency</p></div><span class="pill">All students⌄</span></div><div class="health-list" id="teacher-student-list"><div style="text-align:center;padding:26px;color:var(--muted);font-size:13px;">No students have been added yet.<br>Class progress will appear after students complete their learning check.</div></div></article><article class="card"><h2 class="card-title">AI intervention recommendations</h2><p class="sub">Prioritised actions for this week</p><div style="margin-top:15px"><div style="text-align:center;padding:26px;color:var(--muted);font-size:13px;">No interventions are available yet.<br>Recommendations will appear when student learning data is available.</div></div></article></div>
+      <div class="grid bottom" style="margin-top:17px"><article class="card"><h2 class="card-title">Class-level learning gaps</h2><p class="sub">Average mastery across four core subjects</p><div class="class-subjects"><div class="class-subject"><b>0%</b><span>Mathematics</span><small>No data yet</small></div><div class="class-subject"><b>0%</b><span>Bahasa Melayu</span><small>No data yet</small></div><div class="class-subject"><b>0%</b><span>English</span><small>No data yet</small></div><div class="class-subject"><b>0%</b><span>Science</span><small>No data yet</small></div></div></article><article class="card practice"><div class="eyebrow">Teaching signal</div><h3>No study pattern data yet</h3><p>Class focus patterns and recommendations will activate as students complete learning sessions.</p><button class="cta" id="view-report">Open class report →</button></article></div>
     </section>
   </main>
 </div>
-<div class="teacher-drawer hidden" id="teacher-drawer"><aside class="teacher-drawer-panel"><button class="drawer-close" id="teacher-drawer-close" aria-label="Close">×</button><div class="eyebrow">Class detail</div><h2 id="teacher-drawer-title">Students with good performance</h2><p id="teacher-drawer-description">These learners are progressing consistently.</p><div class="drawer-stat"><b id="teacher-drawer-value">21</b><span id="teacher-drawer-caption">students are on track or thriving</span></div><div class="drawer-list" id="teacher-drawer-list"></div></aside></div>
-<div class="metric-modal hidden" id="metric-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal-panel"><button class="modal-close" id="modal-close" aria-label="Close detail panel">×</button><header class="modal-head"><div class="modal-kicker">CALCULATION &amp; LEARNING PROOF</div><h2 id="modal-title">Study activity</h2></header><section class="modal-value"><label>Computed value</label><b class="verified">◉ Verified</b><strong id="modal-value">6h 25m</strong></section><div class="modal-body"><div class="modal-meta"><b>Learning Engine:</b><span>◷ Updated today, 4:45 PM</span></div><h3 class="source-title">▣ INPUT VALUES &amp; SOURCES</h3><div class="source-table"><div class="source-row header"><div>Label</div><div>Value</div><div>Source</div></div><div class="source-row"><b id="source-one-label">Completed sessions</b><span id="source-one-value">14</span><small>Learning log</small></div><div class="source-row"><b id="source-two-label">Focused minutes</b><span id="source-two-value">385 min</span><small>Timer data</small></div></div><section class="proof"><h3>▦ HOW THIS IS CALCULATED</h3><div class="formula" id="modal-formula">Focused study sessions completed this week = 6h 25m</div><p id="modal-explain">Only completed focus sessions are counted. Breaks and idle time are excluded.</p></section></div><footer class="modal-footer"><button id="modal-done">Close</button></footer></div></div>
+<div class="teacher-drawer hidden" id="teacher-drawer"><aside class="teacher-drawer-panel"><button class="drawer-close" id="teacher-drawer-close" aria-label="Close">×</button><div class="eyebrow">Class detail</div><h2 id="teacher-drawer-title">Students with good performance</h2><p id="teacher-drawer-description">These learners are progressing consistently.</p><div class="drawer-stat"><b id="teacher-drawer-value">0</b><span id="teacher-drawer-caption">students are on track or thriving</span></div><div class="drawer-list" id="teacher-drawer-list"><div style="text-align:center;padding:20px;color:var(--muted);">No students in this group yet.</div></div></aside></div>
+<div class="metric-modal hidden" id="metric-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal-panel"><button class="modal-close" id="modal-close" aria-label="Close detail panel">×</button><header class="modal-head"><div class="modal-kicker">CALCULATION &amp; LEARNING PROOF</div><h2 id="modal-title">Study activity</h2></header><section class="modal-value"><label>Computed value</label><b class="verified">◉ Verified</b><strong id="modal-value">0m</strong></section><div class="modal-body"><div class="modal-meta"><b>Learning Engine:</b><span>◷ Pending learning session</span></div><h3 class="source-title">▣ INPUT VALUES &amp; SOURCES</h3><div class="source-table"><div class="source-row header"><div>Label</div><div>Value</div><div>Source</div></div><div class="source-row"><b id="source-one-label">Completed sessions</b><span id="source-one-value">0</span><small>Learning log</small></div><div class="source-row"><b id="source-two-label">Focused minutes</b><span id="source-two-value">0 min</span><small>Timer data</small></div></div><section class="proof"><h3>▦ HOW THIS IS CALCULATED</h3><div class="formula" id="modal-formula">Focused study sessions completed this week = 0m</div><p id="modal-explain">Only completed focus sessions are counted. Breaks and idle time are excluded.</p></section></div><footer class="modal-footer"><button id="modal-done">Close</button></footer></div></div>
 
 <script>
   // ==========================================
@@ -1006,7 +1045,7 @@
         console.warn('Backend demo-login failed, checking Supabase Auth:', err);
       }
 
-      const email = isStudent ? 'amira@twoblock.ai' : 'liyana@twoblock.ai';
+      const email = isStudent ? 'student@twoblock.ai' : 'teacher@twoblock.ai';
       const password = 'password123';
       if (supabaseClient) {
         try {
@@ -1029,9 +1068,9 @@
 
       // Offline fallback
       this.user = { 
-        id: isStudent ? ('student-user-' + Date.now()) : 'teacher-liyana-001', 
+        id: isStudent ? ('student-user-' + Date.now()) : 'teacher-default', 
         email, 
-        name: isStudent ? 'New Student' : 'Liyana K.' 
+        name: isStudent ? 'Student' : 'Teacher' 
       };
       this.token = 'demo_token_' + Date.now();
       localStorage.setItem('2block_token', this.token);
@@ -1082,6 +1121,12 @@
     },
 
     async request(path, options = {}) {
+      const loadingBar = document.querySelector('#api-loading-bar');
+      if (loadingBar) {
+        loadingBar.classList.remove('done');
+        loadingBar.classList.add('active');
+      }
+
       const headers = {
         'Content-Type': 'application/json',
         ...(this.token ? { 'Authorization': `Bearer ${this.token}` } : {}),
@@ -1093,11 +1138,19 @@
           ...options,
           headers
         });
+        if (loadingBar) {
+          loadingBar.classList.remove('active');
+          loadingBar.classList.add('done');
+        }
         if (res.ok) {
           const json = await res.json();
           return json.data !== undefined ? json.data : json;
         }
       } catch (err) {
+        if (loadingBar) {
+          loadingBar.classList.remove('active');
+          loadingBar.classList.add('done');
+        }
         // Backend not reachable, continue to zero-state local fallback
       }
 
@@ -1153,9 +1206,9 @@
               name: saved.name || 'Student',
               initials: (saved.name || 'ST').split(' ').map(n => n[0]).join('').substring(0, 2),
               grade: `Grade ${saved.grade || 1}`,
-              school: saved.school || 'SK Maju Jaya',
-              district: saved.city || 'Kuala Lumpur',
-              dateOfBirth: saved.birth || '2018-05-12'
+              school: saved.school || '',
+              district: saved.city || '',
+              dateOfBirth: saved.birth || ''
             }
           };
         }
@@ -1193,16 +1246,18 @@
             studyActivityMinutes: 0,
             studyActivityChangePercent: 0,
             availableFocusMinutes: 0,
-            bestFocusWindow: '17:00',
+            bestFocusWindow: '--',
             weeklyActivity: [
               { day: 'Mon', minutes: 0 }, { day: 'Tue', minutes: 0 },
               { day: 'Wed', minutes: 0 }, { day: 'Thu', minutes: 0 },
               { day: 'Fri', minutes: 0 }, { day: 'Sat', minutes: 0 },
               { day: 'Sun', minutes: 0 }
             ],
+            emptyTitle: 'No learning data yet.',
+            emptyMessage: 'Complete your Personal Information and Quick Learning Check to begin.',
             recommendedPractice: {
-              title: 'Complete your Quick Learning Check',
-              description: 'Complete your Quick Learning Check to personalise your learning.'
+              title: 'No practice history yet.',
+              description: 'Your personalised practice will appear after the Quick Learning Check.'
             }
           };
         }
@@ -1231,7 +1286,11 @@
       if (path === '/api/student/learning') {
         const assessment = JSON.parse(localStorage.getItem('2block_initial_assessment') || 'null');
         if (!assessment) {
-          return { subjects: [] };
+          return {
+            subjects: [],
+            emptyTitle: 'No learning data yet.',
+            emptyMessage: 'Complete your Personal Information and Quick Learning Check to begin.'
+          };
         }
         return {
           subjects: assessment.subjectsProgress.map(s => ({
@@ -1250,7 +1309,11 @@
       if (path === '/api/student/insights') {
         const assessment = JSON.parse(localStorage.getItem('2block_initial_assessment') || 'null');
         if (!assessment || !assessment.recommendations || !assessment.recommendations.length) {
-          return { priority: null };
+          return {
+            priority: null,
+            emptyTitle: 'No learning data yet.',
+            emptyMessage: 'Complete your Personal Information and Quick Learning Check to begin.'
+          };
         }
         const rec = assessment.recommendations[0];
         return {
@@ -1272,15 +1335,17 @@
         const assessment = JSON.parse(localStorage.getItem('2block_initial_assessment') || 'null');
         if (!assessment) {
           return {
-            period: 'September 2026',
+            period: 'Current Period',
             overallPerformance: 0,
             totalLearningTimeFormatted: '0m',
             learningStreakDays: 0,
-            practiceRoundsCompleted: 0
+            practiceRoundsCompleted: 0,
+            emptyTitle: 'No learning data yet.',
+            emptyMessage: 'Complete your Personal Information and Quick Learning Check to begin.'
           };
         }
         return {
-          period: 'September 2026',
+          period: 'Current Period',
           overallPerformance: assessment.overallScore,
           totalLearningTimeFormatted: '15m',
           learningStreakDays: 1,
@@ -1295,22 +1360,44 @@
           onTrackCount: 0,
           needsSupportCount: 0,
           studentList: [],
-          message: 'No students or class data yet.'
+          emptyTitle: 'No students have been added yet.',
+          emptyMessage: 'Class progress will appear after students complete their learning check.'
         };
       }
 
       if (path.startsWith('/api/teacher/students')) {
-        return { students: [] };
+        return {
+          students: [],
+          emptyTitle: 'No students have been added yet.',
+          emptyMessage: 'Class progress will appear after students complete their learning check.'
+        };
       }
 
       if (path === '/api/teacher/insights') {
-        return { recommendations: [] };
+        return {
+          recommendations: [],
+          emptyTitle: 'No interventions are available yet.',
+          emptyMessage: 'Recommendations will appear when student learning data is available.'
+        };
       }
 
       if (path.startsWith('/api/teacher/interventions')) {
         return {
           counts: { total: 0, problem: 0, review: 0, complete: 0 },
-          students: []
+          students: [],
+          emptyTitle: 'No interventions are available yet.',
+          emptyMessage: 'Recommendations will appear when student learning data is available.'
+        };
+      }
+
+      if (path === '/api/teacher/report') {
+        return {
+          classHealthScore: 0,
+          averagePerformance: 0,
+          studentsOnTrack: 0,
+          studentsNeedingSupport: 0,
+          emptyTitle: 'No students have been added yet.',
+          emptyMessage: 'Class progress will appear after students complete their learning check.'
         };
       }
 
@@ -1523,7 +1610,7 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // Handle Step 1 Profile Submission (8 fields)
+  // Handle Step 1 Profile Submission (8 fields + class code)
   const diagProfileForm = document.querySelector('#diag-profile-form');
   if (diagProfileForm) {
     diagProfileForm.onsubmit = async e => {
@@ -1536,21 +1623,33 @@
       const language = document.querySelector('#diag-language').value;
       const favourite = document.querySelector('#diag-subject').value;
       const studytime = document.querySelector('#diag-studytime').value;
+      const classCode = (document.querySelector('#diag-class-code')?.value || '').trim();
+      const classAlert = document.querySelector('#diag-class-alert');
 
       if (!name || !grade || !school || !city || !birth || !language || !favourite || !studytime) {
         toast('Please fill out all 8 required fields.');
         return;
       }
 
-      const parsedGrade = Math.max(1, Math.min(6, parseInt(grade, 10) || 3));
-      const profilePayload = { name, grade: parsedGrade, school, city, birth, language, favourite, studytime };
+      const parsedGrade = parseInt(String(grade).replace(/\D/g, ''), 10) || 10;
+      const profilePayload = { name, grade, school, city, birth, language, favourite, studytime, classCode };
       
+      let updateRes = null;
       try {
-        await API.request('/api/student/profile', {
+        updateRes = await API.request('/api/student/profile', {
           method: 'PUT',
           body: JSON.stringify(profilePayload)
         });
       } catch (err) {}
+
+      if (classAlert) {
+        if (updateRes && updateRes.classMatched === false) {
+          classAlert.textContent = updateRes.message || 'Your class is not available yet. Please ask your teacher to create or share a class code.';
+          classAlert.classList.remove('hidden');
+        } else {
+          classAlert.classList.add('hidden');
+        }
+      }
 
       localStorage.setItem('2block_student_profile', JSON.stringify(profilePayload));
       studentProfileCompleted = true;
@@ -1567,11 +1666,11 @@
     };
   }
 
-  // Step 2 Quick Learning Check Adaptive Quiz
+  // Step 2 Quick Learning Check Adaptive Quiz (20 questions: 5 Math, 5 BM, 5 English, 5 Science)
   let questionStartTime = Date.now();
 
-  async function startQuickLearningCheck(grade = 3) {
-    const validGrade = Math.max(1, Math.min(6, parseInt(grade, 10) || 3));
+  async function startQuickLearningCheck(grade = 10) {
+    const validGrade = Math.max(1, Math.min(10, parseInt(grade, 10) || 10));
     openDiagnosticStep('quiz');
 
     // Display loading state
@@ -1580,16 +1679,16 @@
     const feedbackBox = document.querySelector('#diag-feedback-box');
     const nextBtn = document.querySelector('#diag-next-btn');
 
-    document.querySelector('#diag-badge-counter').textContent = 'Question 1 of 10';
+    document.querySelector('#diag-badge-counter').textContent = 'Question 1 of 20';
     document.querySelector('#diag-badge-grade').textContent = `Grade ${validGrade}`;
     document.querySelector('#diag-badge-subject').textContent = 'Mathematics';
-    document.querySelector('#diag-progress-fill').style.width = '10%';
+    document.querySelector('#diag-progress-fill').style.width = '5%';
 
-    promptEl.textContent = 'Preparing your learning check…';
+    promptEl.textContent = 'Preparing your 20-question learning check…';
     optionsContainer.innerHTML = `
       <div style="grid-column: 1/-1; text-align: center; padding: 36px; color: var(--cyan);">
         <div style="font-size: 28px; animation: pulse 1.2s infinite ease-in-out; margin-bottom: 12px;">✦</div>
-        <p style="font-size: 13px; color: var(--muted); margin: 0;">Generating calibrated adaptive questions for Grade ${validGrade}…</p>
+        <p style="font-size: 13px; color: var(--muted); margin: 0;">Generating calibrated adaptive questions for Grade ${validGrade} (5 Math, 5 BM, 5 English, 5 Science)…</p>
       </div>
     `;
     feedbackBox.className = 'diag-feedback-card hidden';
@@ -1606,7 +1705,7 @@
         renderDiagnosticQuestion(
           res.currentQuestion,
           res.questionNumber || 1,
-          res.totalQuestions || 10,
+          res.totalQuestions || 20,
           res.currentGrade || validGrade,
           res.subject || res.currentQuestion.subject || 'Mathematics'
         );
@@ -1625,7 +1724,7 @@
         renderDiagnosticQuestion(
           q,
           currentDiagnosticSession.questionNumber || 1,
-          10,
+          20,
           currentDiagnosticSession.currentGrade || validGrade,
           q.subject || 'Mathematics'
         );
@@ -1647,21 +1746,21 @@
     if (retryBtn) retryBtn.onclick = () => startQuickLearningCheck(validGrade);
   }
 
-  function renderDiagnosticQuestion(question, num = 1, total = 10, grade = 3, subject = 'Mathematics') {
+  function renderDiagnosticQuestion(question, num = 1, total = 20, grade = 10, subject = 'Mathematics') {
     if (!question) return;
     currentQuestionData = question;
     questionStartTime = Date.now();
 
     const safeNum = num || 1;
-    const safeTotal = total || 10;
-    const safeGrade = grade || question.grade || 3;
+    const safeTotal = total || 20;
+    const safeGrade = grade || question.grade || 10;
     const safeSubject = subject || question.subject || 'Mathematics';
 
     document.querySelector('#diag-badge-counter').textContent = `Question ${safeNum} of ${safeTotal}`;
     document.querySelector('#diag-badge-grade').textContent = `Grade ${safeGrade}`;
     document.querySelector('#diag-badge-subject').textContent = safeSubject;
 
-    const progressPct = Math.min(100, Math.max(10, Math.round((safeNum / safeTotal) * 100)));
+    const progressPct = Math.min(100, Math.max(5, Math.round((safeNum / safeTotal) * 100)));
     document.querySelector('#diag-progress-fill').style.width = `${progressPct}%`;
 
     document.querySelector('#diag-question-prompt').textContent = question.question || 'Question';
@@ -1690,9 +1789,9 @@
     buttons.forEach(b => b.disabled = true);
     optBtn.classList.add('selected');
 
-    const questionId = currentQuestionData?.id;
-    const sessionId = currentDiagnosticSession?.sessionId || 'session-fallback';
     const responseTimeSeconds = Math.max(1, Math.round((Date.now() - questionStartTime) / 1000));
+    const questionId = currentQuestionData?.id || 'q-fallback';
+    const sessionId = currentDiagnosticSession?.sessionId || 'session-fallback';
 
     let result = null;
     try {
@@ -1701,13 +1800,13 @@
         body: JSON.stringify({
           sessionId,
           questionId,
-          selectedAnswer: selectedOption,
           studentAnswer: selectedOption,
-          responseTimeSeconds,
           timeSpentSeconds: responseTimeSeconds
         })
       });
-    } catch (e) {}
+    } catch (e) {
+      console.warn('Diagnostic answer API failed, falling back locally:', e);
+    }
 
     if (!result) {
       result = validateLocalDiagnosticAnswer(currentDiagnosticSession, questionId, selectedOption, responseTimeSeconds);
@@ -1719,7 +1818,7 @@
     if (result.isCorrect) {
       optBtn.classList.add('correct');
       feedbackBox.className = 'diag-feedback-card correct';
-      feedbackBox.innerHTML = `✓ <b>Correct!</b> ${escapeHtml(result.explanation || 'Great job!')}`;
+      feedbackBox.innerHTML = `✓ <b>Correct!</b> ${escapeHtml(result.explanation || 'Great job thinking through this concept.')}`;
     } else {
       optBtn.classList.add('wrong');
       buttons.forEach(b => {
@@ -1746,6 +1845,9 @@
       const assessment = res.initialAssessment || res.assessment;
       if (assessment) {
         localStorage.setItem('2block_initial_assessment', JSON.stringify(assessment));
+        if (assessment.recommendedFirstPracticeTopic) {
+          window.lastRecommendedPractice = assessment.recommendedFirstPracticeTopic;
+        }
       }
       openDiagnosticStep('complete');
       renderDiagnosticSummary(assessment);
@@ -1756,7 +1858,7 @@
       renderDiagnosticQuestion(
         res.nextQuestion,
         currentDiagnosticSession.questionNumber,
-        10,
+        res.totalQuestions || 20,
         currentDiagnosticSession.currentGrade,
         res.nextQuestion.subject
       );
@@ -1766,7 +1868,7 @@
   function renderDiagnosticSummary(assessment) {
     if (!assessment) return;
     document.querySelector('#diag-res-score').textContent = `${assessment.overallScore || 0}%`;
-    document.querySelector('#diag-res-grade').textContent = `Grade ${assessment.estimatedGradeLevel || 3}`;
+    document.querySelector('#diag-res-grade').textContent = `Grade ${assessment.estimatedGradeLevel || 10}`;
     
     const strengthsEl = document.querySelector('#diag-res-strengths');
     if (strengthsEl) {
@@ -2579,7 +2681,13 @@
   document.querySelector('#start-practice').onclick = () => {
     if (!guardStudentAccess()) return;
     openPractice();
-    renderTopicsForSubject('Mathematics');
+    const weakTopic = window.lastRecommendedPractice?.topic;
+    const weakSubj = window.lastRecommendedPractice?.subject || 'Mathematics';
+    if (weakTopic) {
+      startRound(weakTopic.toLowerCase(), weakSubj);
+    } else {
+      renderTopicsForSubject('Mathematics');
+    }
   };
   document.querySelectorAll('[data-practice-back]').forEach(b => b.onclick = backToOverview);
 
@@ -2749,13 +2857,12 @@
       const otherInsights = document.querySelector('.other-insights');
 
       if (!data || !data.priority || data.priority.currentScore === 0) {
-        // REQUIRED EMPTY STATE: "Your recommendations will appear after your first learning check."
         if (grid) {
           grid.innerHTML = `
-            <div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px;">
+            <div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;">
               <div style="font-size: 32px; margin-bottom: 8px;">💡</div>
-              <h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">Your recommendations will appear after your first learning check.</h3>
-              <p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">Once you complete your Quick Learning Check, our adaptive engine will display your targeted practice suggestions right here.</p>
+              <h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">${escapeHtml(data?.emptyTitle || 'No learning data yet.')}</h3>
+              <p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">${escapeHtml(data?.emptyMessage || 'Complete your Personal Information and Quick Learning Check to begin.')}</p>
             </div>
           `;
         }
@@ -2790,13 +2897,12 @@
       const reportGrid = document.querySelector('.report-grid');
 
       if (!report || report.overallPerformance === 0) {
-        // REQUIRED EMPTY STATE: "Not enough learning data to generate a report yet."
         if (reportSummary) {
           reportSummary.innerHTML = `
-            <div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px;">
+            <div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;">
               <div style="font-size: 32px; margin-bottom: 8px;">📊</div>
-              <h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">Not enough learning data to generate a report yet.</h3>
-              <p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">Complete learning sessions and practice rounds to view comprehensive progress reports, study habits, and skill matrices.</p>
+              <h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">${escapeHtml(report?.emptyTitle || 'No learning data yet.')}</h3>
+              <p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">${escapeHtml(report?.emptyMessage || 'Complete your Personal Information and Quick Learning Check to begin.')}</p>
             </div>
           `;
         }
@@ -2873,7 +2979,6 @@
       const data = await API.request('/api/teacher/dashboard');
       const isEmpty = !data || data.classHealthScore === 0 || !data.studentList || data.studentList.length === 0;
 
-      // Toggle REQUIRED EMPTY STATE: "No students or class data yet."
       const emptyBanner = document.querySelector('#teacher-empty-banner');
       if (emptyBanner) {
         emptyBanner.classList.toggle('hidden', !isEmpty);
@@ -2887,15 +2992,17 @@
       const studentListContainer = document.querySelector('#teacher-student-list');
       if (studentListContainer) {
         if (isEmpty) {
-          studentListContainer.innerHTML = `<div style="text-align:center;padding:26px;color:var(--muted);font-size:13px;">No students or class data yet.</div>`;
+          studentListContainer.innerHTML = `<div style="text-align:center;padding:26px;color:var(--muted);font-size:13px;"><b>${escapeHtml(data?.emptyTitle || 'No students have been added yet.')}</b><br><span style="font-size:11px;">${escapeHtml(data?.emptyMessage || 'Class progress will appear after students complete their learning check.')}</span></div>`;
         } else {
           studentListContainer.innerHTML = data.studentList.map(s => {
-            const scoreClass = s.healthScore < 55 ? 'risk' : s.healthScore < 70 ? 'watch' : '';
+            const isPending = s.status === 'Assessment pending' || s.healthScore === null || s.healthScore === undefined;
+            const scoreClass = isPending ? 'watch' : (s.healthScore < 55 ? 'risk' : s.healthScore < 70 ? 'watch' : '');
+            const scoreDisplay = isPending ? 'Not available' : `${s.healthScore}/100`;
             return `
               <div class="student-row">
                 <div class="student-avatar">${s.initials}</div>
                 <div><b>${s.name}</b><small>${s.primarySubject} · ${s.timeFormatted} this week</small></div>
-                <div class="score ${scoreClass}">${s.healthScore} · ${s.status}</div>
+                <div class="score ${scoreClass}">${scoreDisplay} · ${s.status}</div>
                 <div class="trend">${s.trendSymbol}</div>
               </div>
             `;
@@ -2930,10 +3037,14 @@
       const body = document.querySelector('#teacher-directory-body');
       if (body) {
         if (!data || !data.students || !data.students.length) {
-          body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">No students or class data yet.</td></tr>`;
+          body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:36px;color:var(--muted);"><b>${escapeHtml(data?.emptyTitle || 'No students have been added yet.')}</b><br><span style="font-size:12px;">${escapeHtml(data?.emptyMessage || 'Class progress will appear after students complete their learning check.')}</span></td></tr>`;
           document.querySelector('#directory-subtitle').textContent = '0 students shown';
         } else {
-          body.innerHTML = data.students.map(s => `
+          body.innerHTML = data.students.map(s => {
+            const isPending = s.status === 'Assessment pending' || s.healthScore === null || s.healthScore === undefined;
+            const scoreDisplay = isPending ? 'Not available' : `${s.healthScore}/100`;
+            const timeDisplay = isPending ? '0 minutes' : (s.timeFormatted || '0 minutes');
+            return `
             <tr>
               <td>
                 <div class="directory-student">
@@ -2942,12 +3053,13 @@
                 </div>
               </td>
               <td>${s.subject}</td>
-              <td>${s.healthScore}/100</td>
-              <td>${s.timeFormatted}</td>
+              <td>${scoreDisplay}</td>
+              <td>${timeDisplay}</td>
               <td><span class="directory-status ${s.statusClass}">${s.status}</span></td>
               <td><button class="student-open" data-student="${s.name}" aria-label="Open ${s.name} progress">›</button></td>
             </tr>
-          `).join('');
+          `;
+          }).join('');
           document.querySelector('#directory-subtitle').textContent = `${data.students.length} students shown`;
         }
       }
@@ -2989,7 +3101,8 @@
   }
 
   document.querySelector('#student-progress-back').onclick = () => openTeacherStudents();
-  document.querySelector('#assign-amira').onclick = () => toast('Targeted practice activity assigned successfully.');
+  const assignActionBtn = document.querySelector('#assign-challenge-btn') || document.querySelector('#assign-amira');
+  if (assignActionBtn) assignActionBtn.onclick = () => toast('Targeted practice activity assigned successfully.');
 
   // ----------------------------------------------------
   // 10. TEACHER INSIGHTS
@@ -3007,10 +3120,10 @@
       if (!data || !data.recommendations || !data.recommendations.length) {
         if (grid) {
           grid.innerHTML = `
-            <div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px;">
+            <div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;">
               <div style="font-size: 32px; margin-bottom: 8px;">✦</div>
-              <h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">No recommendations yet.</h3>
-              <p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">AI intervention recommendations will populate here automatically as learners take diagnostic checks and practice rounds.</p>
+              <h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">${escapeHtml(data?.emptyTitle || 'No interventions are available yet.')}</h3>
+              <p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">${escapeHtml(data?.emptyMessage || 'Recommendations will appear when student learning data is available.')}</p>
             </div>
           `;
         }
@@ -3030,7 +3143,7 @@
     try {
       const data = await API.request(`/api/teacher/interventions?category=${category}`);
       const body = document.querySelector('#simple-intervention-body');
-      const kpis = document.querySelectorAll('.intervention-kpi b');
+      const kpis = document.querySelectorAll('.intervention-simple-kpis .simple-kpi b');
 
       if (kpis.length) {
         kpis[0].textContent = data?.counts?.total || 0;
@@ -3041,8 +3154,28 @@
 
       if (body) {
         if (!data || !data.students || !data.students.length) {
-          body.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">No interventions scheduled yet.</td></tr>`;
+          body.parentElement.style.display = 'none';
+          const tableCard = document.querySelector('.intervention-simple-table');
+          if (tableCard) {
+            let banner = tableCard.querySelector('.empty-banner');
+            if (!banner) {
+              banner = document.createElement('div');
+              banner.className = 'card empty-banner';
+              banner.style.cssText = 'padding:38px 20px;text-align:center;margin-top:14px;';
+              tableCard.appendChild(banner);
+            }
+            banner.style.display = 'block';
+            banner.innerHTML = `
+              <div style="font-size: 28px; margin-bottom: 8px;">✦</div>
+              <h3 style="font-family: 'Space Grotesk'; font-size: 18px; margin: 0 0 6px;">${escapeHtml(data?.emptyTitle || 'No interventions are available yet.')}</h3>
+              <p style="color: var(--muted); font-size: 13px; max-width: 460px; margin: auto;">${escapeHtml(data?.emptyMessage || 'Recommendations will appear when student learning data is available.')}</p>
+            `;
+          }
+          renderSimpleDetail(null);
         } else {
+          body.parentElement.style.display = '';
+          const existingBanner = document.querySelector('.intervention-simple-table .empty-banner');
+          if (existingBanner) existingBanner.style.display = 'none';
           body.innerHTML = data.students.map((st, i) => `
             <tr>
               <td><b>${st.name}</b></td>
@@ -3059,7 +3192,20 @@
   }
 
   function renderSimpleDetail(student) {
-    if (!student) return;
+    if (!student) {
+      document.querySelector('#simple-detail-name').textContent = 'No student selected';
+      document.querySelector('#simple-detail-description').textContent = 'Select a student from the list to view their learning profile and support plan.';
+      document.querySelector('#simple-detail-health').textContent = '0';
+      document.querySelector('#simple-detail-topic').textContent = '--';
+      document.querySelector('#simple-detail-time').textContent = '0 min';
+      document.querySelector('#simple-plan-title').textContent = 'Recommended support plan';
+      document.querySelector('#simple-plan-description').textContent = 'Recommendations will appear when student learning data is available.';
+      const actionBtn = document.querySelector('#simple-detail-action');
+      if (actionBtn) actionBtn.style.display = 'none';
+      return;
+    }
+    const actionBtn = document.querySelector('#simple-detail-action');
+    if (actionBtn) actionBtn.style.display = '';
     document.querySelector('#simple-detail-name').textContent = student.name;
     document.querySelector('#simple-detail-description').textContent = student.description || `${student.name} benefits from structured practice.`;
     document.querySelector('#simple-detail-health').textContent = student.health;
@@ -3083,7 +3229,23 @@
 
     try {
       const data = await API.request('/api/teacher/report');
-      if (data) {
+      const isEmpty = !data || (data.studentsOnTrack === 0 && data.studentsNeedingSupport === 0);
+      const highlight = document.querySelector('.teacher-report-summary');
+      const reportGrid = document.querySelector('.teacher-report-grid');
+
+      if (isEmpty) {
+        if (highlight) {
+          highlight.innerHTML = `
+            <div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;">
+              <div style="font-size: 32px; margin-bottom: 8px;">📋</div>
+              <h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">${escapeHtml(data?.emptyTitle || 'No students have been added yet.')}</h3>
+              <p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">${escapeHtml(data?.emptyMessage || 'Class progress will appear after students complete their learning check.')}</p>
+            </div>
+          `;
+        }
+        if (reportGrid) reportGrid.classList.add('hidden');
+      } else {
+        if (reportGrid) reportGrid.classList.remove('hidden');
         document.querySelector('.teacher-report-highlight b').textContent = data.classHealthScore || 0;
         const kpis = document.querySelectorAll('.teacher-report-kpi b');
         if (kpis[0]) kpis[0].textContent = `${data.averagePerformance || 0}%`;

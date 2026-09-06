@@ -3,154 +3,195 @@
   "studentProfiles": {
     "new-student-001": {
       "userId": "new-student-001",
-      "name": "Amira M.",
-      "initials": "AM",
-      "grade": "Grade 2",
-      "school": "Sk Khamis",
-      "district": "Kuala Lumpur",
-      "dateOfBirth": "2022-09-09",
+      "name": "Mohamad Al Jufrie bin Sudirman",
+      "initials": "MA",
+      "grade": "Year 10",
+      "school": "SMKew",
+      "district": "jb",
+      "dateOfBirth": "2222-02-22",
       "learningLanguages": [
         "English"
       ],
       "preferredLanguage": "English",
       "favouriteSubject": "Mathematics",
       "preferredStudyTime": "Evening",
-      "diagnostic_completed": true
+      "classId": null,
+      "className": null,
+      "classCode": null,
+      "diagnostic_completed": true,
+      "onboarding_completed": true,
+      "estimatedGradeLevel": 2.9
     }
   },
-  "teacherProfiles": {},
-  "classes": [],
+  "teacherProfiles": {
+    "current-teacher": {
+      "userId": "cb21ed2e-dd2d-420e-9679-89156d6b62a5",
+      "name": "Liyana K.",
+      "initials": "LK",
+      "teacherId": "TCH-10482",
+      "school": "Sekolah Menengah Maju Jaya",
+      "district": "Kuala Lumpur",
+      "primarySubject": "Mathematics",
+      "teachingLevel": "Year 10"
+    }
+  },
+  "classes": [
+    {
+      "id": "year10-amanah",
+      "teacherId": "cb21ed2e-dd2d-420e-9679-89156d6b62a5",
+      "name": "Year 10 Amanah (AMANAH10)",
+      "yearLevel": "Year 10",
+      "subject": "Mathematics",
+      "studentCount": 0
+    },
+    {
+      "id": "year10-bestari",
+      "teacherId": "cb21ed2e-dd2d-420e-9679-89156d6b62a5",
+      "name": "Year 10 Bestari (BESTARI10)",
+      "yearLevel": "Year 10",
+      "subject": "Mathematics",
+      "studentCount": 0
+    },
+    {
+      "id": "year10-cemerlang",
+      "teacherId": "cb21ed2e-dd2d-420e-9679-89156d6b62a5",
+      "name": "Year 10 Cemerlang (CEMERLANG10)",
+      "yearLevel": "Year 10",
+      "subject": "Mathematics",
+      "studentCount": 0
+    }
+  ],
   "subjects": [
     {
       "id": "mathematics",
       "name": "Mathematics",
       "shortName": "Maths",
-      "score": 89,
-      "mastery": 90,
-      "learningMinutes": 16,
-      "status": "Mastered",
-      "strength": "Addition",
+      "score": 20,
+      "mastery": 20,
+      "learningMinutes": 15,
+      "status": "Support",
+      "strength": "Core concepts",
       "topics": [
         {
           "id": "mathematics-t1",
-          "name": "Addition",
-          "score": 97,
-          "status": "Mastered",
-          "correctAnswers": 1,
-          "totalAnswers": 1,
-          "timeSpentMinutes": 1
-        },
-        {
-          "id": "mathematics-t2",
-          "name": "Penjodoh bilangan",
-          "score": 80,
+          "name": "Core concepts",
+          "score": 20,
           "status": "Developing"
         }
       ],
       "learningGaps": [
-        "Penjodoh bilangan",
-        "Energy",
+        "Decimals",
+        "Multiplication",
+        "Subtraction",
+        "Addition",
+        "Kata kerja",
+        "Kata nama",
         "Tenses",
-        "Simpulan bahasa"
+        "Reading comprehension",
+        "Vocabulary",
+        "Energy",
+        "Plants",
+        "Living things",
+        "Electricity"
       ]
     },
     {
       "id": "bahasa-melayu",
       "name": "Bahasa Melayu",
       "shortName": "BM",
-      "score": 63,
-      "mastery": 55,
-      "learningMinutes": 18,
-      "status": "Building skills",
-      "strength": "Kata Adjektif",
+      "score": 60,
+      "mastery": 60,
+      "learningMinutes": 15,
+      "status": "Developing",
+      "strength": "Core concepts",
       "topics": [
         {
           "id": "bahasa-melayu-t1",
-          "name": "Vocabulary",
+          "name": "Core concepts",
           "score": 60,
-          "status": "Strong"
-        },
-        {
-          "id": "bahasa-melayu-t2",
-          "name": "Penjodoh bilangan",
-          "score": 45,
           "status": "Developing"
-        },
-        {
-          "id": "kata adjektif",
-          "name": "Kata Adjektif",
-          "score": 83,
-          "status": "Mastered",
-          "correctAnswers": 3,
-          "totalAnswers": 3,
-          "timeSpentMinutes": 3
         }
       ],
       "learningGaps": [
-        "Penjodoh bilangan",
-        "Energy",
+        "Decimals",
+        "Multiplication",
+        "Subtraction",
+        "Addition",
+        "Kata kerja",
+        "Kata nama",
         "Tenses",
-        "Simpulan bahasa"
+        "Reading comprehension",
+        "Vocabulary",
+        "Energy",
+        "Plants",
+        "Living things",
+        "Electricity"
       ]
     },
     {
       "id": "english",
       "name": "English",
       "shortName": "English",
-      "score": 50,
-      "mastery": 50,
+      "score": 40,
+      "mastery": 40,
       "learningMinutes": 15,
-      "status": "Developing",
-      "strength": "Vocabulary",
+      "status": "Support",
+      "strength": "Core concepts",
       "topics": [
         {
           "id": "english-t1",
-          "name": "Vocabulary",
-          "score": 60,
-          "status": "Strong"
-        },
-        {
-          "id": "english-t2",
-          "name": "Penjodoh bilangan",
-          "score": 45,
+          "name": "Core concepts",
+          "score": 40,
           "status": "Developing"
         }
       ],
       "learningGaps": [
-        "Penjodoh bilangan",
-        "Energy",
+        "Decimals",
+        "Multiplication",
+        "Subtraction",
+        "Addition",
+        "Kata kerja",
+        "Kata nama",
         "Tenses",
-        "Simpulan bahasa"
+        "Reading comprehension",
+        "Vocabulary",
+        "Energy",
+        "Plants",
+        "Living things",
+        "Electricity"
       ]
     },
     {
       "id": "science",
       "name": "Science",
       "shortName": "Science",
-      "score": 50,
-      "mastery": 50,
+      "score": 20,
+      "mastery": 20,
       "learningMinutes": 15,
-      "status": "Developing",
-      "strength": "Living things",
+      "status": "Support",
+      "strength": "Core concepts",
       "topics": [
         {
           "id": "science-t1",
-          "name": "Living things",
-          "score": 60,
-          "status": "Strong"
-        },
-        {
-          "id": "science-t2",
-          "name": "Penjodoh bilangan",
-          "score": 45,
+          "name": "Core concepts",
+          "score": 20,
           "status": "Developing"
         }
       ],
       "learningGaps": [
-        "Penjodoh bilangan",
-        "Energy",
+        "Decimals",
+        "Multiplication",
+        "Subtraction",
+        "Addition",
+        "Kata kerja",
+        "Kata nama",
         "Tenses",
-        "Simpulan bahasa"
+        "Reading comprehension",
+        "Vocabulary",
+        "Energy",
+        "Plants",
+        "Living things",
+        "Electricity"
       ]
     }
   ],
@@ -160,17 +201,7 @@
       "name": "Active Learner",
       "initials": "AL",
       "primarySubject": "Bahasa Melayu",
-      "learningMinutes": 15,
-      "healthScore": 60,
-      "status": "watch",
-      "trend": "up"
-    },
-    {
-      "id": "test-student-flow-001",
-      "name": "Active Learner",
-      "initials": "AL",
-      "primarySubject": "Mathematics",
-      "learningMinutes": 1,
+      "learningMinutes": 2,
       "healthScore": 60,
       "status": "watch",
       "trend": "up"
@@ -179,58 +210,33 @@
       "id": "new-student-001",
       "name": "Mohamad Al Jufrie bin Sudirman",
       "initials": "MA",
-      "primarySubject": "Science",
+      "primarySubject": "Mathematics",
       "learningMinutes": 15,
-      "healthScore": 85,
-      "status": "thriving",
-      "trend": "up"
-    },
-    {
-      "id": "student-test-1788655084115",
-      "name": "New Learner",
-      "initials": "NL",
-      "primarySubject": "Bahasa Melayu",
-      "learningMinutes": 15,
-      "healthScore": 65,
-      "status": "on track",
+      "healthScore": 35,
+      "status": "Assessment completed",
       "trend": "up"
     }
   ],
   "interventions": [
     {
-      "id": "int-1788629719061",
-      "studentId": "student-1788629719061",
-      "studentName": "Omar P.",
+      "id": "inv-1788657944127-343",
+      "studentId": "new-student-001",
+      "studentName": "Mohamad Al Jufrie bin Sudirman",
       "status": "problem",
-      "classification": "Subtraction",
+      "classification": "Low topic mastery",
       "subject": "Mathematics",
-      "topic": "Subtraction",
-      "healthScore": 47,
-      "topicScore": "54%",
-      "learningMinutes": "38 min",
-      "recommendation": "15-minute guided support plan",
-      "plan": "Visual counters mini-lesson",
-      "createdAt": "2026-09-05T17:35:19.061Z"
-    },
-    {
-      "id": "int-1788655086682",
-      "studentId": "student-1788655086682",
-      "studentName": "Omar P.",
-      "status": "problem",
-      "classification": "Subtraction",
-      "subject": "Mathematics",
-      "topic": "Subtraction",
-      "healthScore": 47,
-      "topicScore": "54%",
-      "learningMinutes": "38 min",
-      "recommendation": "15-minute guided support plan",
-      "plan": "Visual counters mini-lesson",
-      "createdAt": "2026-09-06T00:38:06.682Z"
+      "topic": "Decimals",
+      "healthScore": 35,
+      "topicScore": 30,
+      "learningMinutes": 15,
+      "recommendation": "Targeted review in Decimals: 15-minute guided practice session.",
+      "reviewDueDate": "2026-09-09",
+      "createdAt": "2026-09-06T01:25:44.127Z"
     }
   ],
   "practiceAttempts": [
     {
-      "id": "att-1788629707100-941",
+      "id": "att-1788657880175-983",
       "studentId": "student-user-001",
       "topic": "Kata Adjektif",
       "level": 1,
@@ -239,34 +245,10 @@
       "correctAnswer": "rajin",
       "isCorrect": true,
       "timeSpentSeconds": 8,
-      "attemptedAt": "2026-09-05T17:35:07.100Z"
+      "attemptedAt": "2026-09-06T01:24:40.175Z"
     },
     {
-      "id": "att-1788629716449-489",
-      "studentId": "test-student-flow-001",
-      "topic": "Subtraction",
-      "level": 1,
-      "question": "15 - 7 = ?",
-      "submittedAnswer": "8",
-      "correctAnswer": "8",
-      "isCorrect": true,
-      "timeSpentSeconds": 15,
-      "attemptedAt": "2026-09-05T17:35:16.449Z"
-    },
-    {
-      "id": "att-1788629718464-56",
-      "studentId": "student-user-001",
-      "topic": "Addition",
-      "level": 1,
-      "question": "2 + 3 = ?",
-      "submittedAnswer": "5",
-      "correctAnswer": "5",
-      "isCorrect": true,
-      "timeSpentSeconds": 3,
-      "attemptedAt": "2026-09-05T17:35:18.464Z"
-    },
-    {
-      "id": "att-1788629749760-872",
+      "id": "att-1788657893989-592",
       "studentId": "student-user-001",
       "topic": "Kata Adjektif",
       "level": 1,
@@ -275,162 +257,18 @@
       "correctAnswer": "rajin",
       "isCorrect": true,
       "timeSpentSeconds": 8,
-      "attemptedAt": "2026-09-05T17:35:49.760Z"
-    },
-    {
-      "id": "att-1788630364576-996",
-      "studentId": "student-user-001",
-      "topic": "Addition",
-      "level": 1,
-      "question": "Ali menggunakan 2/5 meter reben, kemudian 1/5 meter lagi. Jumlah reben ialah ...",
-      "submittedAnswer": "3/5",
-      "correctAnswer": "3/5 m",
-      "isCorrect": false,
-      "timeSpentSeconds": 14,
-      "attemptedAt": "2026-09-05T17:46:04.576Z"
-    },
-    {
-      "id": "att-1788630372433-582",
-      "studentId": "student-user-001",
-      "topic": "Addition",
-      "level": 1,
-      "question": "Hasil 7/12 − 2/12 ialah ...",
-      "submittedAnswer": "5/12",
-      "correctAnswer": "5/12",
-      "isCorrect": true,
-      "timeSpentSeconds": 6,
-      "attemptedAt": "2026-09-05T17:46:12.433Z"
-    },
-    {
-      "id": "att-1788630383055-721",
-      "studentId": "student-user-001",
-      "topic": "Addition",
-      "level": 1,
-      "question": "Dalam satu projek, Amir menyiapkan 3/8 bahagian pada hari pertama dan 1/4 pada hari kedua. Berapa jumlah bahagian yang siap?",
-      "submittedAnswer": "34",
-      "correctAnswer": "5/8",
-      "isCorrect": false,
-      "timeSpentSeconds": 9,
-      "attemptedAt": "2026-09-05T17:46:23.055Z"
-    },
-    {
-      "id": "att-1788630384874-992",
-      "studentId": "student-user-001",
-      "topic": "Addition",
-      "level": 1,
-      "question": "Dalam satu projek, Amir menyiapkan 3/8 bahagian pada hari pertama dan 1/4 pada hari kedua. Berapa jumlah bahagian yang siap?",
-      "submittedAnswer": "34",
-      "correctAnswer": "5/8",
-      "isCorrect": false,
-      "timeSpentSeconds": 11,
-      "attemptedAt": "2026-09-05T17:46:24.874Z"
-    },
-    {
-      "id": "att-1788630386253-172",
-      "studentId": "student-user-001",
-      "topic": "Addition",
-      "level": 1,
-      "question": "Kira 3/8 + 2/8.",
-      "submittedAnswer": "43",
-      "correctAnswer": "5/8",
-      "isCorrect": false,
-      "timeSpentSeconds": 1,
-      "attemptedAt": "2026-09-05T17:46:26.253Z"
-    },
-    {
-      "id": "att-1788631427004-975",
-      "studentId": "student-user-001",
-      "topic": "Kata Adjektif",
-      "level": 1,
-      "question": "Apakah kata adjektif bagi sifat rajin?",
-      "submittedAnswer": "rajin",
-      "correctAnswer": "rajin",
-      "isCorrect": true,
-      "timeSpentSeconds": 8,
-      "attemptedAt": "2026-09-05T18:03:47.004Z"
-    },
-    {
-      "id": "att-1788631827276-384",
-      "studentId": "student-user-001",
-      "topic": "Kata Adjektif",
-      "level": 1,
-      "question": "Apakah kata adjektif bagi sifat rajin?",
-      "submittedAnswer": "rajin",
-      "correctAnswer": "rajin",
-      "isCorrect": true,
-      "timeSpentSeconds": 8,
-      "attemptedAt": "2026-09-05T18:10:27.276Z"
-    },
-    {
-      "id": "att-1788631949590-606",
-      "studentId": "student-user-001",
-      "topic": "Kata Adjektif",
-      "level": 1,
-      "question": "Apakah kata adjektif bagi sifat rajin?",
-      "submittedAnswer": "rajin",
-      "correctAnswer": "rajin",
-      "isCorrect": true,
-      "timeSpentSeconds": 8,
-      "attemptedAt": "2026-09-05T18:12:29.590Z"
-    },
-    {
-      "id": "att-1788655085696-6",
-      "studentId": "student-user-001",
-      "topic": "Addition",
-      "level": 1,
-      "question": "2 + 3 = ?",
-      "submittedAnswer": "5",
-      "correctAnswer": "5",
-      "isCorrect": true,
-      "timeSpentSeconds": 3,
-      "attemptedAt": "2026-09-06T00:38:05.696Z"
-    },
-    {
-      "id": "att-1788655254622-292",
-      "studentId": "student-user-001",
-      "topic": "Kata Adjektif",
-      "level": 1,
-      "question": "Apakah kata adjektif bagi sifat rajin?",
-      "submittedAnswer": "rajin",
-      "correctAnswer": "rajin",
-      "isCorrect": true,
-      "timeSpentSeconds": 8,
-      "attemptedAt": "2026-09-06T00:40:54.622Z"
-    },
-    {
-      "id": "att-1788655500623-403",
-      "studentId": "student-user-001",
-      "topic": "Kata Adjektif",
-      "level": 1,
-      "question": "Apakah kata adjektif bagi sifat rajin?",
-      "submittedAnswer": "rajin",
-      "correctAnswer": "rajin",
-      "isCorrect": true,
-      "timeSpentSeconds": 8,
-      "attemptedAt": "2026-09-06T00:45:00.623Z"
-    },
-    {
-      "id": "att-1788655577591-868",
-      "studentId": "student-user-001",
-      "topic": "Kata Adjektif",
-      "level": 1,
-      "question": "Apakah kata adjektif bagi sifat rajin?",
-      "submittedAnswer": "rajin",
-      "correctAnswer": "rajin",
-      "isCorrect": true,
-      "timeSpentSeconds": 8,
-      "attemptedAt": "2026-09-06T00:46:17.591Z"
+      "attemptedAt": "2026-09-06T01:24:53.989Z"
     }
   ],
   "dashboard": {
-    "overallPerformance": 63,
-    "healthScore": 65,
+    "overallPerformance": 35,
+    "healthScore": 35,
     "learningStreakDays": 1,
     "streakIncreaseThisWeek": 1,
-    "studyActivityMinutes": 24,
-    "studyActivityChangePercent": 0,
+    "studyActivityMinutes": 15,
+    "studyActivityChangePercent": 100,
     "availableFocusMinutes": 45,
-    "bestFocusWindow": "7:00 PM",
+    "bestFocusWindow": "5:00 PM",
     "weeklyActivity": [
       {
         "day": "Mon",
@@ -462,27 +300,36 @@
       }
     ],
     "recommendedPractice": {
-      "title": "Strengthen Vocabulary",
-      "description": "Your score in Vocabulary is 60%. A 15-minute focused session will help establish mastery."
+      "subject": "Mathematics",
+      "topic": "Decimals",
+      "description": "Strengthen decimals in a 15-minute session calibrated to your Quick Learning Check.",
+      "durationMinutes": 15
     }
   },
-  "classDashboard": {},
+  "classDashboard": {
+    "classId": "year10-amanah",
+    "studentCount": 0,
+    "classHealthScore": 0,
+    "onTrackCount": 0,
+    "needsSupportCount": 0,
+    "averageLoginMinutesPerDay": 0,
+    "weeklyPerformance": [],
+    "subjectPerformance": []
+  },
   "recommendations": [
     {
-      "id": "rec-1788655084123",
-      "studentId": "student-test-1788655084115",
-      "subject": "Bahasa Melayu",
-      "topic": "Penjodoh bilangan",
-      "title": "Build confidence in penjodoh bilangan",
-      "reason": "Your Quick Learning Check highlighted penjodoh bilangan as your key growth area. A 15-minute focused session will help establish foundational mastery.",
-      "currentScore": 60,
+      "id": "rec-1788657944127",
+      "studentId": "new-student-001",
+      "subject": "Mathematics",
+      "topic": "Decimals",
+      "title": "Build confidence in decimals",
+      "reason": "Your Quick Learning Check highlighted decimals as your focus topic. A 15-minute session will reinforce key concepts.",
+      "currentScore": 35,
       "timeSpentMinutes": 15,
       "recommendedMinutes": 15,
       "status": "active"
     }
   ],
   "recentActivity": [],
-  "assignedInterventionStudents": [
-    "Omar P."
-  ]
+  "assignedInterventionStudents": []
 }

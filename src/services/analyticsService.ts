@@ -120,14 +120,24 @@ export class AnalyticsService {
       };
     }
 
-    const totalHealth = students.reduce((sum, s) => sum + s.healthScore, 0);
-    const classHealthScore = Math.round(totalHealth / students.length);
+    const assessedStudents = students.filter(s => typeof s.healthScore === 'number' && s.healthScore !== null);
+    if (assessedStudents.length === 0) {
+      return {
+        classHealthScore: 0,
+        onTrackCount: 0,
+        needsSupportCount: 0,
+        averageLoginMinutesPerDay: 0
+      };
+    }
 
-    const onTrackCount = students.filter(s => s.healthScore >= 70).length;
-    const needsSupportCount = students.filter(s => s.healthScore < 55).length;
+    const totalHealth = assessedStudents.reduce((sum, s) => sum + (s.healthScore as number), 0);
+    const classHealthScore = Math.round(totalHealth / assessedStudents.length);
 
-    const totalMinutes = students.reduce((sum, s) => sum + s.learningMinutes, 0);
-    const avgMinsPerWeek = Math.round(totalMinutes / students.length);
+    const onTrackCount = assessedStudents.filter(s => (s.healthScore as number) >= 70).length;
+    const needsSupportCount = assessedStudents.filter(s => (s.healthScore as number) < 55).length;
+
+    const totalMinutes = students.reduce((sum, s) => sum + (s.learningMinutes || 0), 0);
+    const avgMinsPerWeek = Math.round(totalMinutes / (students.length || 1));
     const averageLoginMinutesPerDay = Math.round(avgMinsPerWeek / 6);
 
     return {

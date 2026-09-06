@@ -114,7 +114,7 @@ class DiagnosticEngine {
         studentId,
         initialGrade: parsedGrade,
         currentGrade: parsedGrade,
-        totalQuestions: 10,
+        totalQuestions: 20,
         questionsAnswered: 0,
         status: 'in_progress',
         answers: [],
@@ -143,24 +143,42 @@ class DiagnosticEngine {
 
   /**
    * Selects an adaptive question based on student's grade and previous answers.
-   * If correct -> more difficult.
-   * If wrong -> easier or similar topic.
+   * 20 Questions total:
+   * - Q1 to Q5: Mathematics
+   * - Q6 to Q10: Bahasa Melayu
+   * - Q11 to Q15: English
+   * - Q16 to Q20: Science
    */
   private pickNextQuestion(session: DiagnosticSessionState): DiagnosticQuestion {
     const questions = this.getQuestions();
     const answeredIds = new Set(session.answers.map(a => a.questionId));
-    const available = questions.filter(q => !answeredIds.has(q.id));
+    const count = session.answers.length;
+
+    let targetSubject = 'Mathematics';
+    if (count >= 15) {
+      targetSubject = 'Science';
+    } else if (count >= 10) {
+      targetSubject = 'English';
+    } else if (count >= 5) {
+      targetSubject = 'Bahasa Melayu';
+    }
+
+    const available = questions.filter(q => !answeredIds.has(q.id) && q.subject === targetSubject);
 
     if (available.length === 0) {
-      // If exhausted, fallback to any question
+      // If exhausted in this subject, pick any unattempted question
+      const anyAvailable = questions.filter(q => !answeredIds.has(q.id));
+      if (anyAvailable.length > 0) {
+        return anyAvailable[Math.floor(Math.random() * anyAvailable.length)];
+      }
       return questions[Math.floor(Math.random() * questions.length)];
     }
 
-    // Attempt to match current target grade
+    // Match current target grade
     const targetGrade = session.currentGrade;
     let candidates = available.filter(q => q.grade === targetGrade);
 
-    // If no candidate at exact target grade, search nearest grades (targetGrade +/- 1, 2, etc.)
+    // If no candidate at exact target grade, search nearest grades (+/- 1, 2, etc.)
     if (candidates.length === 0) {
       for (let delta = 1; delta <= 5; delta++) {
         const lower = available.filter(q => q.grade === targetGrade - delta);
@@ -251,29 +269,24 @@ class DiagnosticEngine {
       session.currentGrade = Math.max(1, session.currentGrade - 1);
     }
 
-    // Save attempt to Supabase diagnostic_attempts if available
+    // Save attempt to Supabase question_attempts if available
     try {
       import('../config/supabase.js').then(({ supabase }) => {
         if (supabase && session.studentId) {
-          supabase.from('diagnostic_attempts').insert({
+          supabase.from('question_attempts').insert({
             session_id: session.id,
             student_id: session.studentId,
             question_id: question.id,
-            subject: question.subject,
-            grade: question.grade,
-            topic: question.topic,
-            question_text: question.question,
             student_answer: String(studentAnswer),
-            correct_answer: String(question.correctAnswer),
             is_correct: isCorrect,
             response_time_seconds: Math.max(1, timeSpentSeconds),
-            score: isCorrect ? 100 : 0
+            attempted_at: new Date().toISOString()
           }).then(() => {}).catch(() => {});
         }
       }).catch(() => {});
     } catch (e) {}
 
-    // End the quick test after 10 questions
+    // End the quick test after 20 questions
     if (session.questionsAnswered >= session.totalQuestions) {
       session.status = 'completed';
       session.completedAt = new Date().toISOString();
@@ -310,20 +323,20 @@ class DiagnosticEngine {
   }
 
   /**
-   * After the quick test, create the student's initial progress,
+   * After the quick test, calculate the student's real progress,
    * strengths, learning gaps, and recommendations.
    */
   public computeInitialAssessment(session: DiagnosticSessionState): InitialAssessmentResult {
     const total = session.answers.length;
     const correctCount = session.answers.filter(a => a.isCorrect).length;
-    const overallScore = total > 0 ? Math.round((correctCount / total) * 100) : 50;
+    const overallScore = total > 0 ? Math.round((correctCount / total) * 100) : 0;
 
-    // Estimate grade level based on difficulty and correct answers
+    // Estimate grade level based on performance and starting grade
     const gradeScores = session.answers.map(a => a.isCorrect ? a.grade : Math.max(1, a.grade - 0.5));
     const avgGrade = gradeScores.reduce((sum, g) => sum + g, 0) / (total || 1);
     const estimatedGradeLevel = Math.round(avgGrade * 10) / 10;
 
-    // Calculate subject scores
+    // Calculate real subject scores (5 questions per subject)
     const subjects = ['Mathematics', 'Bahasa Melayu', 'English', 'Science'];
     const subjectScores: Record<string, number> = {};
 
@@ -331,15 +344,13 @@ class DiagnosticEngine {
       const subAnswers = session.answers.filter(a => a.subject === sub);
       if (subAnswers.length > 0) {
         const subCorrect = subAnswers.filter(a => a.isCorrect).length;
-        const rawScore = Math.round((subCorrect / subAnswers.length) * 100);
-        subjectScores[sub] = Math.max(45, Math.min(95, rawScore));
+        subjectScores[sub] = Math.round((subCorrect / subAnswers.length) * 100);
       } else {
-        // Calibrated baseline
-        subjectScores[sub] = overallScore >= 70 ? 75 : 60;
+        subjectScores[sub] = 0;
       }
     }
 
-    // Identify strengths and gaps
+    // Identify real strengths (topics answered correctly)
     const topicStrengths: string[] = [];
     const learningGaps: string[] = [];
 
@@ -351,29 +362,37 @@ class DiagnosticEngine {
       }
     });
 
-    if (topicStrengths.length === 0) {
-      topicStrengths.push('Addition', 'Living things');
-    }
-    if (learningGaps.length === 0) {
-      learningGaps.push('Subtraction', 'Fractions');
-    }
+    // Determine recommended weak topic for personalised practice
+    // Prioritize learning gaps (incorrect topics); if all correct, pick lowest scoring subject
+    let recommendedSubject = 'Mathematics';
+    let recommendedTopic = 'Subtraction';
 
-    // Recommended first practice topic: lowest scoring area or primary gap
-    const recommendedSubject = learningGaps.length > 0
-      ? (session.answers.find(a => !a.isCorrect)?.subject || 'Mathematics')
-      : 'Mathematics';
-    const recommendedTopic = learningGaps[0] || 'Subtraction';
+    if (learningGaps.length > 0) {
+      const wrongAnswer = session.answers.find(a => !a.isCorrect);
+      if (wrongAnswer) {
+        recommendedSubject = wrongAnswer.subject;
+        recommendedTopic = wrongAnswer.topic;
+      } else {
+        recommendedTopic = learningGaps[0];
+      }
+    } else {
+      // Find subject with lowest score
+      const sortedSubs = Object.entries(subjectScores).sort((a, b) => a[1] - b[1]);
+      recommendedSubject = sortedSubs[0][0];
+      const matchSubQ = session.answers.find(a => a.subject === recommendedSubject);
+      recommendedTopic = matchSubQ?.topic || 'Core concepts';
+    }
 
     const recommendedFirstPracticeTopic = {
       subject: recommendedSubject,
       topic: recommendedTopic,
-      description: `Strengthen ${recommendedTopic.toLowerCase()} in a 15-minute session calibrated to your diagnostic results.`,
+      description: `Strengthen ${recommendedTopic.toLowerCase()} in a 15-minute session calibrated to your Quick Learning Check.`,
       durationMinutes: 15
     };
 
     const recommendedDashboardInsight = {
       title: `Build confidence in ${recommendedTopic.toLowerCase()}`,
-      reason: `Your Quick Learning Check highlighted ${recommendedTopic.toLowerCase()} as your key growth area. A 15-minute focused session will help establish foundational mastery.`,
+      reason: `Your Quick Learning Check highlighted ${recommendedTopic.toLowerCase()} as your focus topic. A 15-minute session will reinforce key concepts.`,
       category: recommendedSubject,
       suggestedDurationMinutes: 15
     };
@@ -390,27 +409,26 @@ class DiagnosticEngine {
       recommendedDashboardInsight
     };
 
-    // Persist into dataStore
+    // Persist into dataStore and Supabase
     this.persistAssessmentToDataStore(result);
 
     return result;
   }
 
   /**
-   * Updates dataStore student subjects, topics, and recommendations
+   * Updates dataStore student subjects, topics, recommendations, and Supabase tables
    */
   private persistAssessmentToDataStore(assessment: InitialAssessmentResult): void {
     // 1. Update or create student subject progress
     const subList = [
-      { id: 'mathematics', name: 'Mathematics', shortName: 'Maths', score: assessment.subjectScores['Mathematics'] || 70 },
-      { id: 'bahasa-melayu', name: 'Bahasa Melayu', shortName: 'BM', score: assessment.subjectScores['Bahasa Melayu'] || 68 },
-      { id: 'english', name: 'English', shortName: 'English', score: assessment.subjectScores['English'] || 68 },
-      { id: 'science', name: 'Science', shortName: 'Science', score: assessment.subjectScores['Science'] || 85 }
+      { id: 'mathematics', name: 'Mathematics', shortName: 'Maths', score: assessment.subjectScores['Mathematics'] ?? 0 },
+      { id: 'bahasa-melayu', name: 'Bahasa Melayu', shortName: 'BM', score: assessment.subjectScores['Bahasa Melayu'] ?? 0 },
+      { id: 'english', name: 'English', shortName: 'English', score: assessment.subjectScores['English'] ?? 0 },
+      { id: 'science', name: 'Science', shortName: 'Science', score: assessment.subjectScores['Science'] ?? 0 }
     ];
 
     dataStore.data.subjects = subList.map(s => {
-      const strength = assessment.topicStrengths.find(t => t.toLowerCase().includes(s.name.toLowerCase())) ||
-        (s.id === 'mathematics' ? 'Addition' : s.id === 'science' ? 'Living things' : 'Vocabulary');
+      const strength = assessment.topicStrengths.find(t => t.toLowerCase().includes(s.name.toLowerCase())) || 'Core concepts';
       return {
         id: s.id,
         name: s.name,
@@ -418,11 +436,10 @@ class DiagnosticEngine {
         score: s.score,
         mastery: s.score,
         learningMinutes: 15,
-        status: s.score >= 75 ? 'On track' : 'Developing',
+        status: s.score >= 75 ? 'On track' : s.score >= 50 ? 'Developing' : 'Support',
         strength,
         topics: [
-          { id: `${s.id}-t1`, name: strength, score: Math.min(95, s.score + 10), status: 'Strong' },
-          { id: `${s.id}-t2`, name: assessment.learningGaps[0] || 'Foundation', score: Math.max(45, s.score - 15), status: 'Developing' }
+          { id: `${s.id}-t1`, name: strength, score: s.score, status: s.score >= 75 ? 'Strong' : 'Developing' }
         ],
         learningGaps: assessment.learningGaps
       };
@@ -431,13 +448,13 @@ class DiagnosticEngine {
     // 2. Update dashboard stats
     dataStore.data.dashboard = {
       overallPerformance: assessment.overallScore,
-      healthScore: Math.min(100, assessment.overallScore + 5),
+      healthScore: assessment.overallScore,
       learningStreakDays: 1,
       streakIncreaseThisWeek: 1,
       studyActivityMinutes: 15,
-      studyActivityChangePercent: 0,
+      studyActivityChangePercent: 100,
       availableFocusMinutes: 45,
-      bestFocusWindow: '7:00 PM',
+      bestFocusWindow: '5:00 PM',
       weeklyActivity: [
         { day: 'Mon', minutes: 0 },
         { day: 'Tue', minutes: 0 },
@@ -470,37 +487,94 @@ class DiagnosticEngine {
     const prof = dataStore.data.studentProfiles[assessment.studentId];
     if (prof) {
       (prof as any).diagnostic_completed = true;
+      (prof as any).onboarding_completed = true;
       (prof as any).estimatedGradeLevel = assessment.estimatedGradeLevel;
     }
 
-    try {
-      import('../config/supabase.js').then(({ supabase }) => {
-        if (supabase && assessment.studentId && assessment.studentId.includes('-')) {
-          supabase.from('student_profiles').update({
-            diagnostic_completed: true,
-            estimated_grade_level: assessment.estimatedGradeLevel
-          }).eq('user_id', assessment.studentId).then(() => {}).catch(() => {});
-        }
-      }).catch(() => {});
-    } catch (e) {}
-
-    // 5. Add to teacher student roster
-    const existingStudent = dataStore.data.students.find(s => s.id === assessment.studentId);
+    // 5. Update or add to teacher student roster with REAL status
     const studentName = prof?.name || 'New Learner';
     const initials = prof?.initials || 'NL';
+    const existingStudentIndex = dataStore.data.students.findIndex(s => s.id === assessment.studentId);
 
-    if (!existingStudent) {
-      dataStore.data.students.push({
-        id: assessment.studentId,
-        name: studentName,
-        initials,
-        primarySubject: assessment.recommendedFirstPracticeTopic.subject,
+    const studentRosterItem = {
+      id: assessment.studentId,
+      name: studentName,
+      initials,
+      primarySubject: assessment.recommendedFirstPracticeTopic.subject,
+      learningMinutes: 15,
+      healthScore: assessment.overallScore,
+      status: 'Assessment completed' as const,
+      trend: 'up' as const
+    };
+
+    if (existingStudentIndex >= 0) {
+      dataStore.data.students[existingStudentIndex] = studentRosterItem;
+    } else {
+      dataStore.data.students.push(studentRosterItem);
+    }
+
+    // 6. Generate real intervention only when real support is needed
+    if (assessment.overallScore < 55 || assessment.learningGaps.length > 0) {
+      const weakTopic = assessment.learningGaps[0] || assessment.recommendedFirstPracticeTopic.topic;
+      dataStore.data.interventions.push({
+        id: `inv-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        studentId: assessment.studentId,
+        studentName,
+        status: 'problem',
+        classification: 'Low topic mastery',
+        subject: assessment.recommendedFirstPracticeTopic.subject,
+        topic: weakTopic,
+        healthScore: assessment.overallScore,
+        topicScore: Math.max(30, assessment.overallScore - 10),
         learningMinutes: 15,
-        healthScore: Math.min(100, assessment.overallScore + 5),
-        status: assessment.overallScore >= 75 ? 'thriving' : assessment.overallScore >= 55 ? 'on track' : 'support',
-        trend: 'up'
+        recommendation: `Targeted review in ${weakTopic}: 15-minute guided practice session.`,
+        reviewDueDate: new Date(Date.now() + 86400000 * 3).toISOString().split('T')[0],
+        createdAt: new Date().toISOString()
       });
     }
+
+    // 7. Sync directly to Supabase tables
+    try {
+      import('../config/supabase.js').then(async ({ supabase }) => {
+        if (!supabase || !assessment.studentId) return;
+
+        // a. student_profiles update
+        await supabase.from('student_profiles').update({
+          onboarding_completed: true
+        }).eq('user_id', assessment.studentId);
+
+        // b. student_subject_progress upsert
+        for (const s of subList) {
+          await supabase.from('student_subject_progress').upsert({
+            student_id: assessment.studentId,
+            subject_id: s.id,
+            overall_score: s.score,
+            last_updated_at: new Date().toISOString()
+          });
+        }
+
+        // c. student_health_scores
+        await supabase.from('student_health_scores').upsert({
+          student_id: assessment.studentId,
+          health_score: assessment.overallScore,
+          label: assessment.overallScore >= 75 ? 'Thriving' : assessment.overallScore >= 55 ? 'On track' : 'Support Needed',
+          calculated_at: new Date().toISOString()
+        });
+
+        // d. ai_recommendations
+        await supabase.from('ai_recommendations').insert({
+          target_type: 'student',
+          student_id: assessment.studentId,
+          recommendation_text: `${assessment.recommendedFirstPracticeTopic.subject}: ${assessment.recommendedFirstPracticeTopic.topic}`,
+          evidence_data: {
+            title: assessment.recommendedDashboardInsight.title,
+            reason: assessment.recommendedDashboardInsight.reason,
+            suggestedDurationMinutes: 15
+          },
+          status: 'active'
+        });
+      }).catch(() => {});
+    } catch (e) {}
 
     dataStore.save();
   }
