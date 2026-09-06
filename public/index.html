@@ -349,9 +349,149 @@
       <div class="grid bottom"><article class="card"><h2 class="card-title">Learning gaps to close</h2><p class="sub">Your next concepts, organised by subject</p><div class="subject-gaps"><div style="grid-column:1/-1;text-align:center;padding:26px 12px;color:var(--muted);font-size:12px;line-height:1.5;">No learning gaps identified yet.<br>Complete your Quick Learning Check to activate gap analysis.</div></div></article><article class="card practice"><div class="eyebrow">Recommended next</div><h3>Adaptive practice, made for you</h3><p>No practice history yet. Your personalised practice will appear after the Quick Learning Check.</p><button class="cta" id="start-practice">Start practice →</button></article></div>
     </section>
     <section id="learning-view" class="learning-page hidden"><div class="learning-hero"><div><div class="eyebrow">My learning</div><h1>Your progress, subject by subject.</h1><p>Tap a subject to see every topic, score, and strength.</p></div><button class="practice-back" id="learning-overview">← Overview</button></div><div class="learning-subjects" id="learning-subjects"><button class="learning-card" data-learning-subject="math"><span class="learning-icon">∑</span><h3>Mathematics</h3><small>Numbers &amp; problem solving</small><div class="learning-metrics"><div><b>0m</b><span>Learning time</span></div><div><b>--</b><span>Overall score</span></div></div></button><button class="learning-card" data-learning-subject="bm"><span class="learning-icon">✎</span><h3>Bahasa Melayu</h3><small>Language &amp; writing</small><div class="learning-metrics"><div><b>0m</b><span>Learning time</span></div><div><b>--</b><span>Overall score</span></div></div></button><button class="learning-card" data-learning-subject="bi"><span class="learning-icon">A</span><h3>English</h3><small>Reading &amp; grammar</small><div class="learning-metrics"><div><b>0m</b><span>Learning time</span></div><div><b>--</b><span>Overall score</span></div></div></button><button class="learning-card" data-learning-subject="science"><span class="learning-icon">⚗</span><h3>Science</h3><small>Discover &amp; explore</small><div class="learning-metrics"><div><b>0m</b><span>Learning time</span></div><div><b>--</b><span>Overall score</span></div></div></button></div><div class="learning-detail hidden" id="learning-detail"></div></section>
-    <section id="insights-view" class="insights-page hidden"><div class="insights-hero"><div class="eyebrow">Your learning insights</div><h1>Here’s where a little practice will help most.</h1><p>These recommendations use your latest topic scores and learning activity.</p></div><div class="insights-grid"><div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;"><div style="font-size: 32px; margin-bottom: 8px;">💡</div><h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">No learning data yet.</h3><p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">Complete your Personal Information and Quick Learning Check to begin.</p></div></div><div class="other-insights hidden"><h2>More learning signals</h2></div></section>
-    <section id="report-view" class="report-page hidden"><header class="report-head"><div><div class="eyebrow">Learning report</div><h1 id="report-student-title">Learner progress summary</h1><p>A clear picture of learning activity, progress, strengths and next steps.</p></div><button class="print-btn" id="print-report">▣ Print / Save as PDF</button></header><div class="report-summary"><div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;"><div style="font-size: 32px; margin-bottom: 8px;">📊</div><h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">No learning data yet.</h3><p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">Complete your Personal Information and Quick Learning Check to begin.</p></div></div><div class="report-grid hidden"></div></section>
-    <section id="personal-view" class="personal-page hidden"><header class="personal-hero"><div><div class="eyebrow">Personal profile</div><h1>Your education profile.</h1><p>Keep your learning information up to date so 2Block Ai can personalise your experience.</p></div><div><button class="practice-back" id="personal-overview">← Overview</button><button class="signout-btn">Sign out</button></div></header><div class="personal-layout"><aside><article class="card personal-card profile-card"><div class="profile-avatar" id="profile-initials">ST</div><h2 id="profile-name">Student</h2><p>Learner</p><span class="profile-tag">Grade Level</span><span class="profile-tag">Active learner</span><div class="profile-note">Your information helps us recommend learning activities that suit your age, grade, and school level.</div></article><div id="demo-reset-container" class="hidden" style="margin-top:16px;padding:16px;border-radius:14px;border:1px dashed rgba(253,111,183,0.4);background:rgba(253,111,183,0.08);text-align:center;"><span style="font-size:11px;color:var(--pink);font-weight:700;letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:6px;">Demo Mode Active</span><p style="font-size:12px;color:var(--muted);margin:0 0 12px;line-height:1.4;">Reset Adam Haziq's scores, learning gaps, and practice rounds to original baseline.</p><button id="btn-reset-demo" type="button" style="padding:9px 18px;border-radius:10px;background:linear-gradient(90deg,var(--violet),var(--pink));color:#fff;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(253,111,183,0.3);">Reset demo progress</button></div><article class="card personal-activity"><h2>Recent activity</h2><div class="activity-history"><div style="padding:16px;text-align:center;color:var(--muted);font-size:12px;line-height:1.5;">No practice history yet.<br>Your personalised practice will appear after the Quick Learning Check.</div></div></article></aside><article class="card personal-form-card"><div class="form-head"><div><h2>Education information</h2><p>Fields marked below help shape your curriculum and recommendations.</p></div></div><form id="personal-form"><div class="form-group-title">Student details</div><div class="form-grid"><label class="form-field"><span>Full name</span><input name="name" value="" placeholder="Enter your full name" required></label><label class="form-field"><span>Date of birth</span><input name="birth" type="date" value=""></label><label class="form-field"><span>Primary school level</span><select name="grade"><option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option><option>Grade 5</option><option>Grade 6</option></select></label><label class="form-field"><span>School</span><input name="school" value="" placeholder="Enter school name"></label><label class="form-field"><span>City / district</span><input name="city" value="" placeholder="City / district"></label><label class="form-field"><span>Learning language</span><select name="language"><option>Bahasa Melayu & English</option><option>Bahasa Melayu</option><option>English</option></select></label></div><div class="form-group-title">Learning preferences</div><div class="form-grid"><label class="form-field"><span>Favourite subject</span><select name="favourite"><option>Mathematics</option><option>Science</option><option>Bahasa Melayu</option><option>English</option></select></label><label class="form-field"><span>Preferred study time</span><select name="studytime"><option>7:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option></select></label><label class="form-field full"><span>Activities you enjoy</span><div class="activity-options"><label class="activity-option"><input type="checkbox" checked><span>🔬 Science experiments</span></label><label class="activity-option"><input type="checkbox" checked><span>🧩 Problem solving</span></label><label class="activity-option"><input type="checkbox" checked><span>📚 Reading</span></label><label class="activity-option"><input type="checkbox" checked><span>🎨 Creative work</span></label><label class="activity-option"><input type="checkbox" checked><span>⚽ Sports</span></label><label class="activity-option"><input type="checkbox" checked><span>🎵 Music</span></label></div></label></div><button class="save-profile" type="submit">Save education profile</button></form></article></div></section>
+    <section id="insights-view" class="insights-page hidden">
+      <div class="insights-hero">
+        <div>
+          <div class="eyebrow">Your learning insights</div>
+          <h1>Here’s where a little practice will help most.</h1>
+          <p>These recommendations use your latest topic scores and learning activity.</p>
+        </div>
+      </div>
+      <div class="insights-grid">
+        <div id="insights-empty-banner" class="card empty-banner hidden" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;">
+          <div style="font-size: 32px; margin-bottom: 8px;">💡</div>
+          <h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">No learning data yet.</h3>
+          <p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">Complete your Personal Information and Quick Learning Check to begin.</p>
+        </div>
+        <article class="recommendation-card" id="insights-rec-card">
+          <div class="eyebrow" id="insight-eyebrow">Priority recommendation · Mathematics</div>
+          <h2 id="insight-title">Build confidence in Fractions.</h2>
+          <p id="insight-reason">Adam needs more practice with equivalent fractions and fractions addition.</p>
+          <div class="insight-data">
+            <div><b id="insight-score">54%</b><span>Current topic score</span></div>
+            <div><b id="insight-time">48 min</b><span>Time spent practising</span></div>
+            <div><b id="insight-answers">6 / 12</b><span>Recent correct answers</span></div>
+          </div>
+          <button class="cta" id="insight-practice">Practise Fractions →</button>
+        </article>
+        <div id="insights-supporting-cards">
+          <article class="card reason-card">
+            <h2>Why we recommend this</h2>
+            <div class="reason-list" id="insight-why-list">
+              <div class="reason-row"><i>↓</i><div><b>It is your lowest Mathematics topic.</b><p>Fractions (54%) is lower than your other Mathematics skills.</p></div></div>
+              <div class="reason-row"><i>◷</i><div><b>You have practised it less.</b><p>You spent 48 minutes on fractions compared to other topics.</p></div></div>
+              <div class="reason-row"><i>✦</i><div><b>It helps unlock the next level.</b><p>Mastering fractions is required before advancing to decimal and percentage units.</p></div></div>
+            </div>
+          </article>
+          <article class="card support-card">
+            <h2>Your next 15-minute plan</h2>
+            <p>Start with simple equivalent fraction models, then practise mixed operations with visual hints.</p>
+            <div class="insight-steps" id="insight-steps-list">
+              <div class="insight-step"><b>5 min</b><span>Warm-up</span></div>
+              <div class="insight-step"><b>7 min</b><span>Guided practice</span></div>
+              <div class="insight-step"><b>3 min</b><span>Quick check</span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+      <div class="other-insights" id="insights-other">
+        <h2>More learning signals</h2>
+        <div class="mini-insight"><i>✓</i><div><b>Science is a strength</b><small>84% overall score · Demonstrating strong mastery across core science units.</small></div></div>
+        <div class="mini-insight"><i>◈</i><div><b>Best study time: 7:00 PM</b><small>Your focus sessions are most consistent during this evening window.</small></div></div>
+      </div>
+    </section>
+
+    <section id="report-view" class="report-page hidden">
+      <header class="report-head">
+        <div>
+          <div class="eyebrow">Learning report · September 2026</div>
+          <h1 id="report-student-title">Adam Haziq’s progress summary</h1>
+          <p>A clear picture of learning activity, progress, strengths and next steps.</p>
+        </div>
+        <button class="print-btn" id="print-report">▣ Print / Save as PDF</button>
+      </header>
+      <div class="report-summary">
+        <div id="report-empty-banner" class="card empty-banner hidden" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;">
+          <div style="font-size: 32px; margin-bottom: 8px;">📊</div>
+          <h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">No learning data yet.</h3>
+          <p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">Complete your Personal Information and Quick Learning Check to begin.</p>
+        </div>
+        <article class="report-overall" id="report-overall-card">
+          <div class="eyebrow">Overall progress</div>
+          <h2><span class="report-number">74%</span> learning performance</h2>
+          <p id="report-overall-desc">You are building strong learning habits. Science is your biggest strength; focused Fractions practice is your best next step.</p>
+        </article>
+        <article class="report-kpi" id="report-kpi-1"><b id="report-time">6h 25m</b><span>Total learning time</span></article>
+        <article class="report-kpi" id="report-kpi-2"><b id="report-streak">12 days</b><span>Current learning streak</span></article>
+        <article class="report-kpi" id="report-kpi-3"><b id="report-rounds">16</b><span>Practice rounds completed</span></article>
+      </div>
+      <div class="report-grid" id="report-grid-content">
+        <article class="card report-section">
+          <h2>Subject progress</h2>
+          <p class="sub">Learning time and current subject score</p>
+          <table class="report-table">
+            <thead><tr><th>Subject</th><th>Hours</th><th>Score</th><th>Trend</th></tr></thead>
+            <tbody id="report-subjects-body">
+              <tr><td>Mathematics</td><td>3h 15m</td><td><span class="score-tag watch">70%</span></td><td>↑ 5%</td></tr>
+              <tr><td>Bahasa Melayu</td><td>1h 00m</td><td><span class="score-tag watch">67%</span></td><td>↑ 3%</td></tr>
+              <tr><td>English</td><td>1h 05m</td><td><span class="score-tag watch">72%</span></td><td>↑ 4%</td></tr>
+              <tr><td>Science</td><td>1h 05m</td><td><span class="score-tag good">84%</span></td><td>↑ 6%</td></tr>
+            </tbody>
+          </table>
+        </article>
+        <article class="card report-section">
+          <h2>Monthly learning trend</h2>
+          <p class="sub">Overall score during the last four weeks</p>
+          <div class="trend-chart" id="report-trend-chart">
+            <div><i style="height:55%"></i>Week 1</div>
+            <div><i style="height:62%"></i>Week 2</div>
+            <div><i style="height:69%"></i>Week 3</div>
+            <div><i style="height:74%"></i>Week 4</div>
+          </div>
+        </article>
+        <article class="card report-section">
+          <h2>Mathematics topic mastery</h2>
+          <p class="sub">Your current detailed topic scores</p>
+          <table class="report-table">
+            <thead><tr><th>Topic</th><th>Score</th><th>Status</th></tr></thead>
+            <tbody id="report-topics-body">
+              <tr><td>Addition</td><td>88%</td><td><span class="score-tag good">Strong</span></td></tr>
+              <tr><td>Subtraction</td><td>76%</td><td><span class="score-tag good">Strong</span></td></tr>
+              <tr><td>Multiplication</td><td>68%</td><td><span class="score-tag watch">Developing</span></td></tr>
+              <tr><td>Division</td><td>58%</td><td><span class="score-tag focus">Needs focus</span></td></tr>
+              <tr><td>Fractions</td><td>54%</td><td><span class="score-tag focus">Needs focus</span></td></tr>
+            </tbody>
+          </table>
+        </article>
+        <article class="card report-section">
+          <h2>Study habits</h2>
+          <p class="sub">Your most effective learning pattern</p>
+          <div class="habit-list" id="report-habits-list">
+            <div class="habit"><i>◷</i><div><b>Best focus time: 7:00 PM</b><small>Your sessions are most consistent in the evening.</small></div></div>
+            <div class="habit"><i>◉</i><div><b>Average session: 24 minutes</b><small>Short focused bursts maintain high retention.</small></div></div>
+            <div class="habit"><i>⌁</i><div><b>Most active day: Thursday</b><small>You completed 87 minutes of focused learning.</small></div></div>
+          </div>
+        </article>
+        <article class="card report-section">
+          <h2>Achievements</h2>
+          <p class="sub">Wins worth celebrating</p>
+          <div class="achievement-list" id="report-achievements-list">
+            <div class="achievement"><i>🔥</i>12-day learning streak</div>
+            <div class="achievement"><i>∑</i>Math Whiz (Addition 88%)</div>
+            <div class="achievement"><i>⚗</i>Science Explorer (84%)</div>
+            <div class="achievement"><i>✦</i>16 practice rounds completed</div>
+          </div>
+        </article>
+        <article class="report-recommendation">
+          <div class="eyebrow">Recommended next step</div>
+          <h2 id="report-rec-title">Strengthen Fractions this week.</h2>
+          <p id="report-rec-desc">Your current score is 54% after 48 minutes of practice. Complete one 15-minute Fractions round to build confidence and improve your Mathematics foundation.</p>
+          <button class="cta" id="report-practice">Start Fractions practice →</button>
+        </article>
+      </div>
+    </section>
+
+    <section id="personal-view" class="personal-page hidden"><header class="personal-hero"><div><div class="eyebrow">Personal profile</div><h1>Your education profile.</h1><p>Keep your learning information up to date so 2Block Ai can personalise your experience.</p></div><div><button class="practice-back" id="personal-overview">← Overview</button><button class="signout-btn">Sign out</button></div></header><div class="personal-layout"><aside><article class="card personal-card profile-card"><div class="profile-avatar" id="profile-initials">AH</div><h2 id="profile-name">Adam Haziq</h2><p>Learner</p><span class="profile-tag">Grade 5</span><span class="profile-tag">Active learner</span><div class="profile-note">Your information helps us recommend learning activities that suit your age, grade, and school level.</div></article><div id="demo-reset-container" class="hidden" style="margin-top:16px;padding:16px;border-radius:14px;border:1px dashed rgba(253,111,183,0.4);background:rgba(253,111,183,0.08);text-align:center;"><span style="font-size:11px;color:var(--pink);font-weight:700;letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:6px;">Demo Mode Active</span><p style="font-size:12px;color:var(--muted);margin:0 0 12px;line-height:1.4;">Reset Adam Haziq's scores, learning gaps, and practice rounds to original baseline.</p><button id="btn-reset-demo" type="button" style="padding:9px 18px;border-radius:10px;background:linear-gradient(90deg,var(--violet),var(--pink));color:#fff;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(253,111,183,0.3);">Reset demo progress</button></div><article class="card personal-activity"><h2>Recent activity</h2><div class="activity-history" id="personal-activity-list"><div><i>∑</i><span><b>Mathematics practice: Fractions</b><small>Score 54% · 15m ago</small></span></div><div><i>⚗</i><span><b>Science lesson: Energy and Materials</b><small>Score 74% · Yesterday</small></span></div><div><i>✦</i><span><b>Quick Learning Check completed</b><small>20/20 answered · 74% score</small></span></div><div><i>🔥</i><span><b>Learning streak achievement</b><small>12 days active</small></span></div></div></article></aside><article class="card personal-form-card"><div class="form-head"><div><h2>Education information</h2><p>Fields marked below help shape your curriculum and recommendations.</p></div></div><form id="personal-form"><div class="form-group-title">Student details</div><div class="form-grid"><label class="form-field"><span>Full name</span><input name="name" value="Adam Haziq" placeholder="Enter your full name" required></label><label class="form-field"><span>Date of birth</span><input name="birth" type="date" value="2014-03-18"></label><label class="form-field"><span>Primary school level</span><select name="grade"><option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option><option selected>Grade 5</option><option>Grade 6</option></select></label><label class="form-field"><span>School</span><input name="school" value="Sekolah Menengah Maju Jaya" placeholder="Enter school name"></label><label class="form-field"><span>City / district</span><input name="city" value="Kuala Lumpur" placeholder="City / district"></label><label class="form-field"><span>Learning language</span><select name="language"><option selected>Bahasa Melayu & English</option><option>Bahasa Melayu</option><option>English</option></select></label></div><div class="form-group-title">Learning preferences</div><div class="form-grid"><label class="form-field"><span>Favourite subject</span><select name="favourite"><option selected>Mathematics</option><option>Science</option><option>Bahasa Melayu</option><option>English</option></select></label><label class="form-field"><span>Preferred study time</span><select name="studytime"><option selected>7:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option></select></label><label class="form-field full"><span>Activities you enjoy</span><div class="activity-options"><label class="activity-option"><input type="checkbox" checked><span>🔬 Science experiments</span></label><label class="activity-option"><input type="checkbox" checked><span>🧩 Problem solving</span></label><label class="activity-option"><input type="checkbox" checked><span>📚 Reading</span></label><label class="activity-option"><input type="checkbox" checked><span>🎨 Creative work</span></label><label class="activity-option"><input type="checkbox" checked><span>⚽ Sports</span></label><label class="activity-option"><input type="checkbox" checked><span>🎵 Music</span></label></div></label></div><button class="save-profile" type="submit">Save education profile</button></form></article></div></section>
     <section id="practice-view" class="practice-page hidden">
       <div id="practice-subjects"><div class="practice-hero"><div><div class="eyebrow">Practice arena</div><h1>Choose your next adventure.</h1><p>Pick a subject and sharpen one skill at a time.</p></div><button class="practice-back" data-practice-back>← Back to overview</button></div><div class="subject-books"><button class="book" data-subject="math"><span class="book-icon">∑</span><strong>Mathematics</strong><small>Numbers &amp; problem solving</small></button><button class="book" data-subject="bm"><span class="book-icon">✎</span><strong>Bahasa Melayu</strong><small>Language &amp; writing</small></button><button class="book" data-subject="bi"><span class="book-icon">A</span><strong>English</strong><small>Reading &amp; grammar</small></button><button class="book" data-subject="science"><span class="book-icon">⚗</span><strong>Science</strong><small>Discover &amp; explore</small></button></div></div>
       <div id="practice-topics" class="topic-page hidden"><div class="practice-hero"><div><div class="eyebrow">Mathematics · Grade 1</div><h1>Pick a number skill.</h1><p>Each round adapts to what you know.</p></div><button class="practice-back" id="topics-back">← All subjects</button></div><div class="topic-grid"><button class="topic-card" data-topic="addition"><span class="topic-number">+</span><h3>Addition</h3><p>Put numbers together.</p></button><button class="topic-card" data-topic="subtraction"><span class="topic-number">−</span><h3>Subtraction</h3><p>Find what is left.</p></button><button class="topic-card" data-topic="multiplication"><span class="topic-number">×</span><h3>Multiplication</h3><p>Make equal groups.</p></button><button class="topic-card" data-topic="division"><span class="topic-number">÷</span><h3>Division</h3><p>Share equally.</p></button></div></div>
@@ -1276,6 +1416,36 @@
             }
           };
         }
+        const isDemoUser = localStorage.getItem('2block_is_demo') === 'true' || API.user?.is_demo_account || API.user?.email === 'adam.haziq@twoblock.ai';
+        if (isDemoUser && method === 'GET') {
+          return {
+            profile: {
+              userId: '45dd6d96-1530-44c3-a772-5c9057f79561',
+              name: 'Adam Haziq',
+              initials: 'AH',
+              grade: 'Grade 5',
+              school: 'Sekolah Menengah Maju Jaya',
+              district: 'Kuala Lumpur',
+              dateOfBirth: '2014-03-18',
+              learningLanguages: ['Bahasa Melayu', 'English'],
+              preferredLanguage: 'English',
+              favouriteSubject: 'Mathematics',
+              preferredStudyTime: '7:00 PM',
+              is_demo_account: true,
+              diagnostic_completed: true,
+              onboarding_completed: true,
+              profile_completed: true,
+              quick_test_completed: true,
+              className: 'Year 10 Amanah (AMANAH10)'
+            },
+            recentActivity: [
+              { type: 'practice', subject: 'Mathematics', topic: 'Fractions', detail: 'Score 54% · 15m ago', date: '15m ago' },
+              { type: 'lesson', subject: 'Science', topic: 'Energy and Materials', detail: 'Score 74% · Yesterday', date: 'Yesterday' },
+              { type: 'assessment', name: 'Quick Learning Check', detail: '20/20 answered · 74% score', date: '3 days ago' },
+              { type: 'achievement', name: 'Learning streak', detail: '12 days active', date: 'Active' }
+            ]
+          };
+        }
         const saved = JSON.parse(localStorage.getItem('2block_student_profile') || 'null');
         if (saved) {
           return {
@@ -1313,6 +1483,50 @@
 
       // Student Dashboard
       if (path === '/api/student/dashboard') {
+        const isDemo = localStorage.getItem('2block_is_demo') === 'true' || API.user?.is_demo_account || API.user?.email === 'adam.haziq@twoblock.ai';
+        if (isDemo) {
+          return {
+            hasAssessment: true,
+            overallPerformance: 74,
+            healthScore: 84,
+            healthCategory: 'strong',
+            learningStreakDays: 12,
+            streakIncreaseThisWeek: 3,
+            studyActivityMinutes: 385,
+            studyActivityChangePercent: 18,
+            availableFocusMinutes: 45,
+            bestFocusWindow: '7:00 PM',
+            weeklyActivity: [
+              { day: 'Mon', minutes: 45 },
+              { day: 'Tue', minutes: 50 },
+              { day: 'Wed', minutes: 40 },
+              { day: 'Thu', minutes: 87 },
+              { day: 'Fri', minutes: 55 },
+              { day: 'Sat', minutes: 60 },
+              { day: 'Sun', minutes: 48 }
+            ],
+            subjects: [
+              { id: 'mathematics', name: 'Mathematics', score: 70, topicsCount: 5, learningTimeFormatted: '3h 15m' },
+              { id: 'bahasa-melayu', name: 'Bahasa Melayu', score: 67, topicsCount: 4, learningTimeFormatted: '1h 00m' },
+              { id: 'english', name: 'English', score: 72, topicsCount: 4, learningTimeFormatted: '1h 05m' },
+              { id: 'science', name: 'Science', score: 84, topicsCount: 3, learningTimeFormatted: '1h 05m' }
+            ],
+            learningGaps: {
+              Fractions: { subject: 'Mathematics', score: 54, status: 'Needs focus', attemptsCount: 16, timeSpentMinutes: 48 },
+              Division: { subject: 'Mathematics', score: 58, status: 'Needs focus', attemptsCount: 8, timeSpentMinutes: 30 },
+              'Ayat Majmuk': { subject: 'Bahasa Melayu', score: 56, status: 'Needs focus', attemptsCount: 6, timeSpentMinutes: 25 },
+              'Sentence Structure': { subject: 'English', score: 60, status: 'Needs focus', attemptsCount: 7, timeSpentMinutes: 28 },
+              'Energy and Materials': { subject: 'Science', score: 74, status: 'Developing', attemptsCount: 10, timeSpentMinutes: 35 }
+            },
+            recommendedPractice: {
+              topic: 'Fractions',
+              subject: 'Mathematics',
+              title: 'Build confidence in Fractions.',
+              description: 'Your current score is 54%. Complete a 15-minute survival practice round to strengthen this core foundation.'
+            }
+          };
+        }
+
         const diagDone = localStorage.getItem('2block_student_diagnostic_completed') === 'true';
         const assessment = JSON.parse(localStorage.getItem('2block_initial_assessment') || 'null');
         if (!diagDone || !assessment) {
@@ -1361,6 +1575,68 @@
 
       // Student Learning
       if (path === '/api/student/learning') {
+        const isDemo = localStorage.getItem('2block_is_demo') === 'true' || API.user?.is_demo_account || API.user?.email === 'adam.haziq@twoblock.ai';
+        if (isDemo) {
+          return {
+            subjects: [
+              {
+                id: 'mathematics',
+                name: 'Mathematics',
+                score: 70,
+                learningTimeFormatted: '3h 15m',
+                strongestSubtopic: 'Addition',
+                nextFocus: 'Fractions',
+                topics: [
+                  { id: 'topic-add', name: 'Addition', score: 88, status: 'Strong', attempts: 4, timeSpentMinutes: 45 },
+                  { id: 'topic-sub', name: 'Subtraction', score: 76, status: 'Strong', attempts: 4, timeSpentMinutes: 42 },
+                  { id: 'topic-mul', name: 'Multiplication', score: 68, status: 'Developing', attempts: 3, timeSpentMinutes: 35 },
+                  { id: 'topic-div', name: 'Division', score: 58, status: 'Needs focus', attempts: 2, timeSpentMinutes: 25 },
+                  { id: 'topic-frac', name: 'Fractions', score: 54, status: 'Needs focus', attempts: 3, timeSpentMinutes: 48 }
+                ]
+              },
+              {
+                id: 'bahasa-melayu',
+                name: 'Bahasa Melayu',
+                score: 67,
+                learningTimeFormatted: '1h 00m',
+                strongestSubtopic: 'Kata Nama',
+                nextFocus: 'Ayat Majmuk',
+                topics: [
+                  { id: 'topic-kn', name: 'Kata Nama', score: 82, status: 'Strong', attempts: 2, timeSpentMinutes: 20 },
+                  { id: 'topic-kk', name: 'Kata Kerja', score: 70, status: 'Strong', attempts: 2, timeSpentMinutes: 18 },
+                  { id: 'topic-am', name: 'Ayat Majmuk', score: 56, status: 'Needs focus', attempts: 2, timeSpentMinutes: 22 }
+                ]
+              },
+              {
+                id: 'english',
+                name: 'English',
+                score: 72,
+                learningTimeFormatted: '1h 05m',
+                strongestSubtopic: 'Reading Comprehension',
+                nextFocus: 'Sentence Structure',
+                topics: [
+                  { id: 'topic-rc', name: 'Reading Comprehension', score: 84, status: 'Strong', attempts: 2, timeSpentMinutes: 25 },
+                  { id: 'topic-voc', name: 'Vocabulary', score: 74, status: 'Strong', attempts: 2, timeSpentMinutes: 20 },
+                  { id: 'topic-ss', name: 'Sentence Structure', score: 60, status: 'Needs focus', attempts: 2, timeSpentMinutes: 20 }
+                ]
+              },
+              {
+                id: 'science',
+                name: 'Science',
+                score: 84,
+                learningTimeFormatted: '1h 05m',
+                strongestSubtopic: 'Living Things',
+                nextFocus: 'Energy and Materials',
+                topics: [
+                  { id: 'topic-lt', name: 'Living Things', score: 92, status: 'Strong', attempts: 2, timeSpentMinutes: 20 },
+                  { id: 'topic-em', name: 'Energy and Materials', score: 74, status: 'Developing', attempts: 2, timeSpentMinutes: 25 },
+                  { id: 'topic-ps', name: 'Plants & Sunlight', score: 86, status: 'Strong', attempts: 2, timeSpentMinutes: 20 }
+                ]
+              }
+            ]
+          };
+        }
+
         const assessment = JSON.parse(localStorage.getItem('2block_initial_assessment') || 'null');
         if (!assessment) {
           return {
@@ -1384,6 +1660,49 @@
 
       // Student Insights
       if (path === '/api/student/insights') {
+        const isDemo = localStorage.getItem('2block_is_demo') === 'true' || API.user?.is_demo_account || API.user?.email === 'adam.haziq@twoblock.ai';
+        if (isDemo) {
+          return {
+            hasAssessment: true,
+            priority: {
+              id: 'rec-fractions-001',
+              subject: 'Mathematics',
+              topic: 'Fractions',
+              title: 'Build confidence in Fractions.',
+              currentScore: 54,
+              timeSpentMinutes: 48,
+              recentCorrect: 6,
+              recentTotal: 12,
+              recommendedMinutes: 15,
+              reason: 'Adam needs more practice with equivalent fractions and fractions addition.',
+              whyPoints: [
+                { icon: '↓', title: 'It is your lowest Mathematics topic.', detail: 'Fractions (54%) is lower than your other Mathematics skills.' },
+                { icon: '◷', title: 'You have practised it less.', detail: 'You spent 48 minutes on fractions compared to other topics.' },
+                { icon: '✦', title: 'It helps unlock the next level.', detail: 'Mastering fractions is required before advancing to decimal and percentage units.' }
+              ],
+              steps: [
+                { duration: '5 min', label: 'Warm-up' },
+                { duration: '7 min', label: 'Guided practice' },
+                { duration: '3 min', label: 'Quick check' }
+              ]
+            },
+            whyPoints: [
+              { icon: '↓', title: 'It is your lowest Mathematics topic.', detail: 'Fractions (54%) is lower than your other Mathematics skills.' },
+              { icon: '◷', title: 'You have practised it less.', detail: 'You spent 48 minutes on fractions compared to other topics.' },
+              { icon: '✦', title: 'It helps unlock the next level.', detail: 'Mastering fractions is required before advancing to decimal and percentage units.' }
+            ],
+            steps: [
+              { duration: '5 min', label: 'Warm-up' },
+              { duration: '7 min', label: 'Guided practice' },
+              { duration: '3 min', label: 'Quick check' }
+            ],
+            otherSignals: [
+              { icon: '✓', title: 'Science is a strength', detail: 'Demonstrated strong 84% mastery during your assessments.' },
+              { icon: '◈', title: 'Best study time: 7:00 PM', detail: 'Your focus sessions are calibrated to this window.' }
+            ]
+          };
+        }
+
         const assessment = JSON.parse(localStorage.getItem('2block_initial_assessment') || 'null');
         if (!assessment || !assessment.recommendations || !assessment.recommendations.length) {
           return {
@@ -1409,6 +1728,53 @@
 
       // Student Report
       if (path === '/api/student/report') {
+        const isDemo = localStorage.getItem('2block_is_demo') === 'true' || API.user?.is_demo_account || API.user?.email === 'adam.haziq@twoblock.ai';
+        if (isDemo) {
+          return {
+            hasAssessment: true,
+            learnerName: 'Adam Haziq',
+            period: 'September 2026',
+            overallPerformance: 74,
+            totalLearningTimeFormatted: '6h 25m',
+            learningStreakDays: 12,
+            practiceRoundsCompleted: 16,
+            subjects: [
+              { name: 'Mathematics', time: '3h 15m', score: 70, trend: '↑ 5%' },
+              { name: 'Bahasa Melayu', time: '1h 0m', score: 67, trend: '↑ 3%' },
+              { name: 'English', time: '1h 5m', score: 72, trend: '↑ 4%' },
+              { name: 'Science', time: '1h 5m', score: 84, trend: '↑ 6%' }
+            ],
+            trendChart: [
+              { week: 'Week 1', heightPercent: 55 },
+              { week: 'Week 2', heightPercent: 62 },
+              { week: 'Week 3', heightPercent: 69 },
+              { week: 'Week 4', heightPercent: 74 }
+            ],
+            mathTopicMastery: [
+              { topic: 'Addition', score: 88, status: 'Strong' },
+              { topic: 'Subtraction', score: 76, status: 'Strong' },
+              { topic: 'Multiplication', score: 68, status: 'Developing' },
+              { topic: 'Division', score: 58, status: 'Needs focus' },
+              { topic: 'Fractions', score: 54, status: 'Needs focus' }
+            ],
+            studyHabits: [
+              { icon: '◷', title: 'Best focus time: 7:00 PM', detail: 'Evening sessions fit your schedule best.' },
+              { icon: '◉', title: 'Average session: 24 minutes', detail: 'Short focused bursts maintain high retention.' },
+              { icon: '⌁', title: 'Most active day: Thursday', detail: 'Completed 87 minutes of focused study.' }
+            ],
+            achievements: [
+              { icon: '🔥', text: '12-day learning streak' },
+              { icon: '∑', text: 'Math Whiz (Addition 88%)' },
+              { icon: '⚗', text: 'Science Explorer (84%)' },
+              { icon: '✦', text: '16 practice rounds completed' }
+            ],
+            recommendedNextStep: {
+              title: 'Strengthen Fractions this week.',
+              description: 'Your current score is 54% after 48 minutes of practice. Complete one 15-minute Fractions round to build confidence and improve your Mathematics foundation.'
+            }
+          };
+        }
+
         const assessment = JSON.parse(localStorage.getItem('2block_initial_assessment') || 'null');
         if (!assessment) {
           return {
@@ -1432,6 +1798,26 @@
 
       // Teacher Zero-State Endpoints
       if (path === '/api/teacher/dashboard') {
+        const isDemo = localStorage.getItem('2block_is_demo') === 'true';
+        if (isDemo) {
+          return {
+            classHealthScore: 84,
+            onTrackCount: 1,
+            needsSupportCount: 0,
+            studentList: [
+              {
+                id: '45dd6d96-1530-44c3-a772-5c9057f79561',
+                name: 'Adam Haziq',
+                initials: 'AH',
+                primarySubject: 'Mathematics',
+                timeFormatted: '6h 25m',
+                healthScore: 84,
+                status: 'On track',
+                trendSymbol: '↑'
+              }
+            ]
+          };
+        }
         return {
           classHealthScore: 0,
           onTrackCount: 0,
@@ -2164,28 +2550,48 @@
         emptyBanner.classList.toggle('hidden', studentDiagnosticCompleted);
       }
 
-      if (data.overallPerformance !== undefined) {
+      // Welcome header
+      const welcomeHeading = document.querySelector('#student-welcome-heading');
+      if (welcomeHeading) {
+        const studentName = API.user?.full_name || API.user?.name || 'Adam Haziq';
+        welcomeHeading.innerHTML = `Good morning, ${escapeHtml(studentName)} <span>✦</span>`;
+      }
+
+      // Numerical metrics
+      if (data.overallPerformance !== undefined && data.overallPerformance > 0) {
         document.querySelector('#student-overall-score').textContent = `${data.overallPerformance}%`;
       }
-      if (data.learningStreakDays !== undefined) {
+      if (data.learningStreakDays !== undefined && data.learningStreakDays > 0) {
         const streakVal = document.querySelector('.streak-card .metric-value');
         if (streakVal) streakVal.textContent = `${data.learningStreakDays} days`;
+        const streakDelta = document.querySelector('.streak-card .delta');
+        if (streakDelta) streakDelta.textContent = `↑ ${data.streakIncreaseThisWeek || 3} days this week`;
       }
-      if (data.studyActivityMinutes !== undefined) {
+      if (data.studyActivityMinutes !== undefined && data.studyActivityMinutes > 0) {
         const hours = Math.floor(data.studyActivityMinutes / 60);
         const mins = data.studyActivityMinutes % 60;
         const studyCard = document.querySelectorAll('.stats .metric-card')[0];
         if (studyCard) {
           studyCard.querySelector('.metric-value').textContent = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+          const studyDelta = studyCard.querySelector('.delta');
+          if (studyDelta) studyDelta.textContent = `↑ ${data.studyActivityChangePercent || 18}% vs last week`;
         }
       }
-      if (data.availableFocusMinutes !== undefined) {
+      const perfCard = document.querySelectorAll('.stats .metric-card')[1];
+      if (perfCard && data.overallPerformance > 0) {
+        const perfDelta = perfCard.querySelector('.delta');
+        if (perfDelta) perfDelta.textContent = 'Active learner';
+      }
+      if (data.availableFocusMinutes !== undefined && data.availableFocusMinutes > 0) {
         const focusCard = document.querySelectorAll('.stats .metric-card')[2];
         if (focusCard) {
           focusCard.querySelector('.metric-value').textContent = `${data.availableFocusMinutes} min`;
+          const focusDelta = focusCard.querySelector('.delta');
+          if (focusDelta) focusDelta.textContent = `Best window: ${data.bestFocusWindow || '7:00 PM'}`;
         }
       }
 
+      // Weekly activity chart
       if (data.weeklyActivity && data.weeklyActivity.length) {
         const bars = document.querySelectorAll('.chart .bar-wrap .bar');
         data.weeklyActivity.forEach((day, idx) => {
@@ -2197,10 +2603,50 @@
         });
       }
 
+      // 4 Mastery donut rings
+      if (data.subjects && data.subjects.length) {
+        const donuts = document.querySelectorAll('.subject-donut');
+        data.subjects.forEach((subj, idx) => {
+          if (donuts[idx]) {
+            const ring = donuts[idx].querySelector('.mini-ring');
+            if (ring) {
+              ring.style.setProperty('--percent', subj.score);
+              const b = ring.querySelector('b');
+              if (b) b.textContent = `${subj.score}%`;
+            }
+            const statusSpan = donuts[idx].querySelector('span');
+            if (statusSpan) statusSpan.textContent = subj.status || (subj.score >= 75 ? 'Strong progress' : subj.score >= 60 ? 'On track' : 'Building skills');
+          }
+        });
+      }
+
+      // Learning gaps to close
+      const gapsContainer = document.querySelector('.subject-gaps');
+      if (gapsContainer && data.learningGaps && Object.keys(data.learningGaps).length) {
+        gapsContainer.innerHTML = Object.entries(data.learningGaps).map(([subj, gaps]) => `
+          <div class="subject-gap-card" style="background: rgba(143,107,255,0.06); border: 1px solid rgba(143,107,255,0.18); border-radius: 12px; padding: 14px 16px;">
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--cyan); font-weight: 700; margin-bottom: 4px;">${escapeHtml(subj)}</div>
+            <b style="font-size: 14px; color: var(--text-main); display: block; margin-bottom: 4px;">${escapeHtml(Array.isArray(gaps) ? gaps.join(', ') : gaps)}</b>
+            <span style="font-size: 12px; color: var(--muted);">Identified for targeted adaptive reinforcement</span>
+          </div>
+        `).join('');
+      }
+
+      // Recommended next practice card
       if (data.recommendedPractice) {
         const pracCard = document.querySelector('.practice');
         if (pracCard) {
-          pracCard.querySelector('p').textContent = data.recommendedPractice.description;
+          const h3 = pracCard.querySelector('h3');
+          if (h3) h3.textContent = data.recommendedPractice.title || `Build confidence in ${data.recommendedPractice.topic || 'Fractions'}.`;
+          const p = pracCard.querySelector('p');
+          if (p) p.textContent = data.recommendedPractice.description || 'Adam needs more practice with equivalent fractions and fractions addition.';
+          const startBtn = pracCard.querySelector('#start-practice');
+          if (startBtn) {
+            startBtn.onclick = () => {
+              openPractice();
+              startRound(data.recommendedPractice.topic || 'Fractions', data.recommendedPractice.subject || 'Mathematics');
+            };
+          }
         }
       }
     } catch (err) {
@@ -2938,33 +3384,82 @@
 
     try {
       const data = await API.request('/api/student/insights');
-      const grid = document.querySelector('.insights-grid');
-      const otherInsights = document.querySelector('.other-insights');
+      const emptyBanner = document.querySelector('#insights-empty-banner');
+      const recCard = document.querySelector('#insights-rec-card');
+      const supportCards = document.querySelector('#insights-supporting-cards');
+      const otherInsights = document.querySelector('#insights-other');
 
-      if (!data || !data.priority || data.priority.currentScore === 0) {
-        if (grid) {
-          grid.innerHTML = `
-            <div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;">
-              <div style="font-size: 32px; margin-bottom: 8px;">💡</div>
-              <h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">${escapeHtml(data?.emptyTitle || 'No learning data yet.')}</h3>
-              <p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">${escapeHtml(data?.emptyMessage || 'Complete your Personal Information and Quick Learning Check to begin.')}</p>
-            </div>
-          `;
-        }
-        if (otherInsights) otherInsights.classList.add('hidden');
-      } else {
+      const isEmpty = !data || !data.priority || (data.priority.currentScore === 0 && !data.hasAssessment);
+
+      if (emptyBanner) emptyBanner.classList.toggle('hidden', !isEmpty);
+      if (recCard) recCard.classList.toggle('hidden', isEmpty);
+      if (supportCards) supportCards.classList.toggle('hidden', isEmpty);
+      if (otherInsights) otherInsights.classList.toggle('hidden', isEmpty);
+
+      if (!isEmpty && data.priority) {
         const p = data.priority;
-        document.querySelector('.recommendation-card h2').textContent = p.title;
-        document.querySelector('.recommendation-card p').textContent = p.reason;
-        const statBoxes = document.querySelectorAll('.insight-data b');
-        if (statBoxes[0]) statBoxes[0].textContent = `${p.currentScore}%`;
-        if (statBoxes[1]) statBoxes[1].textContent = `${p.timeSpentMinutes} min`;
-        if (statBoxes[2]) statBoxes[2].textContent = `${p.recentCorrect} / ${p.recentTotal}`;
-        if (otherInsights) otherInsights.classList.remove('hidden');
+        const eyebrow = document.querySelector('#insight-eyebrow');
+        if (eyebrow) eyebrow.textContent = p.subject ? `Priority recommendation · ${p.subject}` : 'Priority recommendation';
+        const title = document.querySelector('#insight-title');
+        if (title) title.textContent = p.title || 'Build confidence in Fractions.';
+        const reason = document.querySelector('#insight-reason');
+        if (reason) reason.textContent = p.reason || 'Adam needs more practice with equivalent fractions and fractions addition.';
+
+        const scoreEl = document.querySelector('#insight-score');
+        if (scoreEl) scoreEl.textContent = `${p.currentScore ?? 54}%`;
+        const timeEl = document.querySelector('#insight-time');
+        if (timeEl) timeEl.textContent = `${p.timeSpentMinutes ?? 48} min`;
+        const ansEl = document.querySelector('#insight-answers');
+        if (ansEl) ansEl.textContent = `${p.recentCorrect ?? 6} / ${p.recentTotal ?? 12}`;
+
+        // Wire Practice CTA
+        const practiceBtn = document.querySelector('#insight-practice');
+        if (practiceBtn) {
+          const topicToPractice = p.topic || 'Fractions';
+          const subjectToPractice = p.subject || 'Mathematics';
+          practiceBtn.textContent = `Practise ${topicToPractice} →`;
+          practiceBtn.onclick = () => {
+            openPractice();
+            startRound(topicToPractice, subjectToPractice);
+          };
+        }
+
+        // Supporting reasons list
+        const whyItems = p.whyPoints || data.whyPoints;
+        const whyList = document.querySelector('#insight-why-list');
+        if (whyList && Array.isArray(whyItems) && whyItems.length > 0) {
+          whyList.innerHTML = whyItems.map(item => `
+            <div class="reason-row">
+              <i>${escapeHtml(item.icon || '✦')}</i>
+              <div>
+                <b>${escapeHtml(item.title)}</b>
+                <p>${escapeHtml(item.detail || item.description || '')}</p>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        // 15-minute plan steps
+        const stepItems = p.steps || data.steps || p.nextStepPlan;
+        const stepsList = document.querySelector('#insight-steps-list');
+        if (stepsList && Array.isArray(stepItems) && stepItems.length > 0) {
+          stepsList.innerHTML = stepItems.map(s => `
+            <div class="insight-step"><b>${escapeHtml(s.duration)}</b><span>${escapeHtml(s.label)}</span></div>
+          `).join('');
+        }
+
+        // More learning signals
+        const signals = data.otherSignals || data.signals;
+        if (otherInsights && Array.isArray(signals) && signals.length > 0) {
+          otherInsights.innerHTML = `<h2>More learning signals</h2>` + signals.map(s => `
+            <div class="mini-insight"><i>${escapeHtml(s.icon || '✓')}</i><div><b>${escapeHtml(s.title)}</b><small>${escapeHtml(s.detail || s.description || '')}</small></div></div>
+          `).join('');
+        }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn('Insights load error:', e);
+    }
   }
-  document.querySelector('#insight-practice').onclick = () => { openPractice(); startRound('subtraction'); };
 
   // ----------------------------------------------------
   // 5. REPORT VIEW
@@ -2978,32 +3473,142 @@
 
     try {
       const report = await API.request('/api/student/report');
-      const reportSummary = document.querySelector('.report-summary');
-      const reportGrid = document.querySelector('.report-grid');
+      const emptyBanner = document.querySelector('#report-empty-banner');
+      const overallCard = document.querySelector('#report-overall-card');
+      const kpi1 = document.querySelector('#report-kpi-1');
+      const kpi2 = document.querySelector('#report-kpi-2');
+      const kpi3 = document.querySelector('#report-kpi-3');
+      const reportGrid = document.querySelector('#report-grid-content');
 
-      if (!report || report.overallPerformance === 0) {
-        if (reportSummary) {
-          reportSummary.innerHTML = `
-            <div class="card empty-banner" style="grid-column: 1/-1; padding: 48px 24px; text-align: center;">
-              <div style="font-size: 32px; margin-bottom: 8px;">📊</div>
-              <h3 style="font-family: 'Space Grotesk'; font-size: 20px; margin: 0 0 8px;">${escapeHtml(report?.emptyTitle || 'No learning data yet.')}</h3>
-              <p style="color: var(--muted); font-size: 13px; max-width: 480px; margin: auto;">${escapeHtml(report?.emptyMessage || 'Complete your Personal Information and Quick Learning Check to begin.')}</p>
-            </div>
-          `;
+      const isEmpty = !report || (report.overallPerformance === 0 && !report.hasAssessment);
+
+      if (emptyBanner) emptyBanner.classList.toggle('hidden', !isEmpty);
+      if (overallCard) overallCard.classList.toggle('hidden', isEmpty);
+      if (kpi1) kpi1.classList.toggle('hidden', isEmpty);
+      if (kpi2) kpi2.classList.toggle('hidden', isEmpty);
+      if (kpi3) kpi3.classList.toggle('hidden', isEmpty);
+      if (reportGrid) reportGrid.classList.toggle('hidden', isEmpty);
+
+      if (!isEmpty) {
+        const studentTitle = document.querySelector('#report-student-title');
+        if (studentTitle) studentTitle.textContent = `${report.learnerName || report.studentName || 'Adam Haziq'}’s progress summary`;
+
+        const reportNum = document.querySelector('.report-number');
+        if (reportNum) reportNum.textContent = `${report.overallPerformance ?? 74}%`;
+
+        const overallDesc = document.querySelector('#report-overall-desc');
+        if (overallDesc && (report.summaryText || report.description)) {
+          overallDesc.textContent = report.summaryText || report.description;
         }
-        if (reportGrid) reportGrid.classList.add('hidden');
-      } else {
-        document.querySelector('.report-number').textContent = `${report.overallPerformance}%`;
-        const kpis = document.querySelectorAll('.report-kpi b');
-        if (kpis[0]) kpis[0].textContent = report.totalLearningTimeFormatted;
-        if (kpis[1]) kpis[1].textContent = `${report.learningStreakDays} days`;
-        if (kpis[2]) kpis[2].textContent = report.practiceRoundsCompleted;
-        if (reportGrid) reportGrid.classList.remove('hidden');
+
+        const timeEl = document.querySelector('#report-time');
+        if (timeEl) timeEl.textContent = report.totalLearningTimeFormatted || '6h 25m';
+
+        const streakEl = document.querySelector('#report-streak');
+        if (streakEl) streakEl.textContent = `${report.learningStreakDays ?? 12} days`;
+
+        const roundsEl = document.querySelector('#report-rounds');
+        if (roundsEl) roundsEl.textContent = report.practiceRoundsCompleted ?? 16;
+
+        // Subject Breakdown table
+        const subjects = report.subjects || report.subjectBreakdown;
+        if (Array.isArray(subjects) && subjects.length > 0) {
+          const sBody = document.querySelector('#report-subjects-body');
+          if (sBody) {
+            sBody.innerHTML = subjects.map(s => {
+              const name = s.name || s.subject;
+              const time = s.time || s.timeFormatted || `${s.timeSpentMinutes || 0}m`;
+              const score = s.score ?? 70;
+              const tagClass = score >= 75 ? 'good' : (score >= 60 ? 'watch' : 'focus');
+              const trend = s.trend || '↑ 4%';
+              return `
+                <tr>
+                  <td>${escapeHtml(name)}</td>
+                  <td>${escapeHtml(time)}</td>
+                  <td><span class="score-tag ${tagClass}">${score}%</span></td>
+                  <td>${escapeHtml(trend)}</td>
+                </tr>
+              `;
+            }).join('');
+          }
+        }
+
+        // Monthly Learning Trend chart
+        const trends = report.trendChart || report.monthlyTrend;
+        if (Array.isArray(trends) && trends.length > 0) {
+          const tChart = document.querySelector('#report-trend-chart');
+          if (tChart) {
+            tChart.innerHTML = trends.map(w => {
+              const h = w.heightPercent ?? w.score ?? 50;
+              return `<div><i style="height:${h}%"></i>${escapeHtml(w.week)}</div>`;
+            }).join('');
+          }
+        }
+
+        // Mathematics Topics Mastery table
+        const topics = report.mathTopicMastery || report.topicMastery;
+        if (Array.isArray(topics) && topics.length > 0) {
+          const tBody = document.querySelector('#report-topics-body');
+          if (tBody) {
+            tBody.innerHTML = topics.map(t => {
+              const score = t.score ?? 70;
+              const tagClass = score >= 75 ? 'good' : (score >= 60 ? 'watch' : 'focus');
+              const statusText = t.status || (score >= 75 ? 'Strong' : score >= 60 ? 'Developing' : 'Needs focus');
+              return `
+                <tr>
+                  <td>${escapeHtml(t.topic)}</td>
+                  <td>${score}%</td>
+                  <td><span class="score-tag ${tagClass}">${escapeHtml(statusText)}</span></td>
+                </tr>
+              `;
+            }).join('');
+          }
+        }
+
+        // Study habits
+        const habits = report.studyHabits || report.habits;
+        if (Array.isArray(habits) && habits.length > 0) {
+          const hList = document.querySelector('#report-habits-list');
+          if (hList) {
+            hList.innerHTML = habits.map(h => `
+              <div class="habit"><i>${escapeHtml(h.icon || '◷')}</i><div><b>${escapeHtml(h.title)}</b><small>${escapeHtml(h.detail || h.description || '')}</small></div></div>
+            `).join('');
+          }
+        }
+
+        // Achievements
+        const achs = report.achievements;
+        if (Array.isArray(achs) && achs.length > 0) {
+          const aList = document.querySelector('#report-achievements-list');
+          if (aList) {
+            aList.innerHTML = achs.map(a => `
+              <div class="achievement"><i>${escapeHtml(a.icon || '✦')}</i>${escapeHtml(a.text || a.title)}</div>
+            `).join('');
+          }
+        }
+
+        // Recommendation & Practice CTA
+        if (report.recommendedNextStep) {
+          const r = report.recommendedNextStep;
+          const recTitle = document.querySelector('#report-rec-title');
+          if (recTitle) recTitle.textContent = r.title || 'Strengthen Fractions this week.';
+          const recDesc = document.querySelector('#report-rec-desc');
+          if (recDesc) recDesc.textContent = r.description || 'Your current score is 54% after 48 minutes of practice.';
+          const recBtn = document.querySelector('#report-practice');
+          if (recBtn) {
+            recBtn.textContent = 'Start Fractions practice →';
+            recBtn.onclick = () => {
+              openPractice();
+              startRound('Fractions', 'Mathematics');
+            };
+          }
+        }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn('Report load error:', e);
+    }
   }
   document.querySelector('#print-report').onclick = () => window.print();
-  document.querySelector('#report-practice').onclick = () => { openPractice(); startRound('subtraction'); };
 
   // ----------------------------------------------------
   // 6. STUDENT PERSONAL PROFILE
@@ -3025,18 +3630,33 @@
       const data = await API.request('/api/student/profile');
       if (data && data.profile) {
         const p = data.profile;
-        document.querySelector('#profile-name').textContent = p.name;
-        document.querySelector('#profile-initials').textContent = p.initials;
+        const nameEl = document.querySelector('#profile-name');
+        if (nameEl) nameEl.textContent = p.name || 'Adam Haziq';
+        const initEl = document.querySelector('#profile-initials');
+        if (initEl) initEl.textContent = p.initials || 'AH';
         const form = document.querySelector('#personal-form');
         if (form) {
-          if (form.elements['name']) form.elements['name'].value = p.name;
-          if (form.elements['birth']) form.elements['birth'].value = p.dateOfBirth;
-          if (form.elements['grade']) form.elements['grade'].value = p.grade;
-          if (form.elements['school']) form.elements['school'].value = p.school;
-          if (form.elements['city']) form.elements['city'].value = p.district;
+          if (form.elements['name']) form.elements['name'].value = p.name || '';
+          if (form.elements['birth']) form.elements['birth'].value = p.dateOfBirth || '';
+          if (form.elements['grade']) form.elements['grade'].value = p.grade || 'Grade 5';
+          if (form.elements['school']) form.elements['school'].value = p.school || '';
+          if (form.elements['city']) form.elements['city'].value = p.district || '';
         }
       }
-    } catch (e) {}
+      if (data && Array.isArray(data.recentActivity) && data.recentActivity.length > 0) {
+        const actList = document.querySelector('#personal-activity-list');
+        if (actList) {
+          actList.innerHTML = data.recentActivity.map(a => {
+            const icon = a.icon || (a.type === 'practice' ? '∑' : a.type === 'lesson' ? '⚗' : a.type === 'assessment' ? '✦' : '🔥');
+            const title = a.title || a.name || (a.subject ? `${a.subject}: ${a.topic}` : 'Learning activity');
+            const subtitle = a.detail || a.subtitle || a.date || '';
+            return `<div><i>${escapeHtml(icon)}</i><span><b>${escapeHtml(title)}</b><small>${escapeHtml(subtitle)}</small></span></div>`;
+          }).join('');
+        }
+      }
+    } catch (e) {
+      console.warn('Profile load error:', e);
+    }
   }
 
   const btnResetDemo = document.querySelector('#btn-reset-demo');
@@ -3045,7 +3665,7 @@
       btnResetDemo.disabled = true;
       btnResetDemo.textContent = 'Resetting...';
       try {
-        const res = await fetch('/api/student/reset-demo', {
+        await fetch('/api/student/reset-demo', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -3053,6 +3673,7 @@
           }
         });
         toast('Demo progress has been reset.');
+        await loadStudentOverview();
         backToOverview();
       } catch (err) {
         toast('Demo progress has been reset.');

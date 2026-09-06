@@ -1,24 +1,31 @@
 {
   "student": {
-    "id": "student-amira-001",
-    "name": "Amira M.",
-    "initials": "AM",
-    "grade": "Grade 1",
-    "school": "Sekolah Kebangsaan Maju Jaya",
+    "id": "45dd6d96-1530-44c3-a772-5c9057f79561",
+    "name": "Adam Haziq",
+    "initials": "AH",
+    "role": "student",
+    "grade": "Grade 5",
+    "school": "Sekolah Menengah Maju Jaya",
     "district": "Kuala Lumpur",
-    "dateOfBirth": "2019-03-18",
+    "dateOfBirth": "2014-03-18",
     "learningLanguages": ["Bahasa Melayu", "English"],
-    "favouriteSubject": "Science",
-    "preferredStudyTime": "19:00"
+    "preferredLanguage": "English",
+    "favouriteSubject": "Mathematics",
+    "preferredStudyTime": "7:00 PM",
+    "is_demo_account": true,
+    "profile_completed": true,
+    "quick_test_completed": true,
+    "classCode": "AMANAH10"
   },
   "dashboard": {
-    "overallPerformance": 84,
+    "overallPerformance": 74,
+    "healthScore": 84,
     "learningStreakDays": 12,
     "streakIncreaseThisWeek": 3,
     "studyActivityMinutes": 385,
     "studyActivityChangePercent": 18,
     "availableFocusMinutes": 45,
-    "bestFocusWindow": "19:00",
+    "bestFocusWindow": "7:00 PM",
     "weeklyActivity": [
       { "day": "Mon", "minutes": 42 },
       { "day": "Tue", "minutes": 63 },
@@ -27,99 +34,128 @@
       { "day": "Fri", "minutes": 68 },
       { "day": "Sat", "minutes": 31 },
       { "day": "Sun", "minutes": 23 }
-    ]
+    ],
+    "recommendedPractice": {
+      "subject": "Mathematics",
+      "topic": "Fractions",
+      "title": "Build confidence in Fractions.",
+      "description": "Adam needs more practice with equivalent fractions and fractions addition.",
+      "durationMinutes": 15
+    }
   },
   "subjects": [
     {
       "id": "mathematics",
       "name": "Mathematics",
+      "shortName": "Mathematics",
       "score": 70,
-      "mastery": 79,
-      "learningMinutes": 683,
+      "mastery": 70,
+      "learningMinutes": 195,
       "status": "On track",
       "strength": "Addition",
       "topics": [
         { "id": "addition", "name": "Addition", "score": 88, "status": "Strong" },
-        { "id": "subtraction", "name": "Subtraction", "score": 54, "status": "Needs focus" },
-        { "id": "multiplication", "name": "Multiplication", "score": 62, "status": "Developing" },
-        { "id": "division", "name": "Division", "score": 58, "status": "Needs focus" }
+        { "id": "subtraction", "name": "Subtraction", "score": 76, "status": "Strong" },
+        { "id": "multiplication", "name": "Multiplication", "score": 68, "status": "Developing" },
+        { "id": "division", "name": "Division", "score": 58, "status": "Needs focus" },
+        { "id": "fractions", "name": "Fractions", "score": 54, "status": "Needs focus" }
       ],
-      "learningGaps": ["Algebraic fractions", "Integrate", "Simplify"]
+      "learningGaps": ["Fractions", "Division"]
     },
     {
       "id": "bahasa-melayu",
       "name": "Bahasa Melayu",
       "shortName": "BM",
       "score": 67,
-      "mastery": 60,
-      "learningMinutes": 72,
+      "mastery": 67,
+      "learningMinutes": 60,
       "status": "Building skills",
-      "strength": "Kata nama",
+      "strength": "Kata Nama",
       "topics": [
-        { "id": "kata-nama", "name": "Kata nama", "score": 81, "status": "Strong" },
-        { "id": "kata-kerja", "name": "Kata kerja", "score": 70, "status": "On track" },
-        { "id": "ayat-majmuk", "name": "Ayat majmuk", "score": 59, "status": "Developing" },
-        { "id": "penanda-wacana", "name": "Penanda wacana", "score": 55, "status": "Needs focus" }
+        { "id": "kata-nama", "name": "Kata Nama", "score": 81, "status": "Strong" },
+        { "id": "kata-kerja", "name": "Kata Kerja", "score": 70, "status": "On track" },
+        { "id": "penjodoh-bilangan", "name": "Penjodoh Bilangan", "score": 64, "status": "Developing" },
+        { "id": "ayat-majmuk", "name": "Ayat Majmuk", "score": 59, "status": "Needs focus" }
       ],
-      "learningGaps": ["Penanda wacana", "Ayat majmuk"]
+      "learningGaps": ["Ayat Majmuk"]
     },
     {
       "id": "english",
       "name": "English",
       "shortName": "BI",
-      "score": 67,
-      "mastery": 60,
-      "learningMinutes": 82,
+      "score": 72,
+      "mastery": 72,
+      "learningMinutes": 65,
       "status": "Building skills",
-      "strength": "Reading comprehension",
+      "strength": "Reading",
       "topics": [
-        { "id": "reading-comprehension", "name": "Reading comprehension", "score": 78, "status": "Strong" },
-        { "id": "vocabulary", "name": "Vocabulary", "score": 73, "status": "On track" },
-        { "id": "sentence-structure", "name": "Sentence structure", "score": 62, "status": "Developing" },
-        { "id": "essay-evidence", "name": "Essay evidence", "score": 55, "status": "Needs focus" }
+        { "id": "reading", "name": "Reading", "score": 82, "status": "Strong" },
+        { "id": "grammar", "name": "Grammar", "score": 75, "status": "On track" },
+        { "id": "vocabulary", "name": "Vocabulary", "score": 70, "status": "On track" },
+        { "id": "sentence-structure", "name": "Sentence Structure", "score": 62, "status": "Developing" }
       ],
-      "learningGaps": ["Evidence in essays", "Sentence structure"]
+      "learningGaps": ["Sentence Structure"]
     },
     {
       "id": "science",
       "name": "Science",
-      "score": 90,
-      "mastery": 90,
-      "learningMinutes": 150,
-      "status": "Excellent",
-      "strength": "Living things",
+      "shortName": "Science",
+      "score": 84,
+      "mastery": 84,
+      "learningMinutes": 65,
+      "status": "Strong progress",
+      "strength": "Living Things",
       "topics": [
-        { "id": "living-things", "name": "Living things", "score": 94, "status": "Strong" },
-        { "id": "cell-structure", "name": "Cell structure", "score": 90, "status": "Strong" },
-        { "id": "energy-transfer", "name": "Energy transfer", "score": 87, "status": "Strong" },
-        { "id": "matter", "name": "Matter", "score": 88, "status": "Strong" }
+        { "id": "living-things", "name": "Living Things", "score": 92, "status": "Strong" },
+        { "id": "plants", "name": "Plants", "score": 88, "status": "Strong" },
+        { "id": "solar-system", "name": "Solar System", "score": 82, "status": "Strong" },
+        { "id": "energy-and-materials", "name": "Energy and Materials", "score": 74, "status": "Developing" }
       ],
-      "learningGaps": ["Cell structure", "Energy transfer"]
+      "learningGaps": ["Energy and Materials"]
     }
   ],
   "recommendations": [
     {
-      "id": "rec-subtraction-001",
+      "id": "rec-fractions-001",
       "subjectId": "mathematics",
-      "topicId": "subtraction",
-      "title": "Build confidence in subtraction",
+      "subject": "Mathematics",
+      "topicId": "fractions",
+      "topic": "Fractions",
+      "title": "Build confidence in Fractions.",
       "currentScore": 54,
       "timeSpentMinutes": 48,
       "recentCorrectAnswers": 6,
       "recentTotalAnswers": 12,
       "recommendedDurationMinutes": 15,
-      "reason": "Subtraction is the lowest Mathematics topic and supports future division learning."
+      "reason": "Adam needs more practice with equivalent fractions and fractions addition.",
+      "steps": [
+        { "duration": "5 min", "label": "Warm-up" },
+        { "duration": "7 min", "label": "Guided practice" },
+        { "duration": "3 min", "label": "Quick check" }
+      ],
+      "whyPoints": [
+        { "icon": "↓", "title": "It is your lowest Mathematics topic.", "detail": "Fractions (54%) is lower than your other Mathematics skills." },
+        { "icon": "◷", "title": "You have practised it less.", "detail": "You spent 48 minutes on fractions compared to other topics." },
+        { "icon": "✦", "title": "It helps unlock the next level.", "detail": "Mastering fractions is required before advancing to decimal and percentage units." }
+      ]
     }
   ],
   "practice": {
     "currentLevel": 1,
-    "grade": "Grade 1",
+    "grade": "Grade 5",
     "endRoundAfterWrongAnswers": 3,
-    "completedRounds": 24
+    "completedRounds": 16
   },
   "recentActivity": [
-    { "type": "practice", "subject": "Mathematics", "topic": "Subtraction", "durationMinutes": 15, "date": "2026-09-05" },
-    { "type": "lesson", "subject": "Science", "topic": "Cell structure", "durationMinutes": 28, "date": "2026-09-04" },
-    { "type": "achievement", "name": "Learning streak", "value": "12 days active", "date": "2026-09-05" }
+    { "type": "practice", "subject": "Mathematics", "topic": "Fractions", "detail": "Score 54% · 15m ago", "date": "15m ago" },
+    { "type": "lesson", "subject": "Science", "topic": "Energy and Materials", "detail": "Score 74% · Yesterday", "date": "Yesterday" },
+    { "type": "assessment", "name": "Quick Learning Check", "detail": "20/20 answered · 74% score", "date": "3 days ago" },
+    { "type": "achievement", "name": "Learning streak", "detail": "12 days active", "date": "Active" }
+  ],
+  "achievements": [
+    { "icon": "🔥", "title": "12-day learning streak", "detail": "Consistent study routine" },
+    { "icon": "∑", "title": "Math Whiz", "detail": "Addition mastery: 88%" },
+    { "icon": "⚗", "title": "Science Explorer", "detail": "Science performance: 84%" },
+    { "icon": "✦", "title": "Practice Champion", "detail": "16 practice rounds completed" }
   ]
 }

@@ -1,38 +1,140 @@
 {
   "users": [],
   "studentProfiles": {
+    "student-mismatch-99": {
+      "userId": "student-mismatch-99",
+      "name": "Unmatched Student",
+      "initials": "US",
+      "grade": "Grade 3",
+      "school": "Sekolah Kebangsaan Subang Jaya",
+      "district": "Subang",
+      "dateOfBirth": "2014-05-12",
+      "learningLanguages": [
+        "English"
+      ],
+      "preferredLanguage": "English",
+      "favouriteSubject": "Science",
+      "preferredStudyTime": "Evening",
+      "classId": null,
+      "className": null,
+      "classCode": "UNKNOWN_CODE_999",
+      "diagnostic_completed": false,
+      "onboarding_completed": false
+    },
+    "student-real-001": {
+      "userId": "student-real-001",
+      "name": "Farah Nadia",
+      "initials": "FN",
+      "grade": "Year 10",
+      "school": "Sekolah Menengah Maju Jaya",
+      "district": "Kuala Lumpur",
+      "dateOfBirth": "2010-03-15",
+      "learningLanguages": [
+        "English"
+      ],
+      "preferredLanguage": "English",
+      "favouriteSubject": "Mathematics",
+      "preferredStudyTime": "Evening",
+      "classId": "year10-amanah",
+      "className": "Year 10 Amanah (AMANAH10)",
+      "classCode": "AMANAH10",
+      "diagnostic_completed": true,
+      "onboarding_completed": true,
+      "estimatedGradeLevel": 2.8
+    },
     "45dd6d96-1530-44c3-a772-5c9057f79561": {
       "userId": "45dd6d96-1530-44c3-a772-5c9057f79561",
       "name": "Adam Haziq",
       "initials": "AH",
-      "grade": "Year 10",
+      "grade": "Grade 5",
       "school": "Sekolah Menengah Maju Jaya",
       "district": "Kuala Lumpur",
-      "dateOfBirth": "2010-03-18",
+      "dateOfBirth": "2014-03-18",
       "learningLanguages": [
         "Bahasa Melayu",
         "English"
       ],
       "preferredLanguage": "English",
-      "favouriteSubject": "Science",
-      "preferredStudyTime": "19:00",
+      "favouriteSubject": "Mathematics",
+      "preferredStudyTime": "7:00 PM",
       "is_demo_account": true,
       "diagnostic_completed": true,
       "onboarding_completed": true,
+      "profile_completed": true,
+      "quick_test_completed": true,
+      "classId": "c93a7680-a4be-41e8-8273-0e1850050bcf",
+      "className": "Year 10 Amanah (AMANAH10)"
+    },
+    "ad000000-0000-4000-8000-000000000001": {
+      "userId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "name": "Adam Haziq",
+      "initials": "AH",
+      "grade": "Grade 5",
+      "school": "Sekolah Menengah Maju Jaya",
+      "district": "Kuala Lumpur",
+      "dateOfBirth": "2014-03-18",
+      "learningLanguages": [
+        "Bahasa Melayu",
+        "English"
+      ],
+      "preferredLanguage": "English",
+      "favouriteSubject": "Mathematics",
+      "preferredStudyTime": "7:00 PM",
+      "is_demo_account": true,
+      "diagnostic_completed": true,
+      "onboarding_completed": true,
+      "profile_completed": true,
+      "quick_test_completed": true,
       "classId": "c93a7680-a4be-41e8-8273-0e1850050bcf",
       "className": "Year 10 Amanah (AMANAH10)"
     }
   },
-  "teacherProfiles": {},
-  "classes": [],
+  "teacherProfiles": {
+    "current-teacher": {
+      "userId": "cb21ed2e-dd2d-420e-9679-89156d6b62a5",
+      "name": "Liyana K.",
+      "initials": "LK",
+      "teacherId": "TCH-10482",
+      "school": "Sekolah Menengah Maju Jaya",
+      "district": "Kuala Lumpur",
+      "primarySubject": "Mathematics",
+      "teachingLevel": "Year 10"
+    }
+  },
+  "classes": [
+    {
+      "id": "year10-amanah",
+      "teacherId": "cb21ed2e-dd2d-420e-9679-89156d6b62a5",
+      "name": "Year 10 Amanah (AMANAH10)",
+      "yearLevel": "Year 10",
+      "subject": "Mathematics",
+      "studentCount": 1
+    },
+    {
+      "id": "year10-bestari",
+      "teacherId": "cb21ed2e-dd2d-420e-9679-89156d6b62a5",
+      "name": "Year 10 Bestari (BESTARI10)",
+      "yearLevel": "Year 10",
+      "subject": "Mathematics",
+      "studentCount": 0
+    },
+    {
+      "id": "year10-cemerlang",
+      "teacherId": "cb21ed2e-dd2d-420e-9679-89156d6b62a5",
+      "name": "Year 10 Cemerlang (CEMERLANG10)",
+      "yearLevel": "Year 10",
+      "subject": "Mathematics",
+      "studentCount": 0
+    }
+  ],
   "subjects": [
     {
       "id": "mathematics",
       "name": "Mathematics",
       "shortName": "Mathematics",
       "score": 70,
-      "mastery": 79,
-      "learningMinutes": 683,
+      "mastery": 70,
+      "learningMinutes": 195,
       "status": "On track",
       "strength": "Addition",
       "topics": [
@@ -45,13 +147,13 @@
         {
           "id": "subtraction",
           "name": "Subtraction",
-          "score": 54,
-          "status": "Needs focus"
+          "score": 76,
+          "status": "Strong"
         },
         {
           "id": "multiplication",
           "name": "Multiplication",
-          "score": 62,
+          "score": 68,
           "status": "Developing"
         },
         {
@@ -59,12 +161,17 @@
           "name": "Division",
           "score": 58,
           "status": "Needs focus"
+        },
+        {
+          "id": "fractions",
+          "name": "Fractions",
+          "score": 54,
+          "status": "Needs focus"
         }
       ],
       "learningGaps": [
-        "Algebraic fractions",
-        "Integrate",
-        "Simplify"
+        "Fractions",
+        "Division"
       ]
     },
     {
@@ -72,119 +179,116 @@
       "name": "Bahasa Melayu",
       "shortName": "BM",
       "score": 67,
-      "mastery": 60,
-      "learningMinutes": 72,
+      "mastery": 67,
+      "learningMinutes": 60,
       "status": "Building skills",
-      "strength": "Kata nama",
+      "strength": "Kata Nama",
       "topics": [
         {
           "id": "kata-nama",
-          "name": "Kata nama",
+          "name": "Kata Nama",
           "score": 81,
           "status": "Strong"
         },
         {
           "id": "kata-kerja",
-          "name": "Kata kerja",
+          "name": "Kata Kerja",
           "score": 70,
           "status": "On track"
         },
         {
-          "id": "ayat-majmuk",
-          "name": "Ayat majmuk",
-          "score": 59,
+          "id": "penjodoh-bilangan",
+          "name": "Penjodoh Bilangan",
+          "score": 64,
           "status": "Developing"
         },
         {
-          "id": "penanda-wacana",
-          "name": "Penanda wacana",
-          "score": 55,
+          "id": "ayat-majmuk",
+          "name": "Ayat Majmuk",
+          "score": 59,
           "status": "Needs focus"
         }
       ],
       "learningGaps": [
-        "Penanda wacana",
-        "Ayat majmuk"
+        "Ayat Majmuk"
       ]
     },
     {
       "id": "english",
       "name": "English",
       "shortName": "BI",
-      "score": 67,
-      "mastery": 60,
-      "learningMinutes": 82,
+      "score": 72,
+      "mastery": 72,
+      "learningMinutes": 65,
       "status": "Building skills",
-      "strength": "Reading comprehension",
+      "strength": "Reading",
       "topics": [
         {
-          "id": "reading-comprehension",
-          "name": "Reading comprehension",
-          "score": 78,
+          "id": "reading",
+          "name": "Reading",
+          "score": 82,
           "status": "Strong"
+        },
+        {
+          "id": "grammar",
+          "name": "Grammar",
+          "score": 75,
+          "status": "On track"
         },
         {
           "id": "vocabulary",
           "name": "Vocabulary",
-          "score": 73,
+          "score": 70,
           "status": "On track"
         },
         {
           "id": "sentence-structure",
-          "name": "Sentence structure",
+          "name": "Sentence Structure",
           "score": 62,
           "status": "Developing"
-        },
-        {
-          "id": "essay-evidence",
-          "name": "Essay evidence",
-          "score": 55,
-          "status": "Needs focus"
         }
       ],
       "learningGaps": [
-        "Evidence in essays",
-        "Sentence structure"
+        "Sentence Structure"
       ]
     },
     {
       "id": "science",
       "name": "Science",
       "shortName": "Science",
-      "score": 90,
-      "mastery": 90,
-      "learningMinutes": 150,
-      "status": "Excellent",
-      "strength": "Living things",
+      "score": 84,
+      "mastery": 84,
+      "learningMinutes": 65,
+      "status": "Strong progress",
+      "strength": "Living Things",
       "topics": [
         {
           "id": "living-things",
-          "name": "Living things",
-          "score": 94,
+          "name": "Living Things",
+          "score": 92,
           "status": "Strong"
         },
         {
-          "id": "cell-structure",
-          "name": "Cell structure",
-          "score": 90,
-          "status": "Strong"
-        },
-        {
-          "id": "energy-transfer",
-          "name": "Energy transfer",
-          "score": 87,
-          "status": "Strong"
-        },
-        {
-          "id": "matter",
-          "name": "Matter",
+          "id": "plants",
+          "name": "Plants",
           "score": 88,
           "status": "Strong"
+        },
+        {
+          "id": "solar-system",
+          "name": "Solar System",
+          "score": 82,
+          "status": "Strong"
+        },
+        {
+          "id": "energy-and-materials",
+          "name": "Energy and Materials",
+          "score": 74,
+          "status": "Developing"
         }
       ],
       "learningGaps": [
-        "Cell structure",
-        "Energy transfer"
+        "Energy and Materials"
       ]
     }
   ],
@@ -194,64 +298,186 @@
       "name": "Adam Haziq",
       "initials": "AH",
       "primarySubject": "Mathematics",
-      "learningMinutes": 987,
+      "learningMinutes": 385,
       "healthScore": 84,
-      "status": "Assessment completed",
+      "status": "On track",
       "trend": "up",
       "classId": "c93a7680-a4be-41e8-8273-0e1850050bcf",
       "className": "Year 10 Amanah (AMANAH10)"
-    },
-    {
-      "id": "ad000000-0000-4000-8000-000000000001",
-      "name": "Active Learner",
-      "initials": "AL",
-      "primarySubject": "Mathematics",
-      "learningMinutes": 1,
-      "healthScore": 60,
-      "status": "watch",
-      "trend": "steady"
     }
   ],
   "interventions": [
     {
-      "id": "int-subtraction-45dd6d96-1530-44c3-a772-5c9057f79561",
+      "id": "int-fractions-45dd6d96-1530-44c3-a772-5c9057f79561",
       "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
       "studentName": "Adam Haziq",
       "status": "problem",
       "classification": "Guided Support",
       "subject": "Mathematics",
-      "topic": "Subtraction",
-      "healthScore": 54,
+      "topic": "Fractions",
+      "healthScore": 84,
       "topicScore": 54,
       "learningMinutes": 48,
-      "recommendation": "Targeted 15-minute guided support plan in subtraction to build core arithmetic confidence.",
-      "plan": "15-minute visual subtraction mini-lesson with adaptive step-by-step hints.",
-      "createdAt": "2026-09-06T01:47:47.710Z"
+      "recommendation": "Targeted 15-minute guided support plan in Fractions to build core equivalent fractions confidence.",
+      "plan": "15-minute visual fractions mini-lesson with adaptive step-by-step hints.",
+      "createdAt": "2026-09-06T02:49:00.014Z"
     }
   ],
   "practiceAttempts": [
     {
-      "id": "att-1788659120692-268",
-      "studentId": "ad000000-0000-4000-8000-000000000001",
-      "topic": "Subtraction",
-      "level": 2,
-      "question": "9 - 5 = ?",
-      "submittedAnswer": "4",
-      "correctAnswer": "4",
+      "id": "practice-attempt-1",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "subject": "Mathematics",
+      "topic": "Fractions",
+      "score": 75,
       "isCorrect": true,
-      "timeSpentSeconds": 15,
-      "attemptedAt": "2026-09-06T01:45:20.692Z"
+      "createdAt": "2026-09-05T10:49:00.013Z"
+    },
+    {
+      "id": "practice-attempt-2",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "subject": "Science",
+      "topic": "Living Things",
+      "score": 75,
+      "isCorrect": true,
+      "createdAt": "2026-09-05T11:49:00.014Z"
+    },
+    {
+      "id": "practice-attempt-3",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "subject": "Mathematics",
+      "topic": "Fractions",
+      "score": 75,
+      "isCorrect": true,
+      "createdAt": "2026-09-05T12:49:00.014Z"
+    },
+    {
+      "id": "practice-attempt-4",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "subject": "Science",
+      "topic": "Living Things",
+      "score": 75,
+      "isCorrect": true,
+      "createdAt": "2026-09-05T13:49:00.014Z"
+    },
+    {
+      "id": "practice-attempt-5",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "subject": "Mathematics",
+      "topic": "Fractions",
+      "score": 75,
+      "isCorrect": true,
+      "createdAt": "2026-09-05T14:49:00.014Z"
+    },
+    {
+      "id": "practice-attempt-6",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "subject": "Science",
+      "topic": "Living Things",
+      "score": 75,
+      "isCorrect": true,
+      "createdAt": "2026-09-05T15:49:00.014Z"
+    },
+    {
+      "id": "practice-attempt-7",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "subject": "Mathematics",
+      "topic": "Fractions",
+      "score": 75,
+      "isCorrect": true,
+      "createdAt": "2026-09-05T16:49:00.014Z"
+    },
+    {
+      "id": "practice-attempt-8",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "subject": "Science",
+      "topic": "Living Things",
+      "score": 75,
+      "isCorrect": true,
+      "createdAt": "2026-09-05T17:49:00.014Z"
+    },
+    {
+      "id": "practice-attempt-9",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "subject": "Mathematics",
+      "topic": "Fractions",
+      "score": 75,
+      "isCorrect": true,
+      "createdAt": "2026-09-05T18:49:00.014Z"
+    },
+    {
+      "id": "practice-attempt-10",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "subject": "Science",
+      "topic": "Living Things",
+      "score": 75,
+      "isCorrect": true,
+      "createdAt": "2026-09-05T19:49:00.014Z"
+    },
+    {
+      "id": "practice-attempt-11",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "subject": "Mathematics",
+      "topic": "Fractions",
+      "score": 75,
+      "isCorrect": true,
+      "createdAt": "2026-09-05T20:49:00.014Z"
+    },
+    {
+      "id": "practice-attempt-12",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "subject": "Science",
+      "topic": "Living Things",
+      "score": 75,
+      "isCorrect": true,
+      "createdAt": "2026-09-05T21:49:00.014Z"
+    },
+    {
+      "id": "practice-attempt-13",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "subject": "Mathematics",
+      "topic": "Fractions",
+      "score": 75,
+      "isCorrect": true,
+      "createdAt": "2026-09-05T22:49:00.014Z"
+    },
+    {
+      "id": "practice-attempt-14",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "subject": "Science",
+      "topic": "Living Things",
+      "score": 75,
+      "isCorrect": true,
+      "createdAt": "2026-09-05T23:49:00.014Z"
+    },
+    {
+      "id": "practice-attempt-15",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "subject": "Mathematics",
+      "topic": "Fractions",
+      "score": 75,
+      "isCorrect": true,
+      "createdAt": "2026-09-06T00:49:00.014Z"
+    },
+    {
+      "id": "practice-attempt-16",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "subject": "Science",
+      "topic": "Living Things",
+      "score": 75,
+      "isCorrect": true,
+      "createdAt": "2026-09-06T01:49:00.014Z"
     }
   ],
   "dashboard": {
-    "overallPerformance": 84,
+    "overallPerformance": 74,
     "healthScore": 84,
     "learningStreakDays": 12,
     "streakIncreaseThisWeek": 3,
     "studyActivityMinutes": 385,
     "studyActivityChangePercent": 18,
     "availableFocusMinutes": 45,
-    "bestFocusWindow": "19:00",
+    "bestFocusWindow": "7:00 PM",
     "weeklyActivity": [
       {
         "day": "Mon",
@@ -284,23 +510,67 @@
     ],
     "recommendedPractice": {
       "subject": "Mathematics",
-      "topic": "Subtraction",
-      "description": "Strengthen subtraction in a 15-minute session calibrated to your pace.",
+      "topic": "Fractions",
+      "description": "Adam needs more practice with equivalent fractions and fractions addition.",
       "durationMinutes": 15
     }
   },
-  "classDashboard": {},
+  "classDashboard": {
+    "classId": "year10-amanah",
+    "studentCount": 0,
+    "classHealthScore": 0,
+    "onTrackCount": 0,
+    "needsSupportCount": 0,
+    "averageLoginMinutesPerDay": 0,
+    "weeklyPerformance": [],
+    "subjectPerformance": []
+  },
   "recommendations": [
     {
-      "id": "rec-subtraction-001",
-      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "id": "rec-fractions-001",
+      "subjectId": "mathematics",
       "subject": "Mathematics",
-      "topic": "Subtraction",
-      "title": "Build confidence in subtraction",
-      "reason": "Subtraction is the lowest Mathematics topic and supports future division learning.",
+      "topicId": "fractions",
+      "topic": "Fractions",
+      "title": "Build confidence in Fractions.",
       "currentScore": 54,
       "timeSpentMinutes": 48,
-      "recommendedMinutes": 15,
+      "recentCorrectAnswers": 6,
+      "recentTotalAnswers": 12,
+      "recommendedDurationMinutes": 15,
+      "reason": "Adam needs more practice with equivalent fractions and fractions addition.",
+      "steps": [
+        {
+          "duration": "5 min",
+          "label": "Warm-up"
+        },
+        {
+          "duration": "7 min",
+          "label": "Guided practice"
+        },
+        {
+          "duration": "3 min",
+          "label": "Quick check"
+        }
+      ],
+      "whyPoints": [
+        {
+          "icon": "↓",
+          "title": "It is your lowest Mathematics topic.",
+          "detail": "Fractions (54%) is lower than your other Mathematics skills."
+        },
+        {
+          "icon": "◷",
+          "title": "You have practised it less.",
+          "detail": "You spent 48 minutes on fractions compared to other topics."
+        },
+        {
+          "icon": "✦",
+          "title": "It helps unlock the next level.",
+          "detail": "Mastering fractions is required before advancing to decimal and percentage units."
+        }
+      ],
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
       "status": "active"
     }
   ],
@@ -308,23 +578,191 @@
     {
       "type": "practice",
       "subject": "Mathematics",
-      "topic": "Subtraction",
-      "durationMinutes": 15,
-      "date": "2026-09-05"
+      "topic": "Fractions",
+      "detail": "Score 54% · 15m ago",
+      "date": "15m ago"
     },
     {
       "type": "lesson",
       "subject": "Science",
-      "topic": "Cell structure",
-      "durationMinutes": 28,
-      "date": "2026-09-04"
+      "topic": "Energy and Materials",
+      "detail": "Score 74% · Yesterday",
+      "date": "Yesterday"
+    },
+    {
+      "type": "assessment",
+      "name": "Quick Learning Check",
+      "detail": "20/20 answered · 74% score",
+      "date": "3 days ago"
     },
     {
       "type": "achievement",
       "name": "Learning streak",
-      "value": "12 days active",
-      "date": "2026-09-05"
+      "detail": "12 days active",
+      "date": "Active"
     }
   ],
-  "assignedInterventionStudents": []
+  "assignedInterventionStudents": [],
+  "diagnosticAttempts": [
+    {
+      "id": "diag-attempt-1",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-1",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-2",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-2",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-3",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-3",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-4",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-4",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-5",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-5",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-6",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-6",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-7",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-7",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-8",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-8",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-9",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-9",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-10",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-10",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-11",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-11",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-12",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-12",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-13",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-13",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-14",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-14",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-15",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-15",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-16",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-16",
+      "selectedAnswer": "A",
+      "isCorrect": false,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-17",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-17",
+      "selectedAnswer": "A",
+      "isCorrect": false,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-18",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-18",
+      "selectedAnswer": "A",
+      "isCorrect": false,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-19",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-19",
+      "selectedAnswer": "A",
+      "isCorrect": false,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    },
+    {
+      "id": "diag-attempt-20",
+      "studentId": "45dd6d96-1530-44c3-a772-5c9057f79561",
+      "questionId": "diag-q-20",
+      "selectedAnswer": "A",
+      "isCorrect": false,
+      "createdAt": "2026-09-03T02:49:00.014Z"
+    }
+  ]
 }

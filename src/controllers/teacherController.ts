@@ -35,10 +35,10 @@ export async function getDashboard(req: Request, res: Response, next: NextFuncti
     ];
 
     const subjectPerformance = [
-      { subject: 'Mathematics', score: 70, changePercent: 8, priority: 'Subtraction', weeklyScores: [43, 55, 48, 66, 72, 62, 70] },
-      { subject: 'Bahasa Melayu', score: 67, changePercent: 3, priority: 'Sentence structure', weeklyScores: [54, 49, 61, 65, 58, 68, 67] },
-      { subject: 'English', score: 67, changePercent: 4, priority: 'Essay evidence', weeklyScores: [45, 56, 59, 62, 68, 65, 67] },
-      { subject: 'Science', score: 90, changePercent: 10, priority: 'Strong', weeklyScores: [73, 78, 82, 79, 88, 86, 90] }
+      { subject: 'Mathematics', score: 70, changePercent: 8, priority: 'Fractions', weeklyScores: [43, 55, 48, 66, 72, 62, 70] },
+      { subject: 'Bahasa Melayu', score: 67, changePercent: 3, priority: 'Ayat Majmuk', weeklyScores: [54, 49, 61, 65, 58, 68, 67] },
+      { subject: 'English', score: 72, changePercent: 4, priority: 'Sentence Structure', weeklyScores: [45, 56, 59, 62, 68, 65, 72] },
+      { subject: 'Science', score: 84, changePercent: 10, priority: 'Strong', weeklyScores: [73, 78, 82, 79, 88, 86, 84] }
     ];
 
     const studentList = dataStore.data.students.map(s => {
@@ -154,26 +154,28 @@ export async function getStudentDetail(req: Request, res: Response, next: NextFu
       healthScore: isPending ? null : student.healthScore,
       healthScoreDisplay: isPending ? 'Not available' : `${student.healthScore}`,
       healthStatus: isPending ? 'Assessment pending' : AnalyticsService.getStudentCategory(student.healthScore as number),
-      overallPerformance: isPending ? 0 : Math.max(50, (student.healthScore as number) - 7),
+      overallPerformance: isPending ? 0 : (dataStore.data.dashboard.overallPerformance ?? Math.max(50, (student.healthScore as number) - 7)),
       learningTimeFormatted: timeFormatted,
-      streakDays: isPending ? 0 : 1,
-      roundsCompleted: isPending ? 0 : 1,
+      streakDays: isPending ? 0 : (dataStore.data.dashboard.learningStreakDays || 12),
+      roundsCompleted: isPending ? 0 : (dataStore.data.practiceAttempts?.length || 16),
       subjects: isPending ? [] : (dataStore.data.subjects.length > 0 ? dataStore.data.subjects.map(s => ({ name: s.name, score: s.score })) : [
         { name: 'Mathematics', score: student.healthScore || 0 }
       ]),
-      topics: isPending ? [] : (dataStore.data.subjects.flatMap(s => s.topics).slice(0, 4).map(t => ({ topic: t.name, score: t.score, note: t.status }))),
+      topics: isPending ? [] : (dataStore.data.subjects.flatMap(s => s.topics).slice(0, 5).map(t => ({ topic: t.name, score: t.score, note: t.status }))),
       recommendation: isPending ? {
         title: `Waiting for ${student.name} to complete Quick Learning Check`,
         text: 'Personalised recommendations and performance trends will appear once the diagnostic assessment is completed.'
       } : {
-        title: (student.healthScore as number) >= 80 ? `Keep ${student.name} challenged` : `Support ${student.name}`,
-        text: (student.healthScore as number) >= 80
-          ? `${student.name} is performing strongly across core curriculum topics. Consider extension exercises.`
-          : `${student.name} needs focused practice on identified growth areas. Offer targeted review.`
+        title: 'Build confidence in Fractions.',
+        text: 'Adam needs more practice with equivalent fractions and fractions addition.'
       },
-      recentActivity: isPending ? [] : [
+      recentActivity: isPending ? [] : (dataStore.data.recentActivity && dataStore.data.recentActivity.length ? dataStore.data.recentActivity.map((a: any) => ({
+        icon: a.type === 'practice' ? '∑' : a.type === 'lesson' ? '⚗' : '✦',
+        title: a.subject ? `${a.subject}: ${a.topic || a.name}` : (a.name || 'Activity completed'),
+        detail: a.detail || a.date || 'Recent'
+      })) : [
         { icon: '✦', title: 'Quick Learning Check completed', detail: '20 calibrated questions · today' }
-      ]
+      ])
     };
 
     sendSuccess(res, detail);

@@ -12,7 +12,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:push": "prisma db push",
     "seed": "tsx src/scripts/seed.ts",
-    "seed:supabase": "tsx src/scripts/seed-supabase.ts"
+    "seed:supabase": "tsx src/scripts/seed-supabase.ts",
+    "seed:adam": "tsx src/scripts/seedAdamDemo.ts"
   },
   "keywords": [
     "adaptive-learning",

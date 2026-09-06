@@ -183,13 +183,16 @@ export class AuthService {
     
     let targetUser: any;
     if (isDemo) {
+      const adamProfile = Object.values(dataStore.data.studentProfiles).find(p => p.is_demo_account || p.name === 'Adam Haziq');
+      const adamId = adamProfile?.userId || '45dd6d96-1530-44c3-a772-5c9057f79561';
       targetUser = dataStore.data.users.find(u => u.email === 'adam.haziq@twoblock.ai') || {
-        id: 'ad000000-0000-4000-8000-000000000001',
+        id: adamId,
         name: 'Adam Haziq',
         email: 'adam.haziq@twoblock.ai',
         role: 'student',
         is_demo_account: true
       };
+      targetUser.id = adamId;
       targetUser.is_demo_account = true;
     } else {
       targetUser = dataStore.data.users.find(u => u.role === (isStudent ? 'student' : 'teacher')) || {

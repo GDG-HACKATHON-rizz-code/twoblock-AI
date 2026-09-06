@@ -104,14 +104,14 @@ export async function seedAdamDemoAccount() {
     const { data: sp, error: spErr } = await supabaseAdmin.from('student_profiles').upsert({
       user_id: authUserId,
       full_name: studentName,
-      grade_level: 'Year 10',
+      grade_level: 'Grade 5',
       preferred_language: 'English',
       learning_preferences: {
         district: 'Kuala Lumpur',
-        dateOfBirth: '2010-03-18',
+        dateOfBirth: '2014-03-18',
         learningLanguages: ['Bahasa Melayu', 'English'],
-        favouriteSubject: 'Science',
-        preferredStudyTime: '19:00',
+        favouriteSubject: 'Mathematics',
+        preferredStudyTime: '7:00 PM',
         school: 'Sekolah Menengah Maju Jaya',
         is_demo_account: true,
         profile_completed: true,
@@ -183,24 +183,32 @@ export async function seedAdamDemoAccount() {
   // 9. Sync into local dataStore for fast query and fallback
   dataStore.load();
 
-  dataStore.data.studentProfiles[authUserId] = {
+  const adamProfile = {
     userId: authUserId,
     name: studentName,
     initials: studentInitials,
-    grade: 'Year 10',
-    school: 'Sekolah Menengah Maju Jaya',
-    district: 'Kuala Lumpur',
-    dateOfBirth: '2010-03-18',
-    learningLanguages: ['Bahasa Melayu', 'English'],
-    preferredLanguage: 'English',
-    favouriteSubject: 'Science',
-    preferredStudyTime: '19:00',
+    grade: demoData.student.grade || 'Grade 5',
+    school: demoData.student.school || 'Sekolah Menengah Maju Jaya',
+    district: demoData.student.district || 'Kuala Lumpur',
+    dateOfBirth: demoData.student.dateOfBirth || '2014-03-18',
+    learningLanguages: demoData.student.learningLanguages || ['Bahasa Melayu', 'English'],
+    preferredLanguage: demoData.student.preferredLanguage || 'English',
+    favouriteSubject: demoData.student.favouriteSubject || 'Mathematics',
+    preferredStudyTime: demoData.student.preferredStudyTime || '7:00 PM',
     is_demo_account: true,
     diagnostic_completed: true,
     onboarding_completed: true,
+    profile_completed: true,
+    quick_test_completed: true,
     classId,
     className
   } as any;
+
+  dataStore.data.studentProfiles[authUserId] = adamProfile;
+  dataStore.data.studentProfiles[ADAM_HAZIQ_USER_ID] = adamProfile;
+  if (demoData.student?.id) {
+    dataStore.data.studentProfiles[demoData.student.id] = adamProfile;
+  }
 
   // Set 4 subjects with topic progress
   dataStore.data.subjects = demoData.subjects.map((s: any) => ({
@@ -224,7 +232,7 @@ export async function seedAdamDemoAccount() {
   // Set Adam's dashboard metrics
   dataStore.data.dashboard = {
     overallPerformance: demoData.dashboard.overallPerformance,
-    healthScore: demoData.dashboard.overallPerformance,
+    healthScore: demoData.dashboard.healthScore || 84,
     learningStreakDays: demoData.dashboard.learningStreakDays,
     streakIncreaseThisWeek: demoData.dashboard.streakIncreaseThisWeek,
     studyActivityMinutes: demoData.dashboard.studyActivityMinutes,
@@ -234,33 +242,44 @@ export async function seedAdamDemoAccount() {
     weeklyActivity: demoData.dashboard.weeklyActivity,
     recommendedPractice: {
       subject: 'Mathematics',
-      topic: 'Subtraction',
-      description: 'Strengthen subtraction in a 15-minute session calibrated to your pace.',
+      topic: 'Fractions',
+      description: 'Adam needs more practice with equivalent fractions and fractions addition.',
       durationMinutes: 15
     }
   };
 
   // Set Adam's priority recommendation
-  dataStore.data.recommendations = [
-    {
-      id: 'rec-subtraction-001',
-      studentId: authUserId,
-      subject: 'Mathematics',
-      topic: 'Subtraction',
-      title: 'Build confidence in subtraction',
-      reason: 'Subtraction is the lowest Mathematics topic and supports future division learning.',
-      currentScore: 54,
-      timeSpentMinutes: 48,
-      recommendedMinutes: 15,
-      status: 'active'
-    }
-  ];
+  dataStore.data.recommendations = demoData.recommendations.map((r: any) => ({
+    ...r,
+    studentId: authUserId,
+    status: 'active'
+  }));
 
   // Set Adam's recent activity
   dataStore.data.recentActivity = demoData.recentActivity;
 
-  // Add / Update Adam Haziq in Teacher student directory
-  const existingIndex = dataStore.data.students.findIndex(s => s.id === authUserId || s.name === studentName);
+  // Set Adam's 16 practice attempts
+  dataStore.data.practiceAttempts = Array.from({ length: 16 }).map((_, i) => ({
+    id: `practice-attempt-${i + 1}`,
+    studentId: authUserId,
+    subject: i % 2 === 0 ? 'Mathematics' : 'Science',
+    topic: i % 2 === 0 ? 'Fractions' : 'Living Things',
+    score: 75,
+    isCorrect: true,
+    createdAt: new Date(Date.now() - (16 - i) * 3600 * 1000).toISOString()
+  }));
+
+  // Set Adam's 20 diagnostic attempts
+  dataStore.data.diagnosticAttempts = Array.from({ length: 20 }).map((_, i) => ({
+    id: `diag-attempt-${i + 1}`,
+    studentId: authUserId,
+    questionId: `diag-q-${i + 1}`,
+    selectedAnswer: 'A',
+    isCorrect: i < 15,
+    createdAt: new Date(Date.now() - 3 * 86400 * 1000).toISOString()
+  }));
+
+  // Adam Haziq is the ONLY student in Teacher student directory
   const totalLearningMins = demoData.subjects.reduce((sum: number, s: any) => sum + (s.learningMinutes || 0), 0);
 
   const adamRosterItem = {
@@ -269,34 +288,31 @@ export async function seedAdamDemoAccount() {
     initials: studentInitials,
     primarySubject: 'Mathematics',
     learningMinutes: totalLearningMins,
-    healthScore: demoData.dashboard.overallPerformance,
-    status: 'Assessment completed' as const,
+    healthScore: demoData.dashboard.healthScore || 84,
+    status: 'On track' as const,
     trend: 'up' as const,
     classId,
     className
   };
 
-  if (existingIndex >= 0) {
-    dataStore.data.students[existingIndex] = adamRosterItem;
-  } else {
-    dataStore.data.students.push(adamRosterItem);
-  }
+  // Remove phantom students - Adam Haziq is the single demo student
+  dataStore.data.students = [adamRosterItem];
 
-  // Teacher intervention for Adam Haziq on Subtraction
+  // Teacher intervention for Adam Haziq on Fractions
   dataStore.data.interventions = [
     {
-      id: `int-subtraction-${authUserId}`,
+      id: `int-fractions-${authUserId}`,
       studentId: authUserId,
       studentName,
       status: 'problem',
       classification: 'Guided Support',
       subject: 'Mathematics',
-      topic: 'Subtraction',
-      healthScore: 54,
+      topic: 'Fractions',
+      healthScore: demoData.dashboard.healthScore || 84,
       topicScore: 54,
       learningMinutes: 48,
-      recommendation: 'Targeted 15-minute guided support plan in subtraction to build core arithmetic confidence.',
-      plan: '15-minute visual subtraction mini-lesson with adaptive step-by-step hints.',
+      recommendation: 'Targeted 15-minute guided support plan in Fractions to build core equivalent fractions confidence.',
+      plan: '15-minute visual fractions mini-lesson with adaptive step-by-step hints.',
       createdAt: new Date().toISOString()
     }
   ];

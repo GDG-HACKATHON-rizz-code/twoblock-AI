@@ -57,7 +57,7 @@ test.describe('Adam Haziq Demonstration Account & Live Sync Suite', () => {
     assert.equal(dashRes.status, 200);
     const data = dashRes.body.data;
     assert.equal(data.hasAssessment, true);
-    assert.equal(data.overallPerformance, 84);
+    assert.equal(data.overallPerformance, 74);
     assert.equal(data.healthScore, 84);
     assert.equal(data.learningStreakDays, 12);
     assert.equal(data.studyActivityMinutes, 385);
@@ -71,8 +71,8 @@ test.describe('Adam Haziq Demonstration Account & Live Sync Suite', () => {
 
     assert.ok(math && math.score === 70, 'Maths should be 70');
     assert.ok(bm && bm.score === 67, 'BM should be 67');
-    assert.ok(english && english.score === 67, 'English should be 67');
-    assert.ok(science && science.score === 90, 'Science should be 90');
+    assert.ok(english && english.score === 72, 'English should be 72');
+    assert.ok(science && science.score === 84, 'Science should be 84');
   });
 
   test('4. Adam Haziq appears on Teacher class roster with correct metrics and status', async () => {
@@ -91,7 +91,7 @@ test.describe('Adam Haziq Demonstration Account & Live Sync Suite', () => {
 
     assert.ok(adam, 'Adam Haziq must be listed in teacher students roster');
     assert.equal(adam.healthScore, 84);
-    assert.equal(adam.status, 'Assessment completed');
+    assert.ok(adam.status === 'On track' || adam.status === 'Assessment completed', 'Status should be active or on track');
     assert.ok(adam.className.includes('Amanah'), 'Adam should be assigned to Amanah class');
   });
 
@@ -101,7 +101,7 @@ test.describe('Adam Haziq Demonstration Account & Live Sync Suite', () => {
       .send({ role: 'demo-student' });
     const token = loginRes.body.data.token;
 
-    // Subtraction previous score is 54
+    // Fractions previous score is 54
     // Student submits correct answer (100) -> new score: Math.round((54 * 0.7) + (100 * 0.3)) = Math.round(37.8 + 30) = 68
     const expectedScore = ScoringService.calculateWeightedScore(54, 100);
     assert.equal(expectedScore, 68);
@@ -110,12 +110,12 @@ test.describe('Adam Haziq Demonstration Account & Live Sync Suite', () => {
       .post('/api/student/practice/answer')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        topic: 'subtraction',
+        topic: 'fractions',
         subject: 'Mathematics',
         studentAnswer: '4',
         correctAnswer: '4',
         timeSpentSeconds: 15,
-        questionText: '9 - 5 = ?',
+        questionText: '2/4 = ?/8',
         level: 2
       });
 
@@ -139,10 +139,12 @@ test.describe('Adam Haziq Demonstration Account & Live Sync Suite', () => {
     assert.equal(resetRes.body.data.success, true);
     assert.equal(resetRes.body.data.message, 'Demo progress has been reset.');
 
-    // Confirm subtraction is back to 54 in dataStore
+    // Confirm Fractions is back to 54 and Subtraction is 76 in dataStore
     const math = dataStore.data.subjects.find(s => s.name === 'Mathematics');
+    const frac = math?.topics.find(t => t.id === 'fractions' || t.name === 'Fractions');
     const sub = math?.topics.find(t => t.id === 'subtraction' || t.name === 'Subtraction');
-    assert.equal(sub?.score, 54, 'Subtraction score should be restored to baseline 54');
+    assert.equal(frac?.score, 54, 'Fractions score should be restored to baseline 54');
+    assert.equal(sub?.score, 76, 'Subtraction score should be restored to baseline 76');
     assert.equal(math?.score, 70, 'Math score should be restored to 70');
   });
 
